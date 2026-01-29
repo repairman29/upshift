@@ -1,0 +1,30 @@
+{
+  "tiers": {
+    "free": {
+      "name": "Free",
+      "priceMonthlyUsd": 0,
+      "limits": {
+        "repos": 1
+      },
+      "features": ["scan", "explain"]
+    },
+    "pro": {
+      "name": "Pro",
+      "priceMonthlyUsd": 19,
+      "stripePriceIdEnv": "STRIPE_PRICE_PRO",
+      "limits": {
+        "repos": "unlimited"
+      },
+      "features": ["scan", "explain", "upgrade", "ai-migration", "rollback"]
+    },
+    "team": {
+      "name": "Team",
+      "priceMonthlyUsd": 79,
+      "stripePriceIdEnv": "STRIPE_PRICE_TEAM",
+      "limits": {
+        "repos": "unlimited"
+      },
+      "features": ["scan", "explain", "upgrade", "ai-migration", "rollback", "audit-logs"]
+    }
+  }
+}
