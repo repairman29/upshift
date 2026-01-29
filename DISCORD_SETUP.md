@@ -47,11 +47,11 @@ With your **Application ID** (Developer Portal → your app → **General Inform
 https://discord.com/api/oauth2/authorize?client_id=APPLICATION_ID&permissions=117824&scope=bot%20applications.commands
 ```
 
-Replace `APPLICATION_ID` with your app’s ID (e.g. `1466281866238759057`). The `permissions=117824` value gives: View Channels, Send Messages, Read Message History, Embed Links, Attach Files, Add Reactions. [Permission calculator](https://discordapi.com/permissions.html) if you want a different set.
+Replace `APPLICATION_ID` with your app’s ID (e.g. `YOUR_APPLICATION_ID`). The `permissions=117824` value gives: View Channels, Send Messages, Read Message History, Embed Links, Attach Files, Add Reactions. [Permission calculator](https://discordapi.com/permissions.html) if you want a different set.
 
-**For your app (Application ID `1466281866238759057`):**
+**For your app (Application ID `YOUR_APPLICATION_ID`):**
 
-[Invite this bot to a server](https://discord.com/api/oauth2/authorize?client_id=1466281866238759057&permissions=117824&scope=bot%20applications.commands)
+[Invite this bot to a server](https://discord.com/api/oauth2/authorize?client_id=YOUR_APPLICATION_ID&permissions=117824&scope=bot%20applications.commands)
 
 Open that link in a browser, choose your server, and authorize.
 
@@ -68,7 +68,7 @@ Open that link in a browser, choose your server, and authorize.
 
 | What | Where | Used for |
 |------|--------|----------|
-| **Application ID** | General Information → Application ID | Invite URL (`client_id`), API calls. You have: `1466281866238759057`. |
+| **Application ID** | General Information → Application ID | Invite URL (`client_id`), API calls. |
 | **Public Key** | General Information → Public Key | Verifying interactions (e.g. slash commands / webhooks). **Not** used by Clawdbot. |
 | **Bot Token** | Bot → Token (Reset Token / Copy) | Clawdbot needs this to connect to Discord. Put it in `~/.clawdbot/.env` as `DISCORD_BOT_TOKEN`. |
 
@@ -121,7 +121,7 @@ This can happen when the agent replies to a Discord DM using your **Discord user
 
 1. Open the session store: `~/.clawdbot/agents/main/sessions/sessions.json`
 2. Find your main session entry (key `"agent:main:main"`). Note its `sessionId`, `sessionFile`, `deliveryContext`, `origin`, `lastChannel`, `lastTo`, `lastAccountId`.
-3. Add a second key `"agent:main:YOUR_DISCORD_USER_ID"` (e.g. `"agent:main:377601792764018698"`) with an object that has the same `sessionId`, `sessionFile`, `deliveryContext`, `origin`, `lastChannel`, `lastTo`, `lastAccountId` (and optionally `updatedAt`). This aliases your Discord user ID to the same session so `sessions_send` with that ID resolves correctly.
+3. Add a second key `"agent:main:YOUR_DISCORD_USER_ID"` (e.g. `"agent:main:123456789012345678"`) with an object that has the same `sessionId`, `sessionFile`, `deliveryContext`, `origin`, `lastChannel`, `lastTo`, `lastAccountId` (and optionally `updatedAt`). This aliases your Discord user ID to the same session so `sessions_send` with that ID resolves correctly.
 
 After adding the alias, send another DM; the bot should be able to reply. If you add more Discord users (or use another bot account), repeat with their user IDs as needed.
 
@@ -131,7 +131,7 @@ After adding the alias, send another DM; the bot should be able to reply. If you
 
 If the bot receives your message but you never get a reply, the agent may be using **sessions_send** to reply to the same conversation. That path uses an "announce" step that can fail or be skipped, so nothing gets sent.
 
-**Fix:** In your **workspace** (e.g. `~/clawd`), add to `AGENTS.md` under a section like "Replying in the current conversation":
+**Fix:** In your **workspace** (e.g. `~/jarvis`), add to `AGENTS.md` under a section like "Replying in the current conversation":
 
 - When replying in a **direct message** or the conversation you are in, **reply with normal text** in your message. Do **not** use the `sessions_send` tool for the same conversation—that is for other sessions only. Your normal text reply will be delivered automatically.
 

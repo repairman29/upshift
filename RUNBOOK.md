@@ -50,7 +50,7 @@ tail -f /tmp/clawdbot/clawdbot-$(date +%Y-%m-%d).log
 ## Channels
 
 ### Discord
-- Bot: @JEFF BOT
+- Bot: @YourBotName
 - Token: stored in `~/.clawdbot/.env` as `DISCORD_BOT_TOKEN`
 - DM policy: pairing (new users get a code)
 
@@ -84,8 +84,8 @@ clawdbot memory search "query"
 ```
 
 Memory files:
-- Long-term: `~/clawd/MEMORY.md`
-- Daily logs: `~/clawd/memory/YYYY-MM-DD.md`
+- Long-term: `~/jarvis/MEMORY.md`
+- Daily logs: `~/jarvis/memory/YYYY-MM-DD.md`
 
 ## Skills
 
@@ -105,7 +105,7 @@ clawdbot skills info <skill-name>
 
 Main config: `~/.clawdbot/clawdbot.json`
 Secrets: `~/.clawdbot/.env`
-Workspace: `~/clawd`
+Workspace: `~/jarvis`
 
 ```bash
 # Validate config
@@ -153,10 +153,10 @@ Clawdbot is set up as a product owner and development partner.
 
 | File | Purpose |
 |------|---------|
-| `~/clawd/PRODUCTS.md` | Product knowledge (vision, roadmap, tech) |
-| `~/clawd/PRIORITIES.md` | Active work queue, what matters now |
-| `~/clawd/DECISIONS.md` | Architecture Decision Records |
-| `~/clawd/HEARTBEAT.md` | Proactive monitoring tasks |
+| `~/jarvis/PRODUCTS.md` | Product knowledge (vision, roadmap, tech) |
+| `~/jarvis/PRIORITIES.md` | Active work queue, what matters now |
+| `~/jarvis/DECISIONS.md` | Architecture Decision Records |
+| `~/jarvis/HEARTBEAT.md` | Proactive monitoring tasks |
 
 ### Voice Commands
 
@@ -173,18 +173,9 @@ Clawdbot is set up as a product owner and development partner.
 
 | Tool | Command | Purpose |
 |------|---------|---------|
-| echeo | `/opt/homebrew/bin/echeo` | Code/market matching |
+| echeo | `echeo` | Code/market matching |
 | beast-mode | `beast-mode` | Quality intelligence |
-| code-roach | `node ~/smuggler-code-roach/cli/code-roach.js` | Code quality |
-
-### Products Being Built
-
-- **Echeo** - The Resonant Engine
-- **BEAST MODE** - Enterprise Quality Intelligence
-- **Code Roach** - Self-learning code quality
-- **Smugglers RPG** - AI game master
-- **Project Forge** - OKR platform
-- **Echeovid** - Video content platform
+| code-roach | `code-roach` | Code quality |
 
 ## Model Info
 
@@ -201,5 +192,5 @@ Clawdbot is set up as a product owner and development partner.
 | Logs | `~/.clawdbot/logs/` |
 | Sessions | `~/.clawdbot/agents/main/sessions/` |
 | Memory DB | `~/.clawdbot/memory/main.sqlite` |
-| Workspace | `~/clawd/` |
+| Workspace | `~/jarvis/` |
 | LaunchAgent | `~/Library/LaunchAgents/com.clawdbot.gateway.plist` |

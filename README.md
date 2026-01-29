@@ -30,7 +30,6 @@ Think Tony Stark's JARVIS, but real and customizable.
 | [**DEVELOPER_GUIDE.md**](./DEVELOPER_GUIDE.md) | Full setup guide — start here! |
 | [DISCORD_SETUP.md](./DISCORD_SETUP.md) | Discord bot configuration |
 | [RUNBOOK.md](./RUNBOOK.md) | Day-to-day operations |
-| [ROADMAP.md](./ROADMAP.md) | Feature roadmap |
 
 ---
 

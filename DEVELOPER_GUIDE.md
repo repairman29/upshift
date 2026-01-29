@@ -839,7 +839,7 @@ Yes, JARVIS can check grocery prices and build shopping lists. For real.
    ```bash
    KROGER_CLIENT_ID=your_client_id
    KROGER_CLIENT_SECRET=your_secret
-   KROGER_LOCATION_ID=62000006  # Your local store
+   KROGER_LOCATION_ID=your_store_id  # Find your store ID at kroger.com
    ```
 
 **What you can do:**
@@ -854,7 +854,7 @@ kroger shop tortillas beef cheese salsa
 # → Lists all items with prices, totals it up
 
 # Find nearby stores
-kroger stores 80904
+kroger stores YOUR_ZIP_CODE
 
 # Open cart in browser
 kroger cart
