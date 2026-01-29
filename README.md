@@ -29,6 +29,8 @@ upshift upgrade react --dry-run
 upshift credits
 upshift credits --add 5
 upshift credits --reset 10
+
+upshift buy-credits --pack small
 ```
 
 ## What it does today
