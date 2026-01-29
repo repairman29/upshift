@@ -68,4 +68,8 @@ UPSHIFT_API_TOKEN=dev-token-1
 - Pricing: `docs/pricing.md`
 - Stripe setup: `docs/stripe-setup.md`
 - Launch pack: `docs/launch.md`
+- Landing page copy: `docs/landing-page.md`
+- One-pager: `docs/one-pager.md`
+- Video script: `docs/video-script.md`
+- Blog post: `docs/blog-post.md`
 
