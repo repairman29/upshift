@@ -105,7 +105,11 @@ async function exchangeCode(code, redirectUri) {
     }).toString(),
   });
   const data = await res.json();
-  if (!res.ok) throw new Error(data.error_description || data.error || 'Token exchange failed');
+  if (!res.ok) {
+    const msg = data.error_description || data.error || 'Token exchange failed';
+    console.error('[exchangeCode] Kroger token error:', res.status, JSON.stringify(data));
+    throw new Error(msg);
+  }
   return data;
 }
 
@@ -207,15 +211,18 @@ app.get('/callback', async (req, res) => {
   let userId = 'default';
   let returnUrl = null;
   try {
-    const stateData = JSON.parse(Buffer.from(state, 'base64').toString());
-    userId = stateData.userId || 'default';
-    if (stateData.return_url && isAllowedReturnUrl(stateData.return_url)) {
-      returnUrl = stateData.return_url;
+    if (state) {
+      const stateData = JSON.parse(Buffer.from(state, 'base64').toString());
+      userId = stateData.userId || 'default';
+      if (stateData.return_url && isAllowedReturnUrl(stateData.return_url)) {
+        returnUrl = stateData.return_url;
+      }
     }
   } catch (_) {}
   
+  const redirectUri = `${SERVICE_URL}/callback`;
+  
   try {
-    const redirectUri = `${SERVICE_URL}/callback`;
     const tokenData = await exchangeCode(code, redirectUri);
     await saveToken(userId, tokenData);
     
@@ -243,7 +250,21 @@ app.get('/callback', async (req, res) => {
       </html>
     `);
   } catch (e) {
-    res.status(500).send(`<h1>Error</h1><p>${e.message}</p>`);
+    console.error('[callback] Token exchange or save failed:', e.message);
+    const hint = e.message && /redirect_uri|invalid_grant|invalid_request/i.test(e.message)
+      ? `<p><strong>Tip:</strong> In the Kroger Developer Portal, add this <em>exact</em> Redirect URI (no trailing slash):<br><code>${redirectUri}</code></p>`
+      : '';
+    res.status(500).send(`
+      <html>
+      <head><title>Connection failed</title></head>
+      <body style="font-family: system-ui; max-width: 600px; margin: 50px auto; text-align: center;">
+        <h1 style="color: #c00;">Connection failed</h1>
+        <p>${e.message}</p>
+        ${hint}
+        <p style="margin-top: 1.5rem; font-size: 0.9rem;">Try connecting again from your app. If it keeps failing, check Railway env: <code>SERVICE_URL</code> must be exactly <code>https://kroger-oauth-production.up.railway.app</code> (no trailing slash).</p>
+      </body>
+      </html>
+    `);
   }
 });
 
