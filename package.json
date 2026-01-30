@@ -1,6 +1,6 @@
 {
   "name": "upshift-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "AI-powered dependency upgrades with explanations and safe rollbacks.",
   "type": "module",
   "bin": {

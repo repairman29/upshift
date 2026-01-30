@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Get Started | Upshift</title>
+  <meta name="description" content="Install Upshift and start scanning your dependencies in under a minute." />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <style>
+    .start-content {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    .start-content h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    .start-content .subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      margin-bottom: 2.5rem;
+    }
+    .step {
+      margin-bottom: 2.5rem;
+    }
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+    .step-number {
+      background: var(--accent);
+      color: #fff;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .step-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin: 0;
+    }
+    .step-desc {
+      color: var(--text-muted);
+      margin: 0 0 1rem;
+      padding-left: 2.75rem;
+    }
+    .code-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      color: var(--accent);
+      margin-left: 2.75rem;
+      position: relative;
+      overflow-x: auto;
+    }
+    .code-block .comment {
+      color: var(--text-muted);
+    }
+    .code-block code {
+      display: block;
+      margin: 0.25rem 0;
+    }
+    .copy-btn-small {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+    .copy-btn-small:hover {
+      background: var(--border);
+      color: var(--text);
+    }
+    .output-preview {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin: 1rem 0 0 2.75rem;
+      white-space: pre-wrap;
+    }
+    .output-preview .highlight {
+      color: var(--accent);
+    }
+    .output-preview .warn {
+      color: #f0883e;
+    }
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 2.5rem 0;
+    }
+    .next-steps {
+      background: var(--bg-soft);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-top: 2rem;
+    }
+    .next-steps h3 {
+      margin: 0 0 1rem;
+      font-size: 1rem;
+    }
+    .next-steps ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .next-steps li {
+      padding: 0.5rem 0;
+      color: var(--text-muted);
+    }
+    .next-steps li code {
+      background: var(--bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      color: var(--accent);
+    }
+    .credits-box {
+      background: linear-gradient(135deg, #238636 0%, #2ea043 100%);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      margin: 2rem 0;
+      color: #fff;
+    }
+    .credits-box h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1rem;
+    }
+    .credits-box p {
+      margin: 0;
+      opacity: 0.9;
+      font-size: 0.95rem;
+    }
+    .btn-row {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="wrap header-inner">
+      <a href="/" class="logo">upshift</a>
+      <nav class="nav">
+        <a href="/#pricing">Pricing</a>
+        <a href="https://github.com/repairman29/upshift" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="start-content">
+    <h1>Get Started</h1>
+    <p class="subtitle">Install Upshift and scan your first project in under a minute.</p>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-number">1</span>
+        <h2 class="step-title">Install the CLI</h2>
+      </div>
+      <p class="step-desc">Requires Node.js 18 or higher.</p>
+      <div class="code-block">
+        <button class="copy-btn-small" onclick="navigator.clipboard.writeText('npm install -g upshift-cli')">Copy</button>
+        <code>npm install -g upshift-cli</code>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-number">2</span>
+        <h2 class="step-title">Scan your project</h2>
+      </div>
+      <p class="step-desc">Navigate to any project with a package.json and run:</p>
+      <div class="code-block">
+        <button class="copy-btn-small" onclick="navigator.clipboard.writeText('upshift scan')">Copy</button>
+        <code>upshift scan</code>
+      </div>
+      <div class="output-preview">✔ Scan complete
+Package manager: npm
+
+Outdated dependencies:
+- <span class="highlight">react</span>: 18.2.0 → 19.0.0
+- <span class="highlight">express</span>: 4.18.2 → 5.0.0
+- <span class="highlight">typescript</span>: 5.3.0 → 5.7.0
+
+Vulnerabilities: <span class="warn">high: 1</span>, moderate: 2</div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-number">3</span>
+        <h2 class="step-title">Understand what will break</h2>
+      </div>
+      <p class="step-desc">Before upgrading, see what changed and assess the risk:</p>
+      <div class="code-block">
+        <button class="copy-btn-small" onclick="navigator.clipboard.writeText('upshift explain react --risk')">Copy</button>
+        <code>upshift explain react --risk</code>
+      </div>
+      <div class="output-preview">react 18.2.0 → 19.0.0: <span class="warn">MEDIUM</span>
+  - Major version bump (potential breaking changes)
+  - High popularity (45M weekly downloads)
+
+Breaking changes:
+  - New JSX transform required
+  - useEffect cleanup timing changed
+  - Removed legacy context API</div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <span class="step-number">4</span>
+        <h2 class="step-title">Upgrade safely</h2>
+      </div>
+      <p class="step-desc">Upshift upgrades the package, runs tests, and rolls back if anything fails:</p>
+      <div class="code-block">
+        <button class="copy-btn-small" onclick="navigator.clipboard.writeText('upshift upgrade react')">Copy</button>
+        <code>upshift upgrade react</code>
+        <code><span class="comment"># or preview first:</span></code>
+        <code>upshift upgrade react --dry-run</code>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="credits-box">
+      <h3>You get 10 free credits</h3>
+      <p>Each AI explanation uses 1 credit. Scan and upgrade are always free.</p>
+    </div>
+
+    <div class="next-steps">
+      <h3>When you need more credits</h3>
+      <ul>
+        <li><code>upshift buy-credits --pack small</code> → 100 credits for $5</li>
+        <li><code>upshift buy-credits --pack medium</code> → 500 credits for $20</li>
+        <li><code>upshift buy-credits --pack large</code> → 2000 credits for $50</li>
+        <li><code>upshift subscribe --tier pro</code> → Unlimited for $9/mo</li>
+      </ul>
+    </div>
+
+    <div class="next-steps">
+      <h3>More commands</h3>
+      <ul>
+        <li><code>upshift scan --json</code> → JSON output for CI/CD</li>
+        <li><code>upshift explain &lt;pkg&gt; --changelog</code> → Fetch changelog from GitHub</li>
+        <li><code>upshift credits</code> → Check your balance</li>
+        <li><code>upshift status</code> → View subscription tier</li>
+      </ul>
+    </div>
+
+    <div class="btn-row">
+      <a href="https://github.com/repairman29/upshift" class="btn btn-secondary" target="_blank" rel="noopener">View on GitHub</a>
+      <a href="/#pricing" class="btn btn-primary">See Pricing</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>&copy; 2026 Upshift. Built for developers who ship.</p>
+    </div>
+  </footer>
+</body>
+</html>

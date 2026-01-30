@@ -1,6 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import path from "path";
 import os from "os";
+import chalk from "chalk";
 
 type CreditState = {
   balance: number;
@@ -8,6 +9,20 @@ type CreditState = {
 };
 
 const DEFAULT_CREDITS = 10;
+
+function showOutOfCreditsMessage(): void {
+  console.log("");
+  console.log(chalk.yellow("⚠ Out of credits"));
+  console.log("");
+  console.log("  AI explanations require credits. Get more:");
+  console.log("");
+  console.log(chalk.cyan("  upshift buy-credits --pack small") + "   → 100 credits for $5");
+  console.log(chalk.cyan("  upshift buy-credits --pack medium") + "  → 500 credits for $20");
+  console.log(chalk.cyan("  upshift subscribe --tier pro") + "      → Unlimited for $9/mo");
+  console.log("");
+  console.log(chalk.dim("  Scans and upgrades are always free."));
+  console.log("");
+}
 
 export async function consumeCredit(action: "explain"): Promise<void> {
   const endpoint = process.env.UPSHIFT_CREDITS_ENDPOINT;
@@ -20,7 +35,7 @@ export async function consumeCredit(action: "explain"): Promise<void> {
 
   const state = loadCredits();
   if (state.balance <= 0) {
-    process.stdout.write("C\n");
+    showOutOfCreditsMessage();
     process.exit(2);
   }
 
@@ -29,6 +44,13 @@ export async function consumeCredit(action: "explain"): Promise<void> {
     updatedAt: new Date().toISOString(),
   };
   saveCredits(next);
+
+  // Warn when credits are running low
+  if (next.balance > 0 && next.balance <= 3) {
+    console.log("");
+    console.log(chalk.yellow(`⚠ ${next.balance} credit${next.balance === 1 ? "" : "s"} remaining`));
+    console.log(chalk.dim("  Run: upshift buy-credits --pack small"));
+  }
 }
 
 export function getCreditBalance(): number {
@@ -109,14 +131,14 @@ async function consumeRemote(
 
     if (!response.ok) {
       if (response.status === 402 || response.status === 429) {
-        process.stdout.write("C\n");
+        showOutOfCreditsMessage();
         process.exit(2);
       }
       return false;
     }
     const data = (await response.json()) as { balance?: number };
     if (typeof data.balance === "number" && data.balance <= 0) {
-      process.stdout.write("C\n");
+      showOutOfCreditsMessage();
       process.exit(2);
     }
     return true;

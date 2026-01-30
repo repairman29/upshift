@@ -222,27 +222,38 @@ function getWelcomeEmailHtml(email: string): string {
           </tr>
           <tr>
             <td style="background-color: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 32px;">
-              <h1 style="margin: 0 0 16px; font-size: 24px; font-weight: 600; color: #e6edf3;">You're on the list!</h1>
-              <p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #8b949e;">
-                Thanks for signing up for early access to Upshift. We're building the tool that makes dependency upgrades safe and painless.
+              <h1 style="margin: 0 0 16px; font-size: 24px; font-weight: 600; color: #e6edf3;">You're in! Here's how to get started</h1>
+              <p style="margin: 0 0 20px; font-size: 16px; line-height: 1.6; color: #8b949e;">
+                Thanks for signing up for Upshift. You're ready to start scanning and upgrading dependencies safely.
               </p>
-              <p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #8b949e;">
-                <strong style="color: #e6edf3;">What Upshift does:</strong><br>
-                • Scans for outdated and vulnerable dependencies<br>
-                • Explains breaking changes with risk assessment<br>
-                • Upgrades with automatic rollback on failure<br>
-                • Works with npm, yarn, and pnpm
+              
+              <p style="margin: 0 0 8px; font-size: 14px; font-weight: 600; color: #e6edf3;">Step 1: Install the CLI</p>
+              <div style="background-color: #0d1117; border: 1px solid #30363d; border-radius: 6px; padding: 12px 16px; margin: 0 0 20px; font-family: 'JetBrains Mono', monospace; font-size: 14px; color: #7ee787;">
+                npm install -g upshift-cli
+              </div>
+              
+              <p style="margin: 0 0 8px; font-size: 14px; font-weight: 600; color: #e6edf3;">Step 2: Scan your project</p>
+              <div style="background-color: #0d1117; border: 1px solid #30363d; border-radius: 6px; padding: 12px 16px; margin: 0 0 20px; font-family: 'JetBrains Mono', monospace; font-size: 14px; color: #7ee787;">
+                cd your-project<br>
+                upshift scan
+              </div>
+              
+              <p style="margin: 0 0 8px; font-size: 14px; font-weight: 600; color: #e6edf3;">Step 3: Understand breaking changes</p>
+              <div style="background-color: #0d1117; border: 1px solid #30363d; border-radius: 6px; padding: 12px 16px; margin: 0 0 20px; font-family: 'JetBrains Mono', monospace; font-size: 14px; color: #7ee787;">
+                upshift explain react --risk
+              </div>
+              
+              <p style="margin: 0 0 24px; font-size: 15px; line-height: 1.6; color: #8b949e;">
+                You get <strong style="color: #e6edf3;">10 free credits</strong> to try AI explanations. Need more? Run <code style="background: #0d1117; padding: 2px 6px; border-radius: 4px; font-size: 13px;">upshift buy-credits</code> or subscribe for unlimited access.
               </p>
-              <p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #8b949e;">
-                We'll email you when we're ready to onboard more users. In the meantime, you can try the CLI:
-              </p>
-              <a href="https://github.com/repairman29/upshift" style="display: inline-block; padding: 12px 24px; background-color: #2ea043; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px;">View on GitHub</a>
+              
+              <a href="https://upshiftai.dev/start" style="display: inline-block; padding: 12px 24px; background-color: #2ea043; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; margin-right: 8px;">Full Getting Started Guide</a>
             </td>
           </tr>
           <tr>
             <td style="padding-top: 24px; text-align: center;">
               <p style="margin: 0; font-size: 13px; color: #8b949e;">
-                <a href="https://upshiftai.dev" style="color: #8b949e; text-decoration: none;">upshiftai.dev</a>
+                <a href="https://upshiftai.dev" style="color: #8b949e; text-decoration: none;">upshiftai.dev</a> · <a href="https://github.com/repairman29/upshift" style="color: #8b949e; text-decoration: none;">GitHub</a>
               </p>
             </td>
           </tr>
@@ -256,19 +267,24 @@ function getWelcomeEmailHtml(email: string): string {
 }
 
 function getWelcomeEmailText(email: string): string {
-  return `You're on the Upshift waitlist!
+  return `You're in! Here's how to get started with Upshift.
 
-Thanks for signing up for early access to Upshift. We're building the tool that makes dependency upgrades safe and painless.
+STEP 1: Install the CLI
+npm install -g upshift-cli
 
-What Upshift does:
-- Scans for outdated and vulnerable dependencies
-- Explains breaking changes with risk assessment
-- Upgrades with automatic rollback on failure
-- Works with npm, yarn, and pnpm
+STEP 2: Scan your project
+cd your-project
+upshift scan
 
-We'll email you when we're ready to onboard more users.
+STEP 3: Understand breaking changes
+upshift explain react --risk
 
-Try the CLI: https://github.com/repairman29/upshift
+You get 10 free credits to try AI explanations. Need more?
+- Buy credits: upshift buy-credits --pack small
+- Subscribe: upshift subscribe --tier pro
+
+Full guide: https://upshiftai.dev/start
+GitHub: https://github.com/repairman29/upshift
 
 ---
 upshiftai.dev
