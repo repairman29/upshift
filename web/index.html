@@ -13,6 +13,8 @@
   <meta name="twitter:description" content="Upgrade dependencies safely, run tests automatically, and roll back when anything breaks." />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
+  <!-- Analytics -->
+  <script defer data-domain="upshiftai.dev" src="https://plausible.io/js/script.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -22,9 +24,9 @@
     <div class="wrap">
       <a href="/" class="logo">upshift</a>
       <nav>
-        <a href="#how">How it works</a>
+        <a href="#demo">Demo</a>
         <a href="#pricing">Pricing</a>
-        <a href="#faq">FAQ</a>
+        <a href="/blog/introducing-upshift">Blog</a>
         <a href="https://github.com/repairman29/upshift" class="nav-gh" target="_blank" rel="noopener">GitHub</a>
       </nav>
     </div>
@@ -33,17 +35,19 @@
   <main>
     <section class="hero">
       <div class="wrap">
-        <p class="hero-tag">CLI • npm • safe rollbacks</p>
-        <h1>Dependabot tells you what to upgrade.<br />Upshift upgrades it and fixes the code.</h1>
-        <p class="hero-lead">Upgrade dependencies safely, run tests automatically, and roll back when anything breaks.</p>
-        <form class="signup-form" id="hero-form">
-          <input type="email" name="email" placeholder="you@example.com" required />
-          <button type="submit" class="btn btn-primary">Get early access</button>
-        </form>
-        <p class="signup-note">Join <span id="waitlist-count">100+</span> developers on the waitlist</p>
+        <p class="hero-tag">AI-powered • CLI • npm/yarn/pnpm</p>
+        <h1>Stop reading changelogs.<br />Let AI tell you what breaks.</h1>
+        <p class="hero-lead">Scan for outdated dependencies. Get AI-powered migration guides. Upgrade with automatic rollback.</p>
+        <div class="install-hero">
+          <code>npm install -g upshift-cli</code>
+          <button class="copy-btn" onclick="navigator.clipboard.writeText('npm install -g upshift-cli')">Copy</button>
+        </div>
         <div class="hero-ctas">
-          <a href="#how" class="btn btn-secondary">See how it works</a>
-          <a href="https://github.com/repairman29/upshift" class="btn btn-secondary" target="_blank" rel="noopener">View on GitHub</a>
+          <a href="/start" class="btn btn-primary">Get Started</a>
+          <a href="https://github.com/repairman29/upshift" class="btn btn-secondary gh-btn" target="_blank" rel="noopener">
+            <svg height="16" viewBox="0 0 16 16" width="16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+            Star on GitHub
+          </a>
         </div>
       </div>
     </section>
@@ -51,11 +55,51 @@
     <section class="trust">
       <div class="wrap">
         <ul class="trust-list">
-          <li>CLI-first workflow</li>
-          <li>Works in your terminal</li>
-          <li>Safe rollbacks</li>
-          <li>Credits that never expire</li>
+          <li>🤖 AI explains breaking changes</li>
+          <li>🔍 Scans npm, yarn, pnpm</li>
+          <li>↩️ Auto-rollback on failure</li>
+          <li>🆓 Free tier included</li>
         </ul>
+      </div>
+    </section>
+
+    <section class="demo" id="demo">
+      <div class="wrap">
+        <h2>See it in action</h2>
+        <div class="terminal">
+          <div class="terminal-header">
+            <span class="terminal-dot red"></span>
+            <span class="terminal-dot yellow"></span>
+            <span class="terminal-dot green"></span>
+            <span class="terminal-title">terminal</span>
+          </div>
+          <div class="terminal-body">
+<pre><span class="cmd">$ upshift explain express --ai --from 4.18.0 --to 5.0.0</span>
+
+<span class="success">✔</span> AI analysis ready
+
+<span class="heading">🤖 AI Analysis:</span>
+<span class="subheading"># Upgrading Express from 4.18.0 to 5.0.0</span>
+
+<span class="subheading">## Breaking Changes</span>
+1. <span class="warn">res.send()</span> no longer accepts objects directly
+   → Use <span class="success">res.json()</span> for JSON responses
+
+2. Built-in <span class="warn">bodyParser</span> removed
+   → Use <span class="success">express.json()</span> instead
+
+3. Error handlers need 4 params: <span class="success">(err, req, res, next)</span>
+
+<span class="subheading">## Code to search for:</span>
+<span class="dim">res.send({ ... })  →  res.json({ ... })</span>
+<span class="dim">bodyParser.json()  →  express.json()</span>
+
+<span class="cmd">$ upshift upgrade express</span>
+<span class="success">✔</span> Upgraded express 4.18.0 → 5.0.0
+<span class="success">✔</span> Tests passed
+</pre>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -74,25 +118,14 @@
     <section class="solution" id="how">
       <div class="wrap">
         <h2>Upshift turns upgrades into a repeatable workflow</h2>
-        <p class="pipeline">Scan → Explain → Upgrade → Test → Rollback</p>
+        <p class="pipeline">Scan → <strong>AI Explain</strong> → Upgrade → Test → Rollback</p>
         <ol class="steps">
           <li><strong>Scan</strong> for outdated or vulnerable dependencies</li>
-          <li><strong>Explain</strong> breaking changes and risk</li>
+          <li><strong>AI Explain</strong> breaking changes, code patterns, and migration steps</li>
           <li><strong>Upgrade</strong> the dependency</li>
           <li><strong>Run tests</strong> and validate</li>
-          <li><strong>Rollback</strong> if anything fails</li>
+          <li><strong>Rollback</strong> automatically if anything fails</li>
         </ol>
-      </div>
-    </section>
-
-    <section class="install">
-      <div class="wrap">
-        <h2>Get started in seconds</h2>
-        <div class="install-box">
-          <code>npm install -g upshift-cli</code>
-          <button class="copy-btn" onclick="navigator.clipboard.writeText('npm install -g upshift-cli')">Copy</button>
-        </div>
-        <p class="install-note">Then run <code>upshift scan</code> in any project</p>
       </div>
     </section>
 

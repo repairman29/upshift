@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introducing Upshift: AI-Powered Dependency Upgrades | Upshift Blog</title>
+  <meta name="description" content="Stop reading changelogs. Upshift uses AI to explain breaking changes, suggest code fixes, and upgrade your dependencies safely." />
+  <meta property="og:title" content="Introducing Upshift: AI-Powered Dependency Upgrades" />
+  <meta property="og:description" content="Stop reading changelogs. Upshift uses AI to explain breaking changes and upgrade dependencies safely." />
+  <meta property="og:type" content="article" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script defer data-domain="upshiftai.dev" src="https://plausible.io/js/script.js"></script>
+  <style>
+    .blog-content {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+    .blog-meta {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+    .blog-content h1 {
+      font-size: 2.25rem;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+    .blog-content h2 {
+      font-size: 1.5rem;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .blog-content p {
+      margin-bottom: 1.5rem;
+      color: var(--text-muted);
+    }
+    .blog-content p:first-of-type {
+      font-size: 1.15rem;
+      color: var(--text);
+    }
+    .blog-content code {
+      font-family: var(--font-mono);
+      background: var(--bg-soft);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    .blog-content pre {
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+    }
+    .blog-content pre code {
+      background: none;
+      padding: 0;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      color: var(--accent);
+    }
+    .blog-content ul, .blog-content ol {
+      margin-bottom: 1.5rem;
+      padding-left: 1.5rem;
+      color: var(--text-muted);
+    }
+    .blog-content li {
+      margin-bottom: 0.5rem;
+    }
+    .blog-content strong {
+      color: var(--text);
+    }
+    .blog-cta {
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      text-align: center;
+      margin: 3rem 0;
+    }
+    .blog-cta h3 {
+      margin: 0 0 0.5rem;
+    }
+    .blog-cta p {
+      margin: 0 0 1.5rem;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="wrap">
+      <a href="/" class="logo">upshift</a>
+      <nav>
+        <a href="/#how">How it works</a>
+        <a href="/#pricing">Pricing</a>
+        <a href="https://github.com/repairman29/upshift" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <article class="blog-content">
+    <p class="blog-meta">January 30, 2026 · 4 min read</p>
+    <h1>Introducing Upshift: AI-Powered Dependency Upgrades</h1>
+    
+    <p>Every developer knows the pain: you run <code>npm outdated</code> and see a wall of packages that need updating. React 19 is out. Express 5 shipped. TypeScript has a new major version. But upgrading means hours of reading changelogs, hunting for migration guides, and hoping your tests catch whatever breaks.</p>
+    
+    <p>Today we're launching Upshift, a CLI tool that uses AI to make dependency upgrades safe and predictable.</p>
+
+    <h2>The Problem</h2>
+    
+    <p>Dependabot tells you <em>what</em> to upgrade. That's the easy part. The hard part is understanding what will break and how to fix it.</p>
+    
+    <p>When you upgrade a major version, you need to:</p>
+    <ul>
+      <li>Read through changelogs (if they exist)</li>
+      <li>Find migration guides (often scattered across blog posts)</li>
+      <li>Identify deprecated APIs in your codebase</li>
+      <li>Make the changes and hope you didn't miss anything</li>
+      <li>Manually rollback if tests fail</li>
+    </ul>
+    
+    <p>This is why teams accumulate technical debt. It's not that upgrades are hard—it's that they're tedious and risky. So they get postponed.</p>
+
+    <h2>How Upshift Works</h2>
+    
+    <p>Upshift is a CLI that scans, explains, and upgrades your dependencies:</p>
+    
+    <pre><code># Scan for outdated packages
+upshift scan
+
+# Get AI-powered analysis of breaking changes
+upshift explain react --ai --from 18.2.0 --to 19.0.0
+
+# Upgrade with automatic rollback
+upshift upgrade react</code></pre>
+
+    <p>The <code>--ai</code> flag is where the magic happens. Instead of dumping a changelog on you, Upshift uses GPT-4 to analyze the upgrade and give you:</p>
+    
+    <ul>
+      <li><strong>Breaking changes</strong> that will affect your code</li>
+      <li><strong>Migration steps</strong> in plain English</li>
+      <li><strong>Code patterns to search for</strong> in your codebase</li>
+      <li><strong>Specific replacements</strong> like <code>res.send()</code> → <code>res.json()</code></li>
+    </ul>
+
+    <h2>Real Example: Express 4 → 5</h2>
+    
+    <p>Here's what Upshift's AI analysis looks like for upgrading Express:</p>
+    
+    <pre><code>🤖 AI Analysis:
+# Upgrading Express from 4.18.0 to 5.0.0
+
+## Breaking Changes
+1. res.send() no longer accepts objects directly
+   → Use res.json() for JSON responses
+
+2. Built-in bodyParser removed
+   → Use express.json() instead
+
+3. Error handlers need 4 params: (err, req, res, next)
+
+## Code to search for:
+res.send({ ... })  →  res.json({ ... })
+bodyParser.json()  →  express.json()</code></pre>
+
+    <p>No more reading through 50 release notes. The AI extracts exactly what you need to know.</p>
+
+    <h2>Safe Upgrades with Rollback</h2>
+    
+    <p>When you run <code>upshift upgrade</code>, it:</p>
+    
+    <ol>
+      <li>Backs up your lockfile and node_modules</li>
+      <li>Installs the new version</li>
+      <li>Runs your test suite</li>
+      <li>Automatically rolls back if tests fail</li>
+    </ol>
+    
+    <p>You can also do a dry run first with <code>upshift upgrade react --dry-run</code> to see what would happen.</p>
+
+    <h2>Pricing</h2>
+    
+    <p>Upshift is free for basic usage:</p>
+    
+    <ul>
+      <li><strong>Free:</strong> Unlimited scans, upgrades, and basic explanations</li>
+      <li><strong>AI credits:</strong> The <code>--ai</code> flag costs 1 credit. You get 10 free credits to start.</li>
+      <li><strong>Credit packs:</strong> 100 credits for $5, 300 for $15, 1000 for $40</li>
+      <li><strong>Pro subscription:</strong> $9/mo includes 100 credits + 20% bonus on packs</li>
+    </ul>
+    
+    <p>We price AI features separately because they have real costs (API calls), but we wanted the core workflow to be free forever.</p>
+
+    <h2>Get Started</h2>
+    
+    <pre><code>npm install -g upshift-cli
+cd your-project
+upshift scan</code></pre>
+    
+    <p>That's it. In 30 seconds you'll see which dependencies need attention. Add <code>--ai</code> when you want the deep analysis.</p>
+
+    <div class="blog-cta">
+      <h3>Try Upshift Today</h3>
+      <p>Stop reading changelogs. Let AI tell you what breaks.</p>
+      <a href="/start" class="btn btn-primary">Get Started</a>
+    </div>
+
+    <h2>What's Next</h2>
+    
+    <p>We're just getting started. On the roadmap:</p>
+    
+    <ul>
+      <li>AI-generated code fixes (not just explanations)</li>
+      <li>VS Code extension</li>
+      <li>GitHub Action for automated PR scanning</li>
+      <li>Multi-repo dashboard</li>
+    </ul>
+    
+    <p>Follow us on <a href="https://github.com/repairman29/upshift">GitHub</a> to stay updated.</p>
+    
+    <p>— The Upshift Team</p>
+  </article>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>&copy; 2026 Upshift. Built for developers who ship.</p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,6 +1,7 @@
 {
   "rewrites": [
-    { "source": "/start", "destination": "/start.html" }
+    { "source": "/start", "destination": "/start.html" },
+    { "source": "/blog/introducing-upshift", "destination": "/blog/introducing-upshift.html" }
   ],
   "headers": [
     {
