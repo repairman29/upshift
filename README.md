@@ -8,9 +8,22 @@ Upshift is a CLI that upgrades dependencies safely. It scans for outdated and vu
 
 Supports npm, yarn, and pnpm. See [ROADMAP.md](ROADMAP.md) for what's next.
 
-## Install (local dev)
+## Install
 
+```bash
+npm install -g upshift-cli
 ```
+
+Then run:
+```bash
+upshift --help
+```
+
+### From source (dev)
+
+```bash
+git clone https://github.com/repairman29/upshift.git
+cd upshift
 npm install
 npm run build
 node dist/cli.js --help

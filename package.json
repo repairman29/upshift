@@ -1,11 +1,28 @@
 {
-  "name": "upshift",
+  "name": "upshift-cli",
   "version": "0.1.0",
   "description": "AI-powered dependency upgrades with explanations and safe rollbacks.",
   "type": "module",
   "bin": {
     "upshift": "dist/cli.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/repairman29/upshift.git"
+  },
+  "homepage": "https://upshiftai.dev",
+  "keywords": [
+    "dependencies",
+    "upgrade",
+    "security",
+    "vulnerabilities",
+    "npm",
+    "yarn",
+    "pnpm",
+    "cli",
+    "ai"
+  ],
+  "author": "Jeff Adkins",
   "scripts": {
     "build": "tsup src/cli.ts src/server.ts --format esm --dts --clean",
     "dev": "node --loader ts-node/esm src/cli.ts",
