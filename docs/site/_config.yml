@@ -1,0 +1,80 @@
+# GitHub Pages Configuration for JARVIS
+title: JARVIS - Conversational Productivity Revolution
+description: AI-powered productivity system with natural language interface, workflow automation, and intelligent task orchestration.
+
+# Site settings
+url: "https://repairman29.github.io"
+baseurl: "/JARVIS"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+permalink: pretty
+
+# GitHub settings
+repository: repairman29/JARVIS
+
+# SEO and social
+logo: /assets/jarvis-logo.png
+twitter:
+  username: jarvis_ai
+  card: summary_large_image
+
+# Navigation
+navigation:
+  - name: "Home"
+    url: "/"
+  - name: "Features"
+    url: "/#features"
+  - name: "Install"
+    url: "/#getting-started"
+  - name: "Docs"
+    url: "/docs/"
+  - name: "GitHub"
+    url: "https://github.com/repairman29/JARVIS"
+
+# Footer links
+footer_links:
+  - name: "GitHub Repository"
+    url: "https://github.com/repairman29/JARVIS"
+  - name: "Documentation"
+    url: "/docs/"
+  - name: "Contributing"
+    url: "/contributing/"
+  - name: "Issues"
+    url: "https://github.com/repairman29/JARVIS/issues"
+  - name: "Roadmap"
+    url: "/roadmap/"
+
+# Collections
+collections:
+  skills:
+    output: true
+    permalink: /:collection/:name/
+  docs:
+    output: true
+    permalink: /:collection/:name/
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+  - scope:
+      path: ""
+      type: "skills"
+    values:
+      layout: "skill"
+  - scope:
+      path: ""
+      type: "docs"
+    values:
+      layout: "documentation"
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
