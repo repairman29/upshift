@@ -338,42 +338,65 @@ async function getAIAnalysis(
   toVersion: string,
   changelog: string | null
 ): Promise<string> {
-  // TODO: Integrate with OpenAI/Claude API for real AI analysis
-  // For now, provide a structured analysis based on available data
+  const apiKey = process.env.OPENAI_API_KEY;
   
-  const lines: string[] = [];
-  
-  lines.push(`Analyzing upgrade path: ${packageName} ${fromVersion ?? "unknown"} → ${toVersion}`);
-  lines.push("");
-  
-  if (changelog) {
-    lines.push("Based on the changelog, here are the key changes to watch for:");
-    lines.push("");
-    // Extract key patterns from changelog
-    const breakingPatterns = changelog.match(/breaking|removed|deprecated|changed/gi);
-    if (breakingPatterns && breakingPatterns.length > 0) {
-      lines.push(`⚠️  Found ${breakingPatterns.length} potential breaking change indicators`);
-    }
-    
-    const featurePatterns = changelog.match(/added|new|feature|support/gi);
-    if (featurePatterns && featurePatterns.length > 0) {
-      lines.push(`✨ Found ${featurePatterns.length} new feature indicators`);
-    }
-    
-    const fixPatterns = changelog.match(/fix|bug|patch|resolve/gi);
-    if (fixPatterns && fixPatterns.length > 0) {
-      lines.push(`🐛 Found ${fixPatterns.length} bug fix indicators`);
-    }
-    lines.push("");
+  if (!apiKey) {
+    return chalk.yellow("AI analysis unavailable (OPENAI_API_KEY not configured).\n") +
+      "Set OPENAI_API_KEY environment variable to enable AI-powered explanations.";
   }
-  
-  lines.push("Recommended upgrade steps:");
-  lines.push("1. Review the changelog and release notes carefully");
-  lines.push("2. Check your codebase for deprecated API usage");
-  lines.push("3. Run `upshift upgrade " + packageName + " --dry-run` first");
-  lines.push("4. Run your test suite after upgrading");
-  lines.push("");
-  lines.push(chalk.dim("Full AI-powered migration analysis coming soon."));
-  
-  return lines.join("\n");
+
+  try {
+    const { default: OpenAI } = await import("openai");
+    const openai = new OpenAI({ apiKey });
+
+    const systemPrompt = `You are a senior software engineer helping developers upgrade npm dependencies safely.
+Your task is to analyze a package upgrade and provide actionable guidance.
+Be concise but thorough. Focus on:
+1. Breaking changes that require code modifications
+2. Deprecated APIs that need to be replaced
+3. New features worth adopting
+4. Common migration pitfalls
+5. Specific code patterns to search for and update
+
+Format your response with clear sections using markdown. Keep it under 500 words.`;
+
+    const userPrompt = `Analyze upgrading **${packageName}** from ${fromVersion ?? "unknown"} to ${toVersion}.
+
+${changelog ? `Here's the recent changelog:\n\n${changelog.slice(0, 3000)}` : "No changelog available - provide general guidance for this package."}
+
+Provide:
+1. Summary of what changed
+2. Breaking changes (if any)
+3. Migration steps
+4. Code patterns to search for in my codebase`;
+
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+      max_tokens: 1000,
+      temperature: 0.3,
+    });
+
+    const content = response.choices[0]?.message?.content;
+    if (!content) {
+      return chalk.yellow("AI returned empty response. Try again.");
+    }
+
+    return content;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    if (message.includes("401") || message.includes("invalid_api_key")) {
+      return chalk.red("Invalid OpenAI API key. Check OPENAI_API_KEY.");
+    }
+    if (message.includes("429") || message.includes("rate_limit")) {
+      return chalk.yellow("OpenAI rate limit hit. Try again in a moment.");
+    }
+    if (message.includes("insufficient_quota")) {
+      return chalk.red("OpenAI quota exceeded. Add billing at platform.openai.com");
+    }
+    return chalk.yellow(`AI analysis failed: ${message}`);
+  }
 }
