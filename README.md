@@ -174,11 +174,13 @@ Add integrations by creating skill files in `~/jarvis/skills/`:
 ```
 ~/jarvis/skills/
 ├── google/SKILL.md      # Gmail, Calendar, Drive
-├── kroger/SKILL.md      # Grocery shopping
+├── kroger/SKILL.md      # Grocery shopping (see skills/kroger in this repo)
 ├── spotify/SKILL.md     # Music control
 ├── imagegen/SKILL.md    # AI image generation
 └── your-skill/SKILL.md  # Your custom skill
 ```
+
+**Kroger:** This repo includes a full Kroger skill in `skills/kroger/` and JARVIS workspace templates in `jarvis/` (TOOLS.md, AGENTS.md). Install the skill and copy/merge `jarvis/` into `~/jarvis/` so JARVIS has full access — see `jarvis/README.md`.
 
 ---
 
@@ -255,6 +257,26 @@ code-roach crawl              # Build knowledge base
 ```
 
 **[Learn more about Code Roach →](https://github.com/repairman29/code-roach)**
+
+---
+
+### 📦 UpshiftAI — Ancient Dependency Lineage
+
+> *"When dependencies fork back to ancient sub-branches of projects of yore."*
+
+Analyze dependency trees and surface ancient/legacy/forked packages for [upshiftai.dev](https://upshiftai.dev).
+
+| Feature | What It Does |
+|---------|--------------|
+| **Tree resolution** | npm lockfile → full tree with depth and "why" |
+| **Ancient detection** | Age since publish, deprecated, fork-name hints |
+| **Report output** | JSON + optional markdown for pipelines or JARVIS |
+
+```bash
+cd upshiftai && node bin/upshiftai-deps.js analyze /path/to/project [--markdown] [--no-registry]
+```
+
+**[See `upshiftai/README.md` →](./upshiftai/README.md)** · **Landing:** deploy `upshiftai/site/` to [upshiftai.dev](https://upshiftai.dev). **JARVIS skill:** `clawdbot skills install ./skills/upshiftai`
 
 ---
 

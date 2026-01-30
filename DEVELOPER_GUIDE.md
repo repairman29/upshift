@@ -410,6 +410,7 @@ clawdbot skills install apple-reminders
 
 | Skill | What It Does | Requirements |
 |-------|--------------|--------------|
+| `kroger` | Search products, prices, stores, shopping list (Kroger/King Soopers) | Kroger API keys + store ID (see [Grocery](#grocery-shopping-with-krogerking-soopers)) |
 | `spotify-player` | Play/pause/skip, search music | Spotify Premium |
 | `openhue` | Control Philips Hue lights | Hue Bridge on network |
 | `apple-reminders` | Create/manage reminders | macOS |
@@ -839,8 +840,11 @@ Yes, JARVIS can check grocery prices and build shopping lists. For real.
    ```bash
    KROGER_CLIENT_ID=your_client_id
    KROGER_CLIENT_SECRET=your_secret
-   KROGER_LOCATION_ID=your_store_id  # Find your store ID at kroger.com
+   KROGER_LOCATION_ID=your_store_id  # 8 chars; find at kroger.com when you select a store (required for prices)
    ```
+4. Install the Kroger skill (from this repo): `clawdbot skills install ./skills/kroger`  
+   Or copy `skills/kroger` to `~/jarvis/skills/kroger`.
+5. **Give JARVIS access:** Copy or merge the files in **`jarvis/`** (TOOLS.md, AGENTS.md) into your `~/jarvis/` workspace so the agent knows to use Kroger. See `jarvis/README.md` and `skills/kroger/JARVIS_ACCESS.md`.
 
 **What you can do:**
 

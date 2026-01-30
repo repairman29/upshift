@@ -58,3 +58,8 @@ out/
 
 # Local development
 .cursor/mcp.json
+
+# Personal and sensitive files
+CREDENTIALS_NOTE.md
+EBAY_*.md
+reports/
