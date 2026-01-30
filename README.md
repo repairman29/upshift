@@ -63,6 +63,10 @@ UPSHIFT_API_TOKEN=dev-token-1
 - Multi-repo support
 - License-based gating for Pro/Team tiers
 
+## Website
+
+The landing page lives in `web/`. To deploy at **upshiftai.dev**: import this repo in [Vercel](https://vercel.com), set **Root Directory** to `web`, deploy, then add domains `upshiftai.dev` and `www.upshiftai.dev`. See `web/README.md`.
+
 ## Docs
 
 - Pricing: `docs/pricing.md`
