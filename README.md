@@ -65,7 +65,11 @@ UPSHIFT_API_TOKEN=dev-token-1
 
 ## Website
 
-The landing page lives in `web/`. To deploy at **upshiftai.dev**: import this repo in [Vercel](https://vercel.com), set **Root Directory** to `web`, deploy, then add domains `upshiftai.dev` and `www.upshiftai.dev`. See `web/README.md`.
+The landing page lives in `web/`. Deploy at **upshiftai.dev**:
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/repairman29/upshift)
+
+After importing, set **Root Directory** to `web`, then add domains `upshiftai.dev` and `www.upshiftai.dev` in Project → Settings → Domains. See `web/README.md`.
 
 ## Docs
 
