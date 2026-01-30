@@ -64,6 +64,13 @@ async function searchProduct(
 }
 
 export async function POST(request: NextRequest) {
+  if (!KROGER_SERVICE || !SERVICE_SECRET) {
+    return NextResponse.json(
+      { success: false, error: 'Kroger service not configured (missing NEXT_PUBLIC_KROGER_SERVICE_URL or KROGER_SERVICE_SECRET)' },
+      { status: 503 }
+    )
+  }
+
   try {
     const { userId, items, shopping_mode: bodyMode } = await request.json()
 
@@ -97,7 +104,15 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const token = await getKrogerToken()
+    let token: string
+    try {
+      token = await getKrogerToken()
+    } catch (e: unknown) {
+      return NextResponse.json(
+        { success: false, error: 'Kroger product search unavailable (check KROGER_CLIENT_ID / KROGER_CLIENT_SECRET)' },
+        { status: 503 }
+      )
+    }
     const cartItems: { upc: string; quantity: number; modality: string }[] = []
     const results: { term: string; found: boolean; upc?: string; description?: string; price?: number }[] = []
 
@@ -157,55 +172,59 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // Store memory (events + preferences) if configured
-    if (isSupabaseServerConfigured() && supabaseServer) {
-      const now = new Date().toISOString()
-      const events = results.map((result: any) => ({
-        user_id: userId,
-        event_type: 'add_to_cart',
-        term: result.term,
-        upc: result.found ? result.upc : null,
-        description: result.description || null,
-        price: result.price || null,
-        store_location_id: DEFAULT_LOCATION_ID,
-        created_at: now,
-      }))
+    // Store memory (events + preferences) if configured — non-fatal so cart success is preserved
+    if (isSupabaseServerConfigured() && supabaseServer && userId) {
+      try {
+        const now = new Date().toISOString()
+        const events = results.map((result: any) => ({
+          user_id: userId,
+          event_type: 'add_to_cart',
+          term: result.term,
+          upc: result.found ? result.upc : null,
+          description: result.description || null,
+          price: result.price || null,
+          store_location_id: DEFAULT_LOCATION_ID,
+          created_at: now,
+        }))
 
-      if (events.length > 0) {
-        await supabaseServer.from('olive_events').insert(events)
-      }
+        if (events.length > 0) {
+          await supabaseServer.from('olive_events').insert(events)
+        }
 
-      const foundItems = results.filter((result: any) => result.found)
-      for (const result of foundItems) {
-        const { data: existing } = await supabaseServer
-          .from('olive_preferences')
-          .select('times_used')
-          .eq('user_id', userId)
-          .eq('term', result.term)
-          .maybeSingle()
-
-        if (existing) {
-          await supabaseServer
+        const foundItems = results.filter((result: any) => result.found)
+        for (const result of foundItems) {
+          const { data: existing } = await supabaseServer
             .from('olive_preferences')
-            .update({
-              preferred_upc: result.upc || null,
-              last_used_at: now,
-              times_used: (existing.times_used || 0) + 1,
-            })
+            .select('times_used')
             .eq('user_id', userId)
             .eq('term', result.term)
-        } else {
-          await supabaseServer.from('olive_preferences').insert({
-            user_id: userId,
-            term: result.term,
-            preferred_upc: result.upc || null,
-            preferred_brand: null,
-            preferred_size: null,
-            notes: null,
-            last_used_at: now,
-            times_used: 1,
-          })
+            .maybeSingle()
+
+          if (existing) {
+            await supabaseServer
+              .from('olive_preferences')
+              .update({
+                preferred_upc: result.upc || null,
+                last_used_at: now,
+                times_used: (existing.times_used || 0) + 1,
+              })
+              .eq('user_id', userId)
+              .eq('term', result.term)
+          } else {
+            await supabaseServer.from('olive_preferences').insert({
+              user_id: userId,
+              term: result.term,
+              preferred_upc: result.upc || null,
+              preferred_brand: null,
+              preferred_size: null,
+              notes: null,
+              last_used_at: now,
+              times_used: 1,
+            })
+          }
         }
+      } catch (_) {
+        // Memory write failed; cart still succeeded — don't fail the request
       }
     }
 
@@ -215,7 +234,8 @@ export async function POST(request: NextRequest) {
       cartUrl: 'https://www.kroger.com/shopping/cart',
       shopping_mode_used: mode,
     })
-  } catch (e: any) {
-    return NextResponse.json({ success: false, error: e.message }, { status: 500 })
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : 'Add to cart failed'
+    return NextResponse.json({ success: false, error: message }, { status: 500 })
   }
 }

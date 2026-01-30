@@ -56,3 +56,23 @@ If the error URL shows **mgeydloygmoiypnwaqmn** instead, the app is still pointe
    - Authentication → URL Configuration: **Site URL** and **Redirect URLs** include your app (e.g. `https://shopolive.xyz`, `http://localhost:3001`).
 
 After changing Auth or env, restart the dev server or redeploy.
+
+---
+
+## 500 on `/api/memory/usuals`, `/api/memory/settings`, or `/api/kroger/add-to-cart`
+
+**Cause:** Server-side APIs need env vars that are **not** exposed to the client. If they’re missing on Vercel, you get 500 (or 503 after recent changes).
+
+**Required on Vercel (Project → Settings → Environment Variables):**
+
+| Variable | Used by | Where to get it |
+|----------|---------|-----------------|
+| `SUPABASE_URL` | Memory APIs, add-to-cart (preferences) | Same as `NEXT_PUBLIC_SUPABASE_URL` (e.g. `https://rbfzlqmkwhbvrrfdcain.supabase.co`) |
+| `SUPABASE_SERVICE_ROLE_KEY` | Memory APIs, add-to-cart (events/preferences) | Supabase Dashboard → API → **service_role** (secret; server only) |
+| `NEXT_PUBLIC_KROGER_SERVICE_URL` | Add-to-cart, Connect Kroger | e.g. `https://kroger-oauth-production.up.railway.app` |
+| `KROGER_SERVICE_SECRET` | Add-to-cart (calls Kroger service) | Same secret as your Railway Kroger OAuth service |
+| `KROGER_CLIENT_ID` / `KROGER_CLIENT_SECRET` | Add-to-cart (product search) | Kroger Developer Portal – same app as OAuth |
+
+**If memory tables don’t exist:** Run the SQL in `supabase/memory.sql` and `supabase/settings.sql` in the Supabase SQL Editor (project rbfzlqmkwhbvrrfdcain). Otherwise usuals/settings queries can still return 500 with a “relation does not exist”–style error.
+
+**After adding or changing these:** Redeploy (Vercel Dashboard → Deployments → ⋮ → Redeploy, or `vercel --prod`).

@@ -159,10 +159,26 @@ app.get('/', (req, res) => {
   });
 });
 
+// Allowed hosts for return_url (avoid open redirect)
+const ALLOWED_RETURN_HOSTS = ['shopolive.xyz', 'www.shopolive.xyz', 'localhost', '127.0.0.1'];
+
+function isAllowedReturnUrl(url) {
+  if (!url || typeof url !== 'string') return false;
+  try {
+    const u = new URL(url);
+    if (u.protocol !== 'https:' && u.protocol !== 'http:') return false;
+    if (u.protocol === 'http:' && u.hostname !== 'localhost') return false;
+    return ALLOWED_RETURN_HOSTS.some(h => u.hostname === h || u.hostname.endsWith('.' + h));
+  } catch (_) {
+    return false;
+  }
+}
+
 // Generate auth URL for a user
 app.get('/auth/url', (req, res) => {
   const userId = req.query.user_id || 'default';
-  const state = Buffer.from(JSON.stringify({ userId, ts: Date.now() })).toString('base64');
+  const returnUrl = req.query.return_url && isAllowedReturnUrl(req.query.return_url) ? req.query.return_url : null;
+  const state = Buffer.from(JSON.stringify({ userId, ts: Date.now(), return_url: returnUrl })).toString('base64');
   const redirectUri = `${SERVICE_URL}/callback`;
   
   const url = `${AUTH_URL}?` + new URLSearchParams({
@@ -189,15 +205,31 @@ app.get('/callback', async (req, res) => {
   }
   
   let userId = 'default';
+  let returnUrl = null;
   try {
     const stateData = JSON.parse(Buffer.from(state, 'base64').toString());
     userId = stateData.userId || 'default';
+    if (stateData.return_url && isAllowedReturnUrl(stateData.return_url)) {
+      returnUrl = stateData.return_url;
+    }
   } catch (_) {}
   
   try {
     const redirectUri = `${SERVICE_URL}/callback`;
     const tokenData = await exchangeCode(code, redirectUri);
     await saveToken(userId, tokenData);
+    
+    const returnSection = returnUrl
+      ? `
+        <p style="margin-top: 1.5rem;">
+          <a href="${returnUrl}" style="display: inline-block; background: #2d3a1f; color: white; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: 600;">Return to Olive</a>
+        </p>
+        <p style="margin-top: 1rem; font-size: 0.9rem; color: #666;">Redirecting in 3 seconds…</p>
+        <script>
+          setTimeout(function(){ window.location.href = ${JSON.stringify(returnUrl)}; }, 3000);
+        </script>
+      `
+      : '<p>You can close this window and return to your app.</p>';
     
     res.send(`
       <html>
@@ -206,7 +238,7 @@ app.get('/callback', async (req, res) => {
         <h1 style="color: green;">✓ Kroger Connected!</h1>
         <p>Your Kroger account is now linked.</p>
         <p>User ID: <code>${userId}</code></p>
-        <p>You can close this window and return to Jarvis.</p>
+        ${returnSection}
       </body>
       </html>
     `);

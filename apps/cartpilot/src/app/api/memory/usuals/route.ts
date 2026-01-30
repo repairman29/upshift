@@ -2,15 +2,15 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseServer, isSupabaseServerConfigured } from '@/lib/supabaseServer'
 
 export async function GET(request: NextRequest) {
-  if (!isSupabaseServerConfigured() || !supabaseServer) {
-    return NextResponse.json({ error: 'Supabase not configured' }, { status: 500 })
-  }
-
   const { searchParams } = new URL(request.url)
   const userId = searchParams.get('userId')
 
   if (!userId) {
     return NextResponse.json({ error: 'Missing userId' }, { status: 400 })
+  }
+
+  if (!isSupabaseServerConfigured() || !supabaseServer) {
+    return NextResponse.json({ usuals: [] })
   }
 
   const { data, error } = await supabaseServer

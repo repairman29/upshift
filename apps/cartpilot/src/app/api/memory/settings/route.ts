@@ -4,15 +4,15 @@ import { supabaseServer, isSupabaseServerConfigured } from '@/lib/supabaseServer
 export type ShoppingMode = 'budget' | 'splurge'
 
 export async function GET(request: NextRequest) {
-  if (!isSupabaseServerConfigured() || !supabaseServer) {
-    return NextResponse.json({ error: 'Supabase not configured' }, { status: 500 })
-  }
-
   const { searchParams } = new URL(request.url)
   const userId = searchParams.get('userId')
 
   if (!userId) {
     return NextResponse.json({ error: 'Missing userId' }, { status: 400 })
+  }
+
+  if (!isSupabaseServerConfigured() || !supabaseServer) {
+    return NextResponse.json({ shopping_mode: 'splurge' })
   }
 
   const { data, error } = await supabaseServer
@@ -31,7 +31,10 @@ export async function GET(request: NextRequest) {
 
 export async function PATCH(request: NextRequest) {
   if (!isSupabaseServerConfigured() || !supabaseServer) {
-    return NextResponse.json({ error: 'Supabase not configured' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Supabase not configured; settings cannot be saved' },
+      { status: 503 }
+    )
   }
 
   const body = await request.json().catch(() => ({}))

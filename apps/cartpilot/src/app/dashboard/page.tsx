@@ -125,10 +125,12 @@ function DashboardContent() {
 
   const connectKroger = async () => {
     if (!user) return
-    const res = await fetch(`/api/kroger/auth-url?userId=${user.id}`)
+    const returnUrl = typeof window !== 'undefined' ? `${window.location.origin}/dashboard` : ''
+    const res = await fetch(`/api/kroger/auth-url?userId=${encodeURIComponent(user.id)}&returnUrl=${encodeURIComponent(returnUrl)}`)
     const data = await res.json()
     if (data.url) {
-      window.location.href = data.url
+      // Open in new tab so dashboard stays open; callback page has "Return to Olive" link
+      window.open(data.url, '_blank', 'noopener,noreferrer')
     }
   }
 
