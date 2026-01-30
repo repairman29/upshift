@@ -1,33 +1,68 @@
-# JARVIS: Build Your Own AI Assistant
+# 🧠 JARVIS - Open Source Conversational Productivity
 
-> Turn any LLM into a personal AI assistant you can chat with on Discord, iMessage, or Telegram. With memory, personality, and real superpowers.
+> The world's most intelligent open source productivity platform. Transform your workflow with AI-powered conversational computing.
 
-![JARVIS](https://img.shields.io/badge/AI-JARVIS-blue?style=for-the-badge)
-![Platform](https://img.shields.io/badge/Platform-macOS-lightgrey?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-
----
-
-## What Is This?
-
-This repo contains everything you need to build your own JARVIS — a personal AI assistant that:
-
-- **Chats with you** on Discord, iMessage, Telegram, or all three
-- **Remembers everything** across conversations
-- **Has a personality** that you define
-- **Controls your life** — calendar, email, tasks, smart home, music
-- **Helps you code** with AI pair programming, quality checks, deployments
-- **Runs locally** on your Mac (or a server)
-
-Think Tony Stark's JARVIS, but real and customizable.
+[![GitHub stars](https://img.shields.io/github/stars/repairman29/JARVIS.svg?style=social&label=Star)](https://github.com/repairman29/JARVIS)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Website](https://img.shields.io/badge/website-jarvis.ai-brightgreen.svg)](https://repairman29.github.io/JARVIS/)
+[![Discord](https://img.shields.io/badge/discord-join-7289da.svg)](https://discord.gg/jarvis-ai)
 
 ---
 
-## Quick Links
+## 🚀 **Conversational Computing Revolution**
+
+JARVIS transforms traditional command-based productivity into intelligent conversation. Instead of memorizing shortcuts and chaining commands, simply talk to your computer like a human assistant.
+
+**Core Capabilities:**
+- 🎙️ **Natural Language Interface**: Talk naturally, get intelligent responses  
+- 🔗 **Skill Orchestration**: 10+ skills work together for complex automation
+- 🤖 **Workflow Intelligence**: AI learns your patterns and suggests optimizations
+- 📱 **Cross-Platform**: Works on macOS, Windows, Linux with full feature parity
+- 🌐 **Community Ecosystem**: Open platform for shared innovation and development
+
+**Example**: *"Find my React project, open it in VS Code, arrange windows for development, and start monitoring performance"* → **Complete workspace setup in one sentence**
+
+## 💎 **Open Core Model**
+
+**🆓 Open Source Core** (This Repository):
+Complete productivity platform with 10 core skills, voice control, workflow automation, and community marketplace infrastructure.
+
+**💰 Premium Skills** ([Marketplace](https://repairman29.github.io/JARVIS/)):
+Advanced AI-powered skills for professionals: Notion Advanced Pro, GitHub Copilot++, Focus Pro, and enterprise solutions.
+
+---
+
+## 🎯 **10 Core Skills Included (Open Source)**
+
+| Skill | Purpose | Key Features |
+|-------|---------|--------------|
+| 🚀 **Launcher** | App management & system control | Launch apps, control system, quick calculations |
+| 🪟 **Window Manager** | Advanced workspace control | Window snapping, workspace presets, multi-display |
+| 📁 **File Search** | Intelligent file discovery | Content search, smart categorization, duplicates |
+| 📋 **Clipboard History** | Smart clipboard management | Unlimited history, privacy controls, sync |
+| ✏️ **Snippets** | Dynamic text expansion | Templates, variables, smart suggestions |
+| 🧮 **Calculator** | Advanced mathematical computing | Units, currency, programming, scientific |
+| 🤖 **Workflow Automation** | AI-powered task orchestration | Command chaining, pattern learning, scheduling |
+| 🏪 **Skill Marketplace** | Community ecosystem platform | Skill discovery, installation, publishing |
+| 🎙️ **Voice Control** | Hands-free operation | Wake word detection, natural speech processing |
+| 📊 **Performance Monitor** | System optimization | Health monitoring, automated cleanup, analytics |
+
+## 💎 **Premium Skills Available**
+
+**Professional AI-powered skills for advanced productivity:**
+
+- **💼 Notion Advanced Pro** ($14.99/month): AI page generation, smart databases, workspace sync
+- **⚡ GitHub Copilot++ Pro** ($19.99/month): Advanced code analysis, PR automation, repo intelligence  
+- **🎯 Focus Pro** ($9.99/month): AI focus optimization, productivity analytics, wellness integration
+
+[**Explore Premium Skills →**](https://repairman29.github.io/JARVIS/)
+
+## 🚀 **Quick Start**
 
 | Document | Description |
 |----------|-------------|
-| [**DEVELOPER_GUIDE.md**](./DEVELOPER_GUIDE.md) | Full setup guide — start here! |
+| [**Installation Guide**](https://repairman29.github.io/JARVIS/getting-started/) | Get JARVIS running in 5 minutes |
+| [**DEVELOPER_GUIDE.md**](./DEVELOPER_GUIDE.md) | Complete setup and development guide |
 | [DISCORD_SETUP.md](./DISCORD_SETUP.md) | Discord bot configuration |
 | [RUNBOOK.md](./RUNBOOK.md) | Day-to-day operations |
 
@@ -180,7 +215,11 @@ Add integrations by creating skill files in `~/jarvis/skills/`:
 └── your-skill/SKILL.md  # Your custom skill
 ```
 
-**Kroger:** This repo includes a full Kroger skill in `skills/kroger/` and JARVIS workspace templates in `jarvis/` (TOOLS.md, AGENTS.md). Install the skill and copy/merge `jarvis/` into `~/jarvis/` so JARVIS has full access — see `jarvis/README.md`.
+**🆓 Open Source Core**: This repository contains the complete open source JARVIS productivity platform with 10+ core skills, AI workflow automation, voice control, and community infrastructure.
+
+**💎 Premium Skills Available**: Advanced AI-powered skills for professionals are available through our [marketplace](https://repairman29.github.io/JARVIS/) including Notion Advanced Pro, GitHub Copilot++ Pro, and Focus Pro.
+
+**📦 Installation**: Get started with the one-command installer: `curl -sSL https://install.jarvis.ai | bash` or follow the [complete setup guide](https://repairman29.github.io/JARVIS/getting-started/).
 
 ---
 
