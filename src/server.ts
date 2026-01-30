@@ -1,8 +1,14 @@
 import express from "express";
 import Stripe from "stripe";
+import { Resend } from "resend";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import path from "path";
 import os from "os";
+
+// Resend for transactional emails
+const resendApiKey = process.env.RESEND_API_KEY ?? "";
+const resend = resendApiKey ? new Resend(resendApiKey) : null;
+const emailFrom = process.env.EMAIL_FROM ?? "Upshift <hello@upshiftai.dev>";
 
 type CreditEntry = {
   balance: number;
@@ -160,7 +166,7 @@ function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-app.post("/waitlist", (req, res) => {
+app.post("/waitlist", async (req, res) => {
   const email = String(req.body?.email ?? "").trim().toLowerCase();
   const source = String(req.body?.source ?? "website").trim();
 
@@ -175,10 +181,99 @@ app.post("/waitlist", (req, res) => {
   if (!exists) {
     entries.push({ email, createdAt: new Date().toISOString(), source });
     saveWaitlist(entries);
+
+    // Send welcome email
+    if (resend) {
+      try {
+        await resend.emails.send({
+          from: emailFrom,
+          to: email,
+          subject: "You're on the Upshift waitlist!",
+          html: getWelcomeEmailHtml(email),
+          text: getWelcomeEmailText(email),
+        });
+      } catch (e) {
+        console.error("Failed to send welcome email:", e);
+      }
+    }
   }
 
   res.json({ success: true, message: "You're on the list!" });
 });
+
+function getWelcomeEmailHtml(email: string): string {
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to Upshift</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #0d1117; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #0d1117; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="100%" max-width="520" cellpadding="0" cellspacing="0" style="max-width: 520px;">
+          <tr>
+            <td style="padding-bottom: 24px;">
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 500; color: #e6edf3;">upshift</span>
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 32px;">
+              <h1 style="margin: 0 0 16px; font-size: 24px; font-weight: 600; color: #e6edf3;">You're on the list!</h1>
+              <p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #8b949e;">
+                Thanks for signing up for early access to Upshift. We're building the tool that makes dependency upgrades safe and painless.
+              </p>
+              <p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #8b949e;">
+                <strong style="color: #e6edf3;">What Upshift does:</strong><br>
+                • Scans for outdated and vulnerable dependencies<br>
+                • Explains breaking changes with risk assessment<br>
+                • Upgrades with automatic rollback on failure<br>
+                • Works with npm, yarn, and pnpm
+              </p>
+              <p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #8b949e;">
+                We'll email you when we're ready to onboard more users. In the meantime, you can try the CLI:
+              </p>
+              <a href="https://github.com/repairman29/upshift" style="display: inline-block; padding: 12px 24px; background-color: #2ea043; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px;">View on GitHub</a>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding-top: 24px; text-align: center;">
+              <p style="margin: 0; font-size: 13px; color: #8b949e;">
+                <a href="https://upshiftai.dev" style="color: #8b949e; text-decoration: none;">upshiftai.dev</a>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `.trim();
+}
+
+function getWelcomeEmailText(email: string): string {
+  return `You're on the Upshift waitlist!
+
+Thanks for signing up for early access to Upshift. We're building the tool that makes dependency upgrades safe and painless.
+
+What Upshift does:
+- Scans for outdated and vulnerable dependencies
+- Explains breaking changes with risk assessment
+- Upgrades with automatic rollback on failure
+- Works with npm, yarn, and pnpm
+
+We'll email you when we're ready to onboard more users.
+
+Try the CLI: https://github.com/repairman29/upshift
+
+---
+upshiftai.dev
+`.trim();
+}
 
 app.get("/waitlist/count", (_req, res) => {
   const entries = loadWaitlist();
