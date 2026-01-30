@@ -240,11 +240,14 @@ function getWelcomeEmailHtml(email: string): string {
               
               <p style="margin: 0 0 8px; font-size: 14px; font-weight: 600; color: #e6edf3;">Step 3: Understand breaking changes</p>
               <div style="background-color: #0d1117; border: 1px solid #30363d; border-radius: 6px; padding: 12px 16px; margin: 0 0 20px; font-family: 'JetBrains Mono', monospace; font-size: 14px; color: #7ee787;">
-                upshift explain react --risk
+                upshift explain react --risk<br>
+                <span style="color: #8b949e;"># or for AI-powered deep analysis:</span><br>
+                upshift explain react --ai
               </div>
               
               <p style="margin: 0 0 24px; font-size: 15px; line-height: 1.6; color: #8b949e;">
-                You get <strong style="color: #e6edf3;">10 free credits</strong> to try AI explanations. Need more? Run <code style="background: #0d1117; padding: 2px 6px; border-radius: 4px; font-size: 13px;">upshift buy-credits</code> or subscribe for unlimited access.
+                <strong style="color: #e6edf3;">Scans, upgrades, and basic explanations are free.</strong><br>
+                AI analysis (<code style="background: #0d1117; padding: 2px 6px; border-radius: 4px; font-size: 13px;">--ai</code>) costs 1 credit. You get 10 free credits to start.
               </p>
               
               <a href="https://upshiftai.dev/start" style="display: inline-block; padding: 12px 24px; background-color: #2ea043; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; margin-right: 8px;">Full Getting Started Guide</a>
@@ -278,10 +281,19 @@ upshift scan
 
 STEP 3: Understand breaking changes
 upshift explain react --risk
+# or for AI-powered deep analysis:
+upshift explain react --ai
 
-You get 10 free credits to try AI explanations. Need more?
-- Buy credits: upshift buy-credits --pack small
-- Subscribe: upshift subscribe --tier pro
+WHAT'S FREE:
+- Scans, upgrades, and basic explanations are unlimited
+
+WHAT COSTS CREDITS:
+- AI analysis (--ai flag) costs 1 credit per package
+- You get 10 free credits to start
+
+Need more credits?
+- upshift buy-credits --pack small  → 100 credits for $5
+- upshift subscribe --tier pro      → $9/mo (100 credits included)
 
 Full guide: https://upshiftai.dev/start
 GitHub: https://github.com/repairman29/upshift

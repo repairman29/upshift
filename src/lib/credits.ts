@@ -12,15 +12,17 @@ const DEFAULT_CREDITS = 10;
 
 function showOutOfCreditsMessage(): void {
   console.log("");
-  console.log(chalk.yellow("⚠ Out of credits"));
+  console.log(chalk.yellow("⚠ Out of AI credits"));
   console.log("");
-  console.log("  AI explanations require credits. Get more:");
+  console.log("  The --ai flag requires credits. Get more:");
   console.log("");
   console.log(chalk.cyan("  upshift buy-credits --pack small") + "   → 100 credits for $5");
-  console.log(chalk.cyan("  upshift buy-credits --pack medium") + "  → 500 credits for $20");
-  console.log(chalk.cyan("  upshift subscribe --tier pro") + "      → Unlimited for $9/mo");
+  console.log(chalk.cyan("  upshift buy-credits --pack medium") + "  → 300 credits for $15");
+  console.log(chalk.cyan("  upshift buy-credits --pack large") + "   → 1000 credits for $40");
   console.log("");
-  console.log(chalk.dim("  Scans and upgrades are always free."));
+  console.log(chalk.cyan("  upshift subscribe --tier pro") + "       → $9/mo (100 credits included)");
+  console.log("");
+  console.log(chalk.dim("  Tip: upshift explain <pkg> without --ai is always free."));
   console.log("");
 }
 

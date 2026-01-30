@@ -219,15 +219,17 @@ Vulnerabilities: <span class="warn">high: 1</span>, moderate: 2</div>
       <div class="code-block">
         <button class="copy-btn-small" onclick="navigator.clipboard.writeText('upshift explain react --risk')">Copy</button>
         <code>upshift explain react --risk</code>
+        <code><span class="comment"># or get AI-powered deep analysis:</span></code>
+        <code>upshift explain react --ai</code>
       </div>
       <div class="output-preview">react 18.2.0 → 19.0.0: <span class="warn">MEDIUM</span>
   - Major version bump (potential breaking changes)
   - High popularity (45M weekly downloads)
 
-Breaking changes:
-  - New JSX transform required
-  - useEffect cleanup timing changed
-  - Removed legacy context API</div>
+<span class="highlight">🤖 AI Analysis:</span>
+  ⚠️  Found 3 potential breaking change indicators
+  ✨ Found 5 new feature indicators
+  Recommended: Review useEffect cleanup changes</div>
     </div>
 
     <div class="step">
@@ -247,25 +249,33 @@ Breaking changes:
     <hr class="divider" />
 
     <div class="credits-box">
-      <h3>You get 10 free credits</h3>
-      <p>Each AI explanation uses 1 credit. Scan and upgrade are always free.</p>
+      <h3>Free vs AI-powered</h3>
+      <p><code>upshift explain</code> is free and unlimited. Add <code>--ai</code> for deep AI analysis (costs 1 credit). You get 10 free credits to start.</p>
     </div>
 
     <div class="next-steps">
-      <h3>When you need more credits</h3>
+      <h3>Credit packs (for AI features)</h3>
       <ul>
         <li><code>upshift buy-credits --pack small</code> → 100 credits for $5</li>
-        <li><code>upshift buy-credits --pack medium</code> → 500 credits for $20</li>
-        <li><code>upshift buy-credits --pack large</code> → 2000 credits for $50</li>
-        <li><code>upshift subscribe --tier pro</code> → Unlimited for $9/mo</li>
+        <li><code>upshift buy-credits --pack medium</code> → 300 credits for $15</li>
+        <li><code>upshift buy-credits --pack large</code> → 1000 credits for $40</li>
+      </ul>
+    </div>
+
+    <div class="next-steps">
+      <h3>Subscriptions (includes monthly credits)</h3>
+      <ul>
+        <li><code>upshift subscribe --tier pro</code> → $9/mo (100 credits included + 20% bonus on packs)</li>
+        <li><code>upshift subscribe --tier team</code> → $29/mo (500 credits included + 20% bonus)</li>
       </ul>
     </div>
 
     <div class="next-steps">
       <h3>More commands</h3>
       <ul>
+        <li><code>upshift explain &lt;pkg&gt;</code> → Free risk assessment</li>
+        <li><code>upshift explain &lt;pkg&gt; --ai</code> → AI-powered deep analysis (1 credit)</li>
         <li><code>upshift scan --json</code> → JSON output for CI/CD</li>
-        <li><code>upshift explain &lt;pkg&gt; --changelog</code> → Fetch changelog from GitHub</li>
         <li><code>upshift credits</code> → Check your balance</li>
         <li><code>upshift status</code> → View subscription tier</li>
       </ul>

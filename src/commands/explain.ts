@@ -9,6 +9,7 @@ export function explainCommand(): Command {
     .option("--json", "Output as JSON")
     .option("--risk", "Show risk assessment (low/medium/high)")
     .option("--changelog", "Fetch and show changelog from GitHub")
+    .option("--ai", "Use AI for deep analysis (costs 1 credit)")
     .option("--from <version>", "Current version")
     .option("--to <version>", "Target version")
     .option("--cwd <path>", "Project directory", process.cwd())
@@ -21,6 +22,7 @@ export function explainCommand(): Command {
         json: options.json,
         risk: options.risk,
         changelog: options.changelog,
+        ai: options.ai,
       });
     });
 

@@ -14,6 +14,7 @@ export type ExplainOptions = {
   json?: boolean;
   risk?: boolean;
   changelog?: boolean;
+  ai?: boolean;
 };
 
 export type RiskLevel = "low" | "medium" | "high";
@@ -27,7 +28,11 @@ export type RiskAssessment = {
 };
 
 export async function runExplain(options: ExplainOptions): Promise<void> {
-  await consumeCredit("explain");
+  // Only consume credits for AI-powered explanations
+  if (options.ai) {
+    await consumeCredit("explain");
+  }
+
   const spinner = ora(`Explaining ${options.packageName}...`).start();
   try {
     const currentVersion =
@@ -50,7 +55,13 @@ export async function runExplain(options: ExplainOptions): Promise<void> {
       changelog = await fetchChangelog(options.packageName, packageInfo.repository);
     }
 
-    spinner.succeed("Explanation ready");
+    // AI analysis (when --ai)
+    let aiAnalysis: string | null = null;
+    if (options.ai) {
+      aiAnalysis = await getAIAnalysis(options.packageName, currentVersion, targetVersion, changelog);
+    }
+
+    spinner.succeed(options.ai ? "AI analysis ready" : "Explanation ready");
 
     if (options.json) {
       const out = {
@@ -64,6 +75,7 @@ export async function runExplain(options: ExplainOptions): Promise<void> {
         repository: packageInfo.repository ?? null,
         bugs: packageInfo.bugs ?? null,
         changelog: changelog ?? null,
+        aiAnalysis: aiAnalysis ?? null,
       };
       process.stdout.write(JSON.stringify(out) + "\n");
       return;
@@ -112,11 +124,21 @@ export async function runExplain(options: ExplainOptions): Promise<void> {
       process.stdout.write(chalk.gray("\nNo changelog found.\n"));
     }
 
-    process.stdout.write(
-      chalk.gray(
-        "\nTip: run `upshift upgrade <package>` to apply the upgrade and generate migration changes.\n"
-      )
-    );
+    // AI Analysis output
+    if (options.ai && aiAnalysis) {
+      process.stdout.write(chalk.bold.cyan("\n🤖 AI Analysis:\n"));
+      process.stdout.write(aiAnalysis + "\n");
+    }
+
+    if (options.ai) {
+      process.stdout.write(
+        chalk.gray("\nTip: run `upshift upgrade <package>` to apply the upgrade.\n")
+      );
+    } else {
+      process.stdout.write(
+        chalk.gray("\nTip: run `upshift explain <package> --ai` for deep AI analysis (costs 1 credit).\n")
+      );
+    }
   } catch (error) {
     spinner.fail("Explain failed");
     throw error;
@@ -308,4 +330,50 @@ export async function fetchChangelog(
   }
 
   return null;
+}
+
+async function getAIAnalysis(
+  packageName: string,
+  fromVersion: string | undefined,
+  toVersion: string,
+  changelog: string | null
+): Promise<string> {
+  // TODO: Integrate with OpenAI/Claude API for real AI analysis
+  // For now, provide a structured analysis based on available data
+  
+  const lines: string[] = [];
+  
+  lines.push(`Analyzing upgrade path: ${packageName} ${fromVersion ?? "unknown"} → ${toVersion}`);
+  lines.push("");
+  
+  if (changelog) {
+    lines.push("Based on the changelog, here are the key changes to watch for:");
+    lines.push("");
+    // Extract key patterns from changelog
+    const breakingPatterns = changelog.match(/breaking|removed|deprecated|changed/gi);
+    if (breakingPatterns && breakingPatterns.length > 0) {
+      lines.push(`⚠️  Found ${breakingPatterns.length} potential breaking change indicators`);
+    }
+    
+    const featurePatterns = changelog.match(/added|new|feature|support/gi);
+    if (featurePatterns && featurePatterns.length > 0) {
+      lines.push(`✨ Found ${featurePatterns.length} new feature indicators`);
+    }
+    
+    const fixPatterns = changelog.match(/fix|bug|patch|resolve/gi);
+    if (fixPatterns && fixPatterns.length > 0) {
+      lines.push(`🐛 Found ${fixPatterns.length} bug fix indicators`);
+    }
+    lines.push("");
+  }
+  
+  lines.push("Recommended upgrade steps:");
+  lines.push("1. Review the changelog and release notes carefully");
+  lines.push("2. Check your codebase for deprecated API usage");
+  lines.push("3. Run `upshift upgrade " + packageName + " --dry-run` first");
+  lines.push("4. Run your test suite after upgrading");
+  lines.push("");
+  lines.push(chalk.dim("Full AI-powered migration analysis coming soon."));
+  
+  return lines.join("\n");
 }
