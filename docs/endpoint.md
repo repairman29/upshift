@@ -5,11 +5,13 @@ for use with Jarvis or any other automation service.
 
 ## Run the server
 
+Copy `.env.example` to `.env` and set values. Then:
+
 ```
-UPSHIFT_API_KEYS=dev-token-1,dev-token-2 \
-UPSHIFT_SERVER_PORT=8787 \
 npm run build && npm run server
 ```
+
+Optional: `UPSHIFT_CORS_ORIGIN=https://your-app.com` or `*` to allow browser calls.
 
 ## Environment Variables (CLI)
 
@@ -22,7 +24,11 @@ UPSHIFT_API_TOKEN=dev-token-1
 
 ### GET /health
 
-Returns `{ "status": "ok" }`
+Returns `{ "status": "ok", "stripe": "configured" | "partial" | "missing" }`. `stripe` indicates: `missing` = no Stripe secret key; `partial` = key set but webhook or price IDs missing; `configured` = key, webhook secret, and at least one price ID set.
+
+### GET /api
+
+Returns a short JSON description of the API: endpoint list and auth note. No auth required.
 
 ### GET /billing/status
 
@@ -121,6 +127,22 @@ Response:
 { "url": "https://checkout.stripe.com/..." }
 ```
 
+### GET /billing/success
+
+HTML page shown after successful Stripe checkout. Link back uses `UPSHIFT_PUBLIC_BASE_URL` or upshiftai.dev.
+
+### GET /billing/cancel
+
+HTML page shown when user cancels Stripe checkout.
+
 ### POST /stripe/webhook
 
 Raw Stripe webhook endpoint. Requires `STRIPE_WEBHOOK_SECRET`.
+
+## Rate limiting
+
+120 requests per minute per IP. `/health`, `/api`, and `/stripe/webhook` are not limited. When exceeded, the server responds with HTTP 429 and `{ "error": "too_many_requests" }`.
+
+## Logging
+
+Each request is logged to stdout: `METHOD path statusCode durationMs`.

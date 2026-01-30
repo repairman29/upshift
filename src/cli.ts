@@ -6,6 +6,8 @@ import { explainCommand } from "./commands/explain.js";
 import { upgradeCommand } from "./commands/upgrade.js";
 import { creditsCommand } from "./commands/credits.js";
 import { buyCreditsCommand } from "./commands/buy-credits.js";
+import { subscribeCommand } from "./commands/subscribe.js";
+import { statusCommand } from "./commands/status.js";
 
 const require = createRequire(import.meta.url);
 const pkg = require("../package.json");
@@ -22,5 +24,7 @@ program.addCommand(explainCommand());
 program.addCommand(upgradeCommand());
 program.addCommand(creditsCommand());
 program.addCommand(buyCreditsCommand());
+program.addCommand(subscribeCommand());
+program.addCommand(statusCommand());
 
 program.parse(process.argv);

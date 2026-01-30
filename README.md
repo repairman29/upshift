@@ -1,10 +1,12 @@
 # Upshift
 
-Upshift is a CLI that upgrades dependencies safely. It scans for outdated and vulnerable packages, explains breaking changes, applies upgrades, runs tests, and can roll back if something fails.
+Upshift is a CLI that upgrades dependencies safely. It scans for outdated and vulnerable packages, explains breaking changes with risk assessment, applies upgrades, runs tests, and can roll back if something fails.
+
+**Wedge:** Dependabot tells you *what* to upgrade; UpShift tells you *why*, *what breaks*, and *fixes the code*.
 
 ## Status
 
-MVP: npm support only (yarn and pnpm planned).
+Supports npm, yarn, and pnpm. See [ROADMAP.md](ROADMAP.md) for what's next.
 
 ## Install (local dev)
 
@@ -21,24 +23,35 @@ upshift scan
 upshift scan --json
 
 upshift explain react --from 18.2.0 --to 19.0.0
+upshift explain react --json
+upshift explain react --risk          # low/medium/high risk score
+upshift explain react --changelog     # fetch changelog from GitHub
 
 upshift upgrade react
 upshift upgrade react --to 19.0.0
 upshift upgrade react --dry-run
 
 upshift credits
+upshift credits --json
 upshift credits --add 5
 upshift credits --reset 10
 
 upshift buy-credits --pack small
+upshift subscribe --tier pro
+upshift subscribe --tier team
+
+upshift status
+upshift status --json
 ```
 
 ## What it does today
 
-- Scan npm dependencies for outdated packages
-- Fetch npm metadata and detect major version bumps
+- Scan dependencies for outdated packages (npm, yarn, pnpm)
+- Fetch metadata and detect major version bumps
+- Risk assessment: low / medium / high based on major delta, CVEs, popularity
+- Fetch changelog from GitHub releases or CHANGELOG.md
 - Upgrade a dependency and run tests (if configured)
-- Roll back on failure (package.json + package-lock.json)
+- Roll back on failure (package.json + lockfile)
 
 ## Credits
 
@@ -56,12 +69,35 @@ UPSHIFT_CREDITS_ENDPOINT=http://localhost:8787
 UPSHIFT_API_TOKEN=dev-token-1
 ```
 
+## GitHub Action
+
+Add to your repo for automated scanning on PRs:
+
+```yaml
+# .github/workflows/upshift.yml
+name: UpShift Scan
+on: [pull_request]
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: repairman29/upshift@main
+        with:
+          comment-on-pr: "true"
+          fail-on-vulnerabilities: "false"
+```
+
+See `.github/workflows/example-scan.yml` for a full example.
+
 ## What is coming next
 
-- AI migration steps for breaking changes
-- Yarn and pnpm support
-- Multi-repo support
-- License-based gating for Pro/Team tiers
+- AI migration steps for breaking changes (code fixes)
+- VS Code extension
+- GitHub App for repo-level scanning
+- Multi-repo dashboard (Radar)
+
+See [ROADMAP.md](ROADMAP.md) for the full plan.
 
 ## Website
 
@@ -73,6 +109,8 @@ After importing, set **Root Directory** to `web`, then add domains `upshiftai.de
 
 ## Docs
 
+- Roadmap: `ROADMAP.md`
+- API endpoints: `docs/endpoint.md`
 - Pricing: `docs/pricing.md`
 - Stripe setup: `docs/stripe-setup.md`
 - Launch pack: `docs/launch.md`

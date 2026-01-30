@@ -14,6 +14,62 @@ type CreditEntry = {
 type CreditStore = Record<string, CreditEntry>;
 
 const app = express();
+
+// CORS: set UPSHIFT_CORS_ORIGIN to comma-separated origins or * to allow browser calls
+const corsOrigin = process.env.UPSHIFT_CORS_ORIGIN?.trim();
+if (corsOrigin) {
+  const origins = corsOrigin === "*" ? ["*"] : corsOrigin.split(",").map((o) => o.trim()).filter(Boolean);
+  app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    if (origins.includes("*") || (origin && origins.includes(origin))) {
+      res.setHeader("Access-Control-Allow-Origin", origins.includes("*") ? "*" : origin!);
+    }
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    if (req.method === "OPTIONS") {
+      res.status(204).end();
+      return;
+    }
+    next();
+  });
+}
+
+// Request logging: method, path, status, duration (ms)
+app.use((req, res, next) => {
+  const start = Date.now();
+  res.on("finish", () => {
+    const duration = Date.now() - start;
+    const logLine = `${req.method} ${req.path} ${res.statusCode} ${duration}ms`;
+    process.stdout.write(logLine + "\n");
+  });
+  next();
+});
+
+// Rate limit: 120 requests per minute per IP (skip /health, /api, /stripe/webhook)
+const rateLimitWindowMs = 60 * 1000;
+const rateLimitMax = 120;
+const rateLimitByIp = new Map<string, { count: number; resetAt: number }>();
+app.use((req, res, next) => {
+  const path = req.path;
+  if (path === "/health" || path === "/api" || path === "/stripe/webhook") {
+    next();
+    return;
+  }
+  const ip = (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() ?? req.socket?.remoteAddress ?? "unknown";
+  const now = Date.now();
+  let entry = rateLimitByIp.get(ip);
+  if (!entry || now >= entry.resetAt) {
+    entry = { count: 0, resetAt: now + rateLimitWindowMs };
+    rateLimitByIp.set(ip, entry);
+  }
+  entry.count += 1;
+  if (entry.count > rateLimitMax) {
+    res.status(429).json({ error: "too_many_requests" });
+    return;
+  }
+  next();
+});
+
 app.use((req, _res, next) => {
   if (req.originalUrl === "/stripe/webhook") {
     next();
@@ -38,7 +94,41 @@ const stripePricePackLarge = process.env.STRIPE_PRICE_PACK_LARGE ?? "";
 const publicBaseUrl = process.env.UPSHIFT_PUBLIC_BASE_URL ?? "http://localhost:8787";
 
 app.get("/health", (_req, res) => {
-  res.json({ status: "ok" });
+  const hasStripeKey = Boolean(process.env.STRIPE_SECRET_KEY?.trim());
+  const hasWebhookSecret = Boolean(process.env.STRIPE_WEBHOOK_SECRET?.trim());
+  const hasAnyPrice =
+    Boolean(process.env.STRIPE_PRICE_PRO?.trim()) ||
+    Boolean(process.env.STRIPE_PRICE_TEAM?.trim()) ||
+    Boolean(process.env.STRIPE_PRICE_PACK_SMALL?.trim());
+  const stripe =
+    !hasStripeKey
+      ? "missing"
+      : hasWebhookSecret && hasAnyPrice
+        ? "configured"
+        : "partial";
+  res.json({ status: "ok", stripe });
+});
+
+app.get("/api", (_req, res) => {
+  res.json({
+    name: "Upshift Billing API",
+    auth: "Bearer token in Authorization header. Token must be in UPSHIFT_API_KEYS.",
+    endpoints: [
+      "GET  /health",
+      "GET  /api",
+      "GET  /billing/status",
+      "GET  /billing/success",
+      "GET  /billing/cancel",
+      "POST /credits/consume",
+      "POST /credits/refill",
+      "POST /credits/purchase",
+      "POST /billing/subscription",
+      "POST /billing/checkout/subscription",
+      "POST /billing/checkout/credits",
+      "POST /stripe/webhook (raw body)",
+    ],
+    docs: "See docs/endpoint.md in the repo.",
+  });
 });
 
 app.post("/billing/checkout/subscription", authMiddleware, async (req, res) => {
@@ -230,9 +320,36 @@ app.post("/stripe/webhook", express.raw({ type: "application/json" }), (req, res
   res.json({ received: true });
 });
 
-app.listen(port, () => {
+// Billing redirect targets (Stripe success_url / cancel_url)
+app.get("/billing/success", (_req, res) => {
+  res.setHeader("Content-Type", "text/html; charset=utf-8");
+  const landing = process.env.UPSHIFT_PUBLIC_BASE_URL ?? "https://upshiftai.dev";
+  res.status(200).send(
+    `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Payment successful</title></head><body><h1>Thank you</h1><p>Your payment was successful. Credits have been added to your account.</p><p><a href="${landing}">Back to Upshift</a></p></body></html>`
+  );
+});
+app.get("/billing/cancel", (_req, res) => {
+  res.setHeader("Content-Type", "text/html; charset=utf-8");
+  const landing = process.env.UPSHIFT_PUBLIC_BASE_URL ?? "https://upshiftai.dev";
+  res.status(200).send(
+    `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Payment cancelled</title></head><body><h1>Cancelled</h1><p>Your payment was cancelled. No charges were made.</p><p><a href="${landing}">Back to Upshift</a></p></body></html>`
+  );
+});
+
+const server = app.listen(port, () => {
   process.stdout.write(`Upshift billing server listening on ${port}\n`);
 });
+
+function shutdown(signal: string) {
+  process.stdout.write(`${signal} received, shutting down gracefully...\n`);
+  server.close(() => {
+    process.stdout.write("Server closed.\n");
+    process.exit(0);
+  });
+  setTimeout(() => process.exit(1), 10000);
+}
+process.on("SIGTERM", () => shutdown("SIGTERM"));
+process.on("SIGINT", () => shutdown("SIGINT"));
 
 function authMiddleware(req: any, res: any, next: any) {
   if (apiKeys.size === 0) {

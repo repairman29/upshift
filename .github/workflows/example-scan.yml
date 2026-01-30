@@ -1,0 +1,26 @@
+# Example: Run UpShift scan on PRs and weekly
+# Copy this to your repo's .github/workflows/ directory
+
+name: UpShift Scan
+
+on:
+  pull_request:
+  schedule:
+    - cron: "0 9 * * 1" # Every Monday at 9am UTC
+  workflow_dispatch:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run UpShift Scan
+        uses: repairman29/upshift@main
+        with:
+          working-directory: "."
+          fail-on-vulnerabilities: "false"
+          comment-on-pr: "true"
+          # Optional: add token for credits (explain uses credits)
+          # token: ${{ secrets.UPSHIFT_API_TOKEN }}
+          # endpoint: https://api.upshiftai.dev

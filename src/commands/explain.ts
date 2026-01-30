@@ -6,6 +6,9 @@ export function explainCommand(): Command {
   command
     .description("Explain breaking changes for a dependency")
     .argument("<package>", "Package name to explain")
+    .option("--json", "Output as JSON")
+    .option("--risk", "Show risk assessment (low/medium/high)")
+    .option("--changelog", "Fetch and show changelog from GitHub")
     .option("--from <version>", "Current version")
     .option("--to <version>", "Target version")
     .option("--cwd <path>", "Project directory", process.cwd())
@@ -15,6 +18,9 @@ export function explainCommand(): Command {
         packageName: pkg,
         fromVersion: options.from,
         toVersion: options.to,
+        json: options.json,
+        risk: options.risk,
+        changelog: options.changelog,
       });
     });
 

@@ -1,0 +1,118 @@
+name: "UpShift Scan"
+description: "Scan dependencies for outdated packages and vulnerabilities with UpShift"
+author: "UpShift"
+branding:
+  icon: "arrow-up-circle"
+  color: "green"
+
+inputs:
+  token:
+    description: "UpShift API token (for credits, optional)"
+    required: false
+    default: ""
+  endpoint:
+    description: "UpShift billing endpoint (optional)"
+    required: false
+    default: ""
+  working-directory:
+    description: "Project directory to scan"
+    required: false
+    default: "."
+  fail-on-vulnerabilities:
+    description: "Fail the action if vulnerabilities are found (true/false)"
+    required: false
+    default: "false"
+  comment-on-pr:
+    description: "Post scan results as a PR comment (true/false)"
+    required: false
+    default: "true"
+
+outputs:
+  outdated-count:
+    description: "Number of outdated dependencies"
+    value: ${{ steps.scan.outputs.outdated-count }}
+  vulnerability-count:
+    description: "Number of vulnerabilities"
+    value: ${{ steps.scan.outputs.vulnerability-count }}
+  scan-result:
+    description: "JSON scan result"
+    value: ${{ steps.scan.outputs.scan-result }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: "20"
+
+    - name: Install UpShift
+      shell: bash
+      run: |
+        npm install -g upshift || npm install upshift
+        echo "UpShift installed"
+
+    - name: Run UpShift scan
+      id: scan
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        UPSHIFT_CREDITS_ENDPOINT: ${{ inputs.endpoint }}
+        UPSHIFT_API_TOKEN: ${{ inputs.token }}
+      run: |
+        set +e
+        RESULT=$(upshift scan --json 2>&1)
+        EXIT_CODE=$?
+        set -e
+
+        # Save full result
+        echo "scan-result<<EOF" >> $GITHUB_OUTPUT
+        echo "$RESULT" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+        # Parse counts
+        OUTDATED=$(echo "$RESULT" | jq -r '.outdated | length // 0' 2>/dev/null || echo "0")
+        VULNS=$(echo "$RESULT" | jq -r '.vulnerabilities.items | length // 0' 2>/dev/null || echo "0")
+
+        echo "outdated-count=$OUTDATED" >> $GITHUB_OUTPUT
+        echo "vulnerability-count=$VULNS" >> $GITHUB_OUTPUT
+
+        echo "Outdated: $OUTDATED, Vulnerabilities: $VULNS"
+
+    - name: Comment on PR
+      if: ${{ github.event_name == 'pull_request' && inputs.comment-on-pr == 'true' }}
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const outdated = '${{ steps.scan.outputs.outdated-count }}';
+          const vulns = '${{ steps.scan.outputs.vulnerability-count }}';
+
+          let body = `## UpShift Dependency Scan\n\n`;
+          body += `| Metric | Count |\n`;
+          body += `|--------|-------|\n`;
+          body += `| Outdated | ${outdated} |\n`;
+          body += `| Vulnerabilities | ${vulns} |\n\n`;
+
+          if (parseInt(vulns) > 0) {
+            body += `⚠️ **Vulnerabilities detected.** Run \`upshift explain <pkg>\` for details.\n`;
+          } else if (parseInt(outdated) > 0) {
+            body += `📦 Some dependencies are outdated. Run \`upshift explain <pkg>\` for upgrade info.\n`;
+          } else {
+            body += `✅ All dependencies are up to date with no known vulnerabilities.\n`;
+          }
+
+          body += `\n---\n*Scanned by [UpShift](https://upshiftai.dev)*`;
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: body
+          });
+
+    - name: Fail on vulnerabilities
+      if: ${{ inputs.fail-on-vulnerabilities == 'true' && steps.scan.outputs.vulnerability-count != '0' }}
+      shell: bash
+      run: |
+        echo "Vulnerabilities found. Failing as requested."
+        exit 1
