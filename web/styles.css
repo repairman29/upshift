@@ -115,6 +115,64 @@ nav a:hover {
   gap: 0.75rem;
 }
 
+/* Signup form */
+.signup-form {
+  display: flex;
+  gap: 0.5rem;
+  max-width: 420px;
+  margin-bottom: 0.75rem;
+}
+
+.signup-form input[type="email"] {
+  flex: 1;
+  padding: 0.65rem 1rem;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  color: var(--text);
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.signup-form input[type="email"]:focus {
+  border-color: var(--accent);
+}
+
+.signup-form input[type="email"]::placeholder {
+  color: var(--text-muted);
+}
+
+.signup-form button {
+  flex-shrink: 0;
+  border: none;
+  cursor: pointer;
+}
+
+.signup-form button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.signup-note {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0 0 1.5rem;
+}
+
+.signup-success {
+  color: var(--accent);
+  font-weight: 500;
+  margin: 0;
+  padding: 0.65rem 0;
+}
+
+.cta .signup-form {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
 /* Buttons */
 .btn {
   display: inline-block;
@@ -210,12 +268,19 @@ h3:first-child { margin-top: 0; }
   color: var(--text-muted);
 }
 
-.problem li::before,
-.today li::before {
+.problem li::before {
   content: "×";
   position: absolute;
   left: 0;
   color: #f85149;
+  font-weight: 600;
+}
+
+.today li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
   font-weight: 600;
 }
 

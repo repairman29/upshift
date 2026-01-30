@@ -116,6 +116,8 @@ app.get("/api", (_req, res) => {
     endpoints: [
       "GET  /health",
       "GET  /api",
+      "POST /waitlist (no auth)",
+      "GET  /waitlist/count (no auth)",
       "GET  /billing/status",
       "GET  /billing/success",
       "GET  /billing/cancel",
@@ -129,6 +131,58 @@ app.get("/api", (_req, res) => {
     ],
     docs: "See docs/endpoint.md in the repo.",
   });
+});
+
+// Waitlist: collect emails (no auth required)
+type WaitlistEntry = { email: string; createdAt: string; source?: string };
+
+function waitlistPath(): string {
+  return path.join(os.homedir(), ".upshift", "waitlist.json");
+}
+
+function loadWaitlist(): WaitlistEntry[] {
+  const file = waitlistPath();
+  if (!existsSync(file)) return [];
+  try {
+    return JSON.parse(readFileSync(file, "utf8")) as WaitlistEntry[];
+  } catch {
+    return [];
+  }
+}
+
+function saveWaitlist(entries: WaitlistEntry[]): void {
+  const file = waitlistPath();
+  mkdirSync(path.dirname(file), { recursive: true });
+  writeFileSync(file, JSON.stringify(entries, null, 2));
+}
+
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+app.post("/waitlist", (req, res) => {
+  const email = String(req.body?.email ?? "").trim().toLowerCase();
+  const source = String(req.body?.source ?? "website").trim();
+
+  if (!email || !isValidEmail(email)) {
+    res.status(400).json({ error: "invalid_email" });
+    return;
+  }
+
+  const entries = loadWaitlist();
+  const exists = entries.some((e) => e.email === email);
+
+  if (!exists) {
+    entries.push({ email, createdAt: new Date().toISOString(), source });
+    saveWaitlist(entries);
+  }
+
+  res.json({ success: true, message: "You're on the list!" });
+});
+
+app.get("/waitlist/count", (_req, res) => {
+  const entries = loadWaitlist();
+  res.json({ count: entries.length });
 });
 
 app.post("/billing/checkout/subscription", authMiddleware, async (req, res) => {

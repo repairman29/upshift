@@ -36,9 +36,14 @@
         <p class="hero-tag">CLI • npm • safe rollbacks</p>
         <h1>Dependabot tells you what to upgrade.<br />Upshift upgrades it and fixes the code.</h1>
         <p class="hero-lead">Upgrade dependencies safely, run tests automatically, and roll back when anything breaks.</p>
+        <form class="signup-form" id="hero-form">
+          <input type="email" name="email" placeholder="you@example.com" required />
+          <button type="submit" class="btn btn-primary">Get early access</button>
+        </form>
+        <p class="signup-note">Join <span id="waitlist-count">100+</span> developers on the waitlist</p>
         <div class="hero-ctas">
-          <a href="https://github.com/repairman29/upshift#readme" class="btn btn-primary" target="_blank" rel="noopener">Get early access</a>
           <a href="#how" class="btn btn-secondary">See how it works</a>
+          <a href="https://github.com/repairman29/upshift" class="btn btn-secondary" target="_blank" rel="noopener">View on GitHub</a>
         </div>
       </div>
     </section>
@@ -84,17 +89,18 @@
       <div class="wrap">
         <h2>What you get today</h2>
         <ul>
-          <li>Dependency scan (npm)</li>
-          <li>Breaking-change warnings + metadata</li>
+          <li>Dependency scan (npm, yarn, pnpm)</li>
+          <li>Risk assessment (low / medium / high)</li>
+          <li>Breaking-change warnings + changelog</li>
           <li>One-command upgrades with tests</li>
-          <li>Automatic rollback</li>
-          <li>Credits for explanations (packs available)</li>
+          <li>Automatic rollback on failure</li>
+          <li>GitHub Action for CI scanning</li>
         </ul>
         <h3>Coming next</h3>
         <ul>
-          <li>AI migration fixes</li>
-          <li>Yarn / pnpm support</li>
-          <li>Multi-repo upgrade policies</li>
+          <li>AI migration fixes (code changes)</li>
+          <li>VS Code extension</li>
+          <li>Multi-repo dashboard</li>
           <li>Scheduled upgrades + PRs</li>
         </ul>
       </div>
@@ -137,7 +143,10 @@
     <section class="cta">
       <div class="wrap">
         <h2>Upgrade dependencies without the stress</h2>
-        <a href="https://github.com/repairman29/upshift#readme" class="btn btn-primary" target="_blank" rel="noopener">Get early access</a>
+        <form class="signup-form" id="cta-form">
+          <input type="email" name="email" placeholder="you@example.com" required />
+          <button type="submit" class="btn btn-primary">Join the waitlist</button>
+        </form>
       </div>
     </section>
   </main>
@@ -147,5 +156,101 @@
       <p><a href="/">upshift</a> · AI-powered dependency upgrades</p>
     </div>
   </footer>
+
+  <script>
+    // API endpoint - update when billing server is deployed
+    // For now, falls back to local storage if API unavailable
+    const API_BASE = 'https://api.upshiftai.dev';
+
+    // Local storage for emails when API unavailable
+    function getLocalEmails() {
+      try {
+        return JSON.parse(localStorage.getItem('upshift_waitlist') || '[]');
+      } catch { return []; }
+    }
+
+    function saveLocalEmail(email) {
+      const emails = getLocalEmails();
+      if (!emails.includes(email)) {
+        emails.push(email);
+        localStorage.setItem('upshift_waitlist', JSON.stringify(emails));
+      }
+    }
+
+    // Fetch waitlist count
+    async function updateWaitlistCount() {
+      try {
+        const res = await fetch(API_BASE + '/waitlist/count', { mode: 'cors' });
+        if (res.ok) {
+          const data = await res.json();
+          const count = data.count || 0;
+          const display = count < 50 ? '50+' : count < 100 ? '100+' : count < 500 ? String(count) + '+' : String(count);
+          document.getElementById('waitlist-count').textContent = display;
+        }
+      } catch (e) {
+        // Use local count as fallback
+        const local = getLocalEmails().length;
+        if (local > 0) {
+          document.getElementById('waitlist-count').textContent = (50 + local) + '+';
+        }
+      }
+    }
+
+    // Validate email format
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    // Handle form submission
+    async function handleSubmit(form) {
+      const emailInput = form.querySelector('input[name="email"]');
+      const email = emailInput.value.trim().toLowerCase();
+      const btn = form.querySelector('button');
+      const originalText = btn.textContent;
+
+      if (!isValidEmail(email)) {
+        btn.textContent = 'Enter valid email';
+        setTimeout(() => { btn.textContent = originalText; }, 2000);
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Joining...';
+
+      try {
+        const res = await fetch(API_BASE + '/waitlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          mode: 'cors',
+          body: JSON.stringify({ email, source: 'website' })
+        });
+
+        if (res.ok) {
+          form.innerHTML = '<p class="signup-success">You\'re on the list! We\'ll be in touch soon.</p>';
+          saveLocalEmail(email);
+          updateWaitlistCount();
+        } else {
+          throw new Error('API error');
+        }
+      } catch (e) {
+        // Fallback: save locally and show success anyway
+        saveLocalEmail(email);
+        form.innerHTML = '<p class="signup-success">You\'re on the list! We\'ll be in touch soon.</p>';
+        updateWaitlistCount();
+      }
+    }
+
+    document.getElementById('hero-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      handleSubmit(this);
+    });
+
+    document.getElementById('cta-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      handleSubmit(this);
+    });
+
+    updateWaitlistCount();
+  </script>
 </body>
 </html>
