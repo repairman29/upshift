@@ -3,27 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JARVIS - Open Source Conversational Productivity Revolution</title>
-    <meta name="description" content="The world's most intelligent open source productivity platform. AI-powered workflow automation with natural language interface, voice control, and community skill marketplace.">
+    <title>JARVIS - The Future of Conversational Computing</title>
+    <meta name="description" content="Stop memorizing commands. Start having conversations. JARVIS is the open-source AI platform that orchestrates your digital life.">
     
     <!-- Open Graph / Social Media -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://repairman29.github.io/JARVIS/">
-    <meta property="og:title" content="JARVIS - Open Source Conversational Productivity Platform">
-    <meta property="og:description" content="🧠 The world's most intelligent open source productivity platform. AI-powered workflow automation, natural language interface, voice control, and thriving community ecosystem. MIT licensed and free forever.">
+    <meta property="og:title" content="JARVIS - Conversational Productivity Revolution">
+    <meta property="og:description" content="AI-powered workflow automation, natural language interface, and a thriving community ecosystem.">
     <meta property="og:image" content="https://repairman29.github.io/JARVIS/assets/jarvis-social.png">
     
     <!-- GitHub specific -->
     <meta name="github:owner" content="repairman29">
     <meta name="github:repository" content="JARVIS">
     
-    <!-- Keywords for SEO -->
-    <meta name="keywords" content="productivity, AI, automation, workflow, conversational computing, open source, JARVIS, natural language, voice control, developer tools">
-    
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23000' viewBox='0 0 100 100'%3e%3ctext y='.9em' font-size='90'%3e🧠%3c/text%3e%3c/svg%3e">
     
     <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+            --surface-color: #ffffff;
+            --surface-dark: #0f172a;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.3);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -33,1115 +46,586 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            color: var(--text-primary);
+            background: #f8fafc;
+            overflow-x: hidden;
         }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        header {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 1rem 0;
+
+        /* Animated Background */
+        .bg-animate {
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            z-index: 1000;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(236, 72, 153, 0.08), transparent 25%);
         }
-        
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Navigation */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+        }
+
         nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            height: 70px;
         }
-        
+
         .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: white;
+            font-size: 1.5rem;
+            font-weight: 800;
             text-decoration: none;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-        
+
         .nav-links {
             display: flex;
-            list-style: none;
             gap: 2rem;
+            list-style: none;
         }
-        
+
         .nav-links a {
-            color: white;
+            color: var(--text-secondary);
             text-decoration: none;
             font-weight: 500;
-            transition: opacity 0.2s;
-        }
-        
-        .nav-links a:hover {
-            opacity: 0.8;
-        }
-        
-        .hero {
-            padding: 120px 0 80px;
-            text-align: center;
-            color: white;
-        }
-        
-        .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            background: linear-gradient(45deg, #fff, #f0f0f0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .hero p {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .cta-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .btn {
-            padding: 12px 30px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: inline-block;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transform: translateY(0);
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-        
-        .btn-primary {
-            background: white;
-            color: #667eea;
-            border: 2px solid white;
-        }
-        
-        .btn-primary:hover {
-            background: transparent;
-            color: white;
-        }
-        
-        .btn-secondary {
-            background: transparent;
-            color: white;
-            border: 2px solid white;
-        }
-        
-        .btn-secondary:hover {
-            background: white;
-            color: #667eea;
-        }
-        
-        .features {
-            padding: 80px 0;
-            background: white;
-        }
-        
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 3rem;
-            margin-top: 3rem;
-        }
-        
-        .feature {
-            text-align: center;
-            padding: 2rem;
-            border-radius: 12px;
-            background: #f8f9fa;
-            transition: transform 0.3s ease;
-        }
-        
-        .feature:hover {
-            transform: translateY(-5px);
-        }
-        
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        
-        .feature h3 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
-            color: #333;
-        }
-        
-        .feature p {
-            color: #666;
-        }
-        
-        .demo-section {
-            padding: 80px 0;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            text-align: center;
-        }
-        
-        .demo-container {
-            background: white;
-            border-radius: 12px;
-            padding: 3rem;
-            margin-top: 2rem;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        }
-        
-        .command-example {
-            background: #1e1e1e;
-            color: #f0f0f0;
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin: 1rem 0;
-            text-align: left;
-            font-family: 'Monaco', 'Consolas', monospace;
-            overflow-x: auto;
-        }
-        
-        .user-input {
-            color: #61dafb;
-        }
-        
-        .jarvis-response {
-            color: #98d982;
-        }
-        
-        .stats {
-            padding: 60px 0;
-            background: #2c3e50;
-            color: white;
-            text-align: center;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-        
-        .stat {
-            padding: 1rem;
-        }
-        
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #61dafb;
-        }
-        
-        .stat-label {
-            font-size: 1rem;
-            opacity: 0.8;
-        }
-        
-        .getting-started {
-            padding: 80px 0;
-            background: white;
-            text-align: center;
-        }
-        
-        .installation-code {
-            background: #1e1e1e;
-            color: #f0f0f0;
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin: 2rem auto;
-            max-width: 600px;
-            font-family: 'Monaco', 'Consolas', monospace;
-            font-size: 1.1rem;
-        }
-        
-        footer {
-            background: #1a1a1a;
-            color: white;
-            padding: 40px 0;
-            text-align: center;
-        }
-        
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-        
-        .footer-links a {
-            color: #ccc;
-            text-decoration: none;
+            font-size: 0.95rem;
             transition: color 0.2s;
         }
-        
-        .footer-links a:hover {
-            color: white;
+
+        .nav-links a:hover {
+            color: var(--accent-blue);
         }
-        
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            
-            .hero p {
-                font-size: 1.1rem;
-            }
-            
-            .cta-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .nav-links {
-                display: none;
-            }
+
+        /* Hero Section */
+        .hero {
+            padding: 160px 0 100px;
+            text-align: center;
+            position: relative;
         }
-        
-        .highlight {
-            background: linear-gradient(120deg, #61dafb 0%, #98d982 100%);
+
+        .hero h1 {
+            font-size: 4rem;
+            line-height: 1.1;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: var(--primary-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            font-weight: bold;
         }
-        
-        /* GitHub-style elements */
-        .github-badge {
-            background: #24292e;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 600;
+
+        .hero p {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            line-height: 1.5;
+        }
+
+        .badge-pill {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            transition: background 0.2s;
-        }
-        
-        .github-badge:hover {
-            background: #0366d6;
-            color: white;
-        }
-        
-        /* Code snippets */
-        code {
-            background: rgba(0,0,0,0.1);
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            font-family: 'Monaco', 'Consolas', monospace;
-            font-size: 0.9em;
-        }
-        
-        /* Premium skill cards */
-        .premium-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .premium-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-        }
-        
-        /* Open source badges */
-        .open-source-badge {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            color: white;
-            padding: 0.5rem 1.5rem;
-            border-radius: 25px;
-            font-size: 0.85rem;
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
             font-weight: 600;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
+            color: var(--text-secondary);
         }
-        
-        /* Community engagement elements */
-        .community-stat {
-            background: rgba(255,255,255,0.1);
-            padding: 1rem;
+
+        .cta-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+        }
+
+        .btn {
+            padding: 16px 32px;
             border-radius: 12px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-        
-        /* Responsive improvements */
+
+        .btn-primary {
+            background: var(--text-primary);
+            color: white;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 1px solid #e2e8f0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-secondary:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        .install-box {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.95rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid #334155;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .install-box:hover {
+            border-color: #475569;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin: 4rem 0;
+            padding: 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid #f1f5f9;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        /* Comparison Section */
+        .comparison-section {
+            padding: 100px 0;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .comparison-card {
+            padding: 2.5rem;
+            border-radius: 24px;
+            border: 1px solid;
+        }
+
+        .card-old {
+            background: #fff;
+            border-color: #e2e8f0;
+        }
+
+        .card-new {
+            background: #0f172a;
+            color: white;
+            border-color: #334155;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-new::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+
+        .step-list {
+            list-style: none;
+            margin-top: 1.5rem;
+        }
+
+        .step-list li {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .card-new .step-list li {
+            border-bottom-color: rgba(255,255,255,0.1);
+        }
+
+        /* Features Grid */
+        .features-section {
+            padding: 100px 0;
+            background: white;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            border-radius: 16px;
+            background: #f8fafc;
+            border: 1px solid #f1f5f9;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            background: white;
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            padding: 1rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Marketplace Section */
+        .marketplace-section {
+            padding: 100px 0;
+            background: #0f172a;
+            color: white;
+            text-align: center;
+        }
+
+        .premium-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .premium-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 2.5rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .premium-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.08);
+        }
+
+        .price-tag {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 1.5rem 0;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Footer */
+        footer {
+            background: white;
+            padding: 80px 0 40px;
+            border-top: 1px solid #e2e8f0;
+        }
+
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.2rem;
-                line-height: 1.2;
-            }
-            
-            .hero p {
-                font-size: 1.1rem;
-            }
-            
-            .features-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-            
-            .nav-links {
-                display: none;
-            }
-            
-            .cta-buttons {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+            .hero h1 { font-size: 2.5rem; }
+            .hero p { font-size: 1.1rem; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .comparison-grid { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
         }
     </style>
 </head>
 <body>
+    <div class="bg-animate"></div>
+
     <header>
         <nav class="container">
-            <a href="#" class="logo" style="display: flex; align-items: center; gap: 0.5rem;">
-                🧠 <span>JARVIS</span>
-                <span style="background: #28a745; color: white; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.7rem; font-weight: normal;">OPEN SOURCE</span>
+            <a href="#" class="logo">
+                🧠 JARVIS
             </a>
             <ul class="nav-links">
-                <li><a href="#features">10 Skills</a></li>
-                <li><a href="#demo">Demo</a></li>
-                <li><a href="#installation">Install</a></li>
-                <li><a href="#premium">Premium</a></li>
-                <li><a href="https://github.com/repairman29/JARVIS" style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 20px; display: flex; align-items: center; gap: 0.5rem;">⭐ GitHub</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#marketplace">Marketplace</a></li>
+                <li><a href="#developers">Developers</a></li>
+                <li><a href="https://github.com/repairman29/JARVIS">GitHub</a></li>
             </ul>
+            <a href="#install" class="btn btn-primary" style="padding: 10px 20px; font-size: 0.9rem;">
+                Get Started
+            </a>
         </nav>
     </header>
 
     <main>
         <section class="hero">
             <div class="container">
-                <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 1rem;">
-                    <div style="font-size: 4rem;">🧠</div>
-                    <div>
-                        <div style="background: rgba(255,255,255,0.1); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; margin-bottom: 0.5rem; display: inline-block;">
-                            ⭐ OPEN SOURCE • MIT LICENSE • FREE FOREVER
-                        </div>
+                <div class="badge-pill">
+                    <span>✨</span> The New Standard in Productivity
+                </div>
+                <h1>Conversational Computing<br>is Here.</h1>
+                <p>
+                    Stop memorizing commands. Start having conversations. 
+                    JARVIS transforms your natural language into complex workflows, 
+                    automating your digital life with AI intelligence.
+                </p>
+                
+                <div class="cta-group">
+                    <div class="install-box" onclick="copyInstall()">
+                        <span style="color: #10b981;">$</span> curl -sSL https://install.jarvis.ai | bash
+                        <span style="color: #94a3b8; margin-left: 1rem;">📋</span>
                     </div>
                 </div>
-                
-                <h1>JARVIS: Conversational Productivity Revolution</h1>
-                <p style="font-size: 1.4rem; margin-bottom: 1rem;">The world's most intelligent <strong>open source</strong> productivity platform. Transform complex workflows into natural conversation with AI-powered automation, voice control, and a thriving community ecosystem.</p>
-                
-                <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 12px; margin: 2rem 0; backdrop-filter: blur(10px);">
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; text-align: center;">
-                        <div>
-                            <div style="font-size: 2rem; font-weight: bold; color: #61dafb;">10+</div>
-                            <div style="opacity: 0.9;">Core Skills</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 2rem; font-weight: bold; color: #98d982;">150+</div>
-                            <div style="opacity: 0.9;">Tools & Features</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 2rem; font-weight: bold; color: #ffd93d;">105K+</div>
-                            <div style="opacity: 0.9;">Lines of Code</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 2rem; font-weight: bold; color: #ff6b9d;">100%</div>
-                            <div style="opacity: 0.9;">Open Source</div>
-                        </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">10+</div>
+                        <div class="stat-label">Core Skills</div>
                     </div>
-                </div>
-                
-                <div class="cta-buttons">
-                    <a href="https://github.com/repairman29/JARVIS" class="btn btn-primary" style="font-size: 1.1rem; padding: 15px 40px;">
-                        ⭐ Star on GitHub
-                    </a>
-                    <a href="#installation" class="btn btn-secondary" style="font-size: 1.1rem; padding: 15px 40px;">
-                        🚀 Install JARVIS
-                    </a>
-                </div>
-                
-                <div style="margin-top: 2rem; font-size: 0.9rem; opacity: 0.8;">
-                    🎯 One command installation: <code style="background: rgba(0,0,0,0.3); padding: 0.3rem 0.8rem; border-radius: 4px;">curl -sSL install.jarvis.ai | bash</code>
+                    <div class="stat-item">
+                        <div class="stat-value">105K</div>
+                        <div class="stat-label">Lines of Code</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">100%</div>
+                        <div class="stat-label">Open Source</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">MIT</div>
+                        <div class="stat-label">License</div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section class="features" id="features">
+        <section class="comparison-section">
             <div class="container">
-                <div style="text-align: center; margin-bottom: 3rem;">
-                    <div style="background: #e8f4fd; color: #0366d6; padding: 1rem 2rem; border-radius: 50px; display: inline-block; margin-bottom: 2rem; font-weight: 600;">
-                        🆓 100% FREE & OPEN SOURCE • MIT LICENSE
-                    </div>
-                    <h2 style="font-size: 2.8rem; margin-bottom: 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">10 Revolutionary Skills Included</h2>
-                    <p style="font-size: 1.3rem; color: #666; max-width: 900px; margin: 0 auto;">Complete conversational productivity platform with AI intelligence, workflow automation, voice control, and community ecosystem. Everything you need to transform your productivity forever.</p>
-                </div>
+                <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 1rem;">Evolution of Productivity</h2>
+                <p style="text-align: center; color: var(--text-secondary);">See why conversational computing makes traditional launchers obsolete.</p>
                 
-                <div class="features-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
-                    <div class="feature" style="border-left: 4px solid #61dafb;">
-                        <div class="feature-icon">🚀</div>
-                        <h3>Launcher</h3>
-                        <p><strong>App management & system control</strong><br>Launch apps, control system settings, quick calculations, process management, screenshots</p>
+                <div class="comparison-grid">
+                    <div class="comparison-card card-old">
+                        <h3 style="color: #64748b; margin-bottom: 1rem;">❌ The Old Way (Launchers)</h3>
+                        <div style="font-family: monospace; background: #f1f5f9; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; color: #475569;">
+                            Workflow: "Setup React Project"
+                        </div>
+                        <ul class="step-list">
+                            <li>⌨️ Cmd+Space "files" → Enter</li>
+                            <li>⌨️ Type "react-project" → Enter</li>
+                            <li>⌨️ Cmd+Space "vscode" → Enter</li>
+                            <li>⌨️ Cmd+Option+Left (Window Snap)</li>
+                            <li>⌨️ Cmd+Space "chrome" → Enter</li>
+                            <li>⌨️ Cmd+Option+Right (Window Snap)</li>
+                            <li>😓 <strong>6+ Steps, Manual Effort</strong></li>
+                        </ul>
                     </div>
-                    
-                    <div class="feature" style="border-left: 4px solid #98d982;">
-                        <div class="feature-icon">🪟</div>
-                        <h3>Window Manager</h3>
-                        <p><strong>Advanced workspace control</strong><br>Smart window snapping, workspace presets, multi-display support, layout automation</p>
+
+                    <div class="comparison-card card-new">
+                        <h3 style="color: white; margin-bottom: 1rem;">✅ The JARVIS Way</h3>
+                        <div style="font-family: monospace; background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; color: #a5b4fc;">
+                            "Find my React project, open in VS Code, snap left, and open GitHub on right."
+                        </div>
+                        <ul class="step-list">
+                            <li>🧠 AI parses natural language intent</li>
+                            <li>📁 Locates project intelligently</li>
+                            <li>🚀 Launches apps in parallel</li>
+                            <li>🪟 Arranges window layout automatically</li>
+                            <li>✨ <strong>1 Sentence, Zero Friction</strong></li>
+                        </ul>
                     </div>
-                    
-                    <div class="feature" style="border-left: 4px solid #ffd93d;">
-                        <div class="feature-icon">📁</div>
-                        <h3>File Search</h3>
-                        <p><strong>Intelligent content discovery</strong><br>Lightning-fast indexing, content search, duplicate detection, smart categorization</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="features-section" id="features">
+            <div class="container">
+                <h2 style="text-align: center; font-size: 2.5rem;">Powering Your Workflow</h2>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🤖</div>
+                        <h3>Workflow Automation</h3>
+                        <p>Chain commands intelligently. JARVIS learns your patterns and suggests automations before you even ask.</p>
                     </div>
-                    
-                    <div class="feature" style="border-left: 4px solid #ff6b9d;">
-                        <div class="feature-icon">📋</div>
-                        <h3>Clipboard History</h3>
-                        <p><strong>Smart clipboard management</strong><br>Unlimited history, intelligent search, privacy controls, cross-device sync</p>
-                    </div>
-                    
-                    <div class="feature" style="border-left: 4px solid #c3aed6;">
-                        <div class="feature-icon">✏️</div>
-                        <h3>Snippets</h3>
-                        <p><strong>Dynamic text expansion</strong><br>Smart templates, variables, context-aware suggestions, cross-platform sync</p>
-                    </div>
-                    
-                    <div class="feature" style="border-left: 4px solid #66d9ef;">
-                        <div class="feature-icon">🧮</div>
-                        <h3>Calculator</h3>
-                        <p><strong>Mathematical powerhouse</strong><br>Advanced math, unit conversions, currency, programming calculations, scientific functions</p>
-                    </div>
-                    
-                    <div class="feature" style="border-left: 4px solid #ff9500; background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%); border: 2px solid #ff9500;">
-                        <div class="feature-icon" style="font-size: 3.5rem;">🤖</div>
-                        <h3 style="color: #ff9500;">Workflow Automation ⭐</h3>
-                        <p style="font-weight: 500;"><strong>THE GAME CHANGER</strong><br>AI-powered task orchestration, pattern learning, command chaining, intelligent scheduling</p>
-                    </div>
-                    
-                    <div class="feature" style="border-left: 4px solid #8bc34a;">
-                        <div class="feature-icon">🏪</div>
-                        <h3>Skill Marketplace</h3>
-                        <p><strong>Community ecosystem</strong><br>Skill discovery, secure installation, developer tools, quality assurance, revenue sharing</p>
-                    </div>
-                    
-                    <div class="feature" style="border-left: 4px solid #f44336;">
+                    <div class="feature-card">
                         <div class="feature-icon">🎙️</div>
                         <h3>Voice Control</h3>
-                        <p><strong>Hands-free operation</strong><br>Wake word detection, natural speech processing, voice shortcuts, accessibility features</p>
+                        <p>Complete hands-free operation. "Hey JARVIS, set up for my meeting" handles everything while you grab coffee.</p>
                     </div>
-                    
-                    <div class="feature" style="border-left: 4px solid #795548;">
-                        <div class="feature-icon">📊</div>
-                        <h3>Performance Monitor</h3>
-                        <p><strong>System optimization</strong><br>Health monitoring, automated cleanup, performance analytics, real-time alerts</p>
+                    <div class="feature-card">
+                        <div class="feature-icon">🧠</div>
+                        <h3>Context Awareness</h3>
+                        <p>JARVIS understands your current task. It knows "run tests" means something different in Python vs React.</p>
                     </div>
-                </div>
-                
-                <div style="text-align: center; margin-top: 4rem; padding: 3rem; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 16px;">
-                    <h3 style="color: #333; font-size: 1.8rem; margin-bottom: 1rem;">💎 Professional Premium Skills Available</h3>
-                    <p style="color: #666; font-size: 1.1rem; margin-bottom: 2rem;">Advanced AI-powered skills for professionals and enterprises</p>
-                    
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-                        <div style="background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">💼</div>
-                            <h4 style="color: #333;">Notion Advanced Pro</h4>
-                            <p style="color: #666; font-size: 0.9rem;">AI page generation, smart databases</p>
-                            <div style="color: #667eea; font-weight: bold;">$14.99/month</div>
-                        </div>
-                        <div style="background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚡</div>
-                            <h4 style="color: #333;">GitHub Copilot++ Pro</h4>
-                            <p style="color: #666; font-size: 0.9rem;">Advanced code analysis, PR automation</p>
-                            <div style="color: #667eea; font-weight: bold;">$19.99/month</div>
-                        </div>
-                        <div style="background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎯</div>
-                            <h4 style="color: #333;">Focus Pro</h4>
-                            <p style="color: #666; font-size: 0.9rem;">AI focus optimization, wellness integration</p>
-                            <div style="color: #667eea; font-weight: bold;">$9.99/month</div>
-                        </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🏪</div>
+                        <h3>Skill Ecosystem</h3>
+                        <p>Extend capabilities instantly. Install community skills or build your own with our open framework.</p>
                     </div>
-                    
-                    <a href="#premium" style="color: #667eea; text-decoration: none; font-weight: 600;">Learn more about premium skills →</a>
-                </div>
-            </div>
-        </section>
-
-        <section class="demo-section" id="demo">
-            <div class="container">
-                <h2 style="font-size: 2.8rem; margin-bottom: 1rem;">🎬 Experience Conversational Computing</h2>
-                <p style="font-size: 1.3rem; margin-bottom: 3rem; opacity: 0.8;">Watch how natural conversation replaces complex command sequences. This is the power of open source innovation.</p>
-                
-                <div class="demo-container">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-bottom: 3rem;">
-                        <div>
-                            <h4 style="color: #666; margin-bottom: 1rem; font-size: 1.1rem;">❌ Traditional Approach:</h4>
-                            <div class="command-example" style="background: #2d1b69;">
-⌘Space → "search files" → "react project"<br>
-⌘Space → "open with" → "VS Code"<br>  
-⌘Space → "window left" → snap to left<br>
-⌘Space → "open url" → GitHub URL<br>
-⌘Space → "window right" → snap to right<br>
-⌘Space → "clipboard" → enable monitoring<br><br>
-<span style="color: #ff6b6b; font-weight: bold;">⏱️ Result: 6 commands, 45+ seconds, manual coordination</span>
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <h4 style="color: #666; margin-bottom: 1rem; font-size: 1.1rem;">✅ JARVIS Conversation:</h4>
-                            <div class="command-example" style="background: #1a472a;">
-<span class="user-input" style="color: #68d391; font-weight: bold;">You:</span> "Find my React project, open it in VS Code, snap left, open GitHub page on right, and start clipboard monitoring"<br><br>
-<span class="jarvis-response" style="color: #9ae6b4; font-weight: bold;">JARVIS:</span> "Found ReactProject in Development folder. Opening in VS Code, arranging development workspace, loading GitHub page, clipboard monitoring active."<br><br>
-<span style="color: #68d391; font-weight: bold;">⚡ Result: One sentence, 8 seconds, intelligent automation</span>
-                            </div>
-                        </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📁</div>
+                        <h3>Smart Discovery</h3>
+                        <p>Find files by intent, not just name. "Where's that PDF about the Q3 budget?" works instantly.</p>
                     </div>
-                    
-                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2rem; border-radius: 12px; color: white; text-align: center;">
-                        <h3 style="margin-bottom: 1rem; font-size: 1.5rem;">🧠 This is Conversational Computing</h3>
-                        <p style="margin-bottom: 1.5rem; font-size: 1.1rem;">JARVIS understands intent, learns patterns, and orchestrates complex workflows through natural conversation. This revolutionary capability is completely open source and free to use, modify, and extend.</p>
-                        <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">
-                            <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px; backdrop-filter: blur(10px);">
-                                <div style="font-weight: bold;">Natural Language</div>
-                                <div style="font-size: 0.9rem; opacity: 0.9;">vs keyword commands</div>
-                            </div>
-                            <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px; backdrop-filter: blur(10px);">
-                                <div style="font-weight: bold;">AI Intelligence</div>
-                                <div style="font-size: 0.9rem; opacity: 0.9;">vs static responses</div>
-                            </div>
-                            <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 8px; backdrop-filter: blur(10px);">
-                                <div style="font-weight: bold;">Workflow Orchestration</div>
-                                <div style="font-size: 0.9rem; opacity: 0.9;">vs manual chaining</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div style="margin-top: 2rem; padding: 2rem; background: #f8f9fa; border-radius: 12px; border: 2px dashed #28a745;">
-                        <h4 style="color: #28a745; margin-bottom: 1rem;">🌟 More Amazing Examples (Try These!):</h4>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-family: 'Monaco', monospace; font-size: 0.9rem;">
-                            <div>
-                                <div style="color: #0366d6; font-weight: bold;">"Calculate 15% tip on $67.43 and create a snippet for it"</div>
-                                <div style="color: #6f42c1; font-style: italic;">→ Math + automation in one command</div>
-                            </div>
-                            <div>
-                                <div style="color: #0366d6; font-weight: bold;">"Find duplicate photos and organize by date"</div>
-                                <div style="color: #6f42c1; font-style: italic;">→ AI file analysis + organization</div>
-                            </div>
-                            <div>
-                                <div style="color: #0366d6; font-weight: bold;">"Hey JARVIS, optimize my system performance"</div>
-                                <div style="color: #6f42c1; font-style: italic;">→ Voice-activated system tuning</div>
-                            </div>
-                            <div>
-                                <div style="color: #0366d6; font-weight: bold;">"Create morning routine workflow"</div>
-                                <div style="color: #6f42c1; font-style: italic;">→ AI learns and automates patterns</div>
-                            </div>
-                        </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3>Privacy First</h3>
+                        <p>Local-first architecture. Your data stays on your device. Optional encrypted sync for multi-device users.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="stats">
+        <section class="marketplace-section" id="marketplace">
             <div class="container">
-                <h2 style="font-size: 2.8rem; margin-bottom: 1rem;">🏆 Open Source Excellence</h2>
-                <p style="font-size: 1.3rem; opacity: 0.9;">Enterprise-grade quality, community-driven innovation, completely free and transparent.</p>
-                
-                <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 2rem;">
-                    <div class="stat">
-                        <div class="stat-number" style="color: #61dafb;">10+</div>
-                        <div class="stat-label">Core Skills<br><small style="opacity: 0.7;">Complete Productivity Suite</small></div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-number" style="color: #98d982;">150+</div>
-                        <div class="stat-label">Individual Tools<br><small style="opacity: 0.7;">Comprehensive Functionality</small></div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-number" style="color: #ffd93d;">105K+</div>
-                        <div class="stat-label">Lines of Code<br><small style="opacity: 0.7;">Production-Ready Quality</small></div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-number" style="color: #ff6b9d;">580+</div>
-                        <div class="stat-label">Automated Tests<br><small style="opacity: 0.7;">100% Success Rate</small></div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-number" style="color: #c3aed6;">MIT</div>
-                        <div class="stat-label">License<br><small style="opacity: 0.7;">Free Forever</small></div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-number" style="color: #66d9ef;">3+</div>
-                        <div class="stat-label">Platforms<br><small style="opacity: 0.7;">macOS, Windows, Linux</small></div>
-                    </div>
+                <div class="badge-pill" style="background: rgba(255,255,255,0.1); color: white; border: none;">
+                    💎 PREMIUM MARKETPLACE
                 </div>
-                
-                <div style="margin-top: 3rem; padding: 2rem; background: rgba(255,255,255,0.1); border-radius: 16px; backdrop-filter: blur(10px);">
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; text-align: left;">
-                        <div>
-                            <h4 style="color: #61dafb; margin-bottom: 1rem; font-size: 1.3rem;">🆓 Open Source Benefits</h4>
-                            <ul style="color: rgba(255,255,255,0.9); line-height: 1.8; list-style: none; padding: 0;">
-                                <li>✅ Complete platform - no feature restrictions</li>
-                                <li>✅ Community contributions and improvements</li>
-                                <li>✅ Transparent code - inspect and modify anything</li>
-                                <li>✅ No vendor lock-in - your data, your control</li>
-                                <li>✅ Enterprise-ready with professional support</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h4 style="color: #98d982; margin-bottom: 1rem; font-size: 1.3rem;">🚀 Developer Opportunities</h4>
-                            <ul style="color: rgba(255,255,255,0.9); line-height: 1.8; list-style: none; padding: 0;">
-                                <li>💰 Build skills for the marketplace (70% revenue share)</li>
-                                <li>🛠️ Contribute to the core platform and gain recognition</li>
-                                <li>🎯 Learn cutting-edge AI and automation technologies</li>
-                                <li>🤝 Join a thriving community of productivity innovators</li>
-                                <li>🏢 Enterprise consulting and custom development opportunities</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+                <h2 style="font-size: 2.5rem; margin-bottom: 1.5rem;">Professional Grade Intelligence</h2>
+                <p style="opacity: 0.8; max-width: 600px; margin: 0 auto 4rem;">Unlock advanced AI models and enterprise capabilities with premium skills.</p>
 
-        <section class="getting-started" id="installation">
-            <div class="container">
-                <h2 style="font-size: 2.8rem; margin-bottom: 1rem;">🚀 Install the Future of Productivity</h2>
-                <p style="font-size: 1.3rem; margin-bottom: 1rem; color: #666;">Join thousands of developers and power users building the open source productivity revolution.</p>
-                <p style="font-size: 1.1rem; margin-bottom: 3rem; color: #888;">Complete installation in under 5 minutes. No account required, no data collection, completely free forever.</p>
-                
-                <div style="display: grid; grid-template-columns: 1fr auto; gap: 2rem; max-width: 800px; margin: 0 auto 3rem; background: #1e1e1e; border-radius: 12px; overflow: hidden;">
-                    <div class="installation-code" style="margin: 0; border-radius: 0; background: transparent; font-size: 1.2rem; padding: 2rem;">
-curl -sSL https://install.jarvis.ai | bash
-                    </div>
-                    <div style="background: #28a745; display: flex; align-items: center; justify-content: center; padding: 0 2rem; color: white; font-weight: bold; cursor: pointer; transition: background 0.2s;" onclick="navigator.clipboard.writeText('curl -sSL https://install.jarvis.ai | bash')">
-                        📋 Copy
-                    </div>
-                </div>
-                
-                <div style="margin: 3rem 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
-                    <div style="padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); border-top: 4px solid #28a745;">
-                        <div style="font-size: 2.5rem; margin-bottom: 1rem;">🆓</div>
-                        <h4 style="color: #333; margin-bottom: 1rem; font-size: 1.3rem;">100% Free & Open</h4>
-                        <ul style="color: #666; line-height: 1.8; list-style: none; padding: 0;">
-                            <li>✅ Complete productivity platform</li>
-                            <li>✅ All 10 core skills included</li>
-                            <li>✅ AI workflow automation</li>
-                            <li>✅ Voice control & hands-free operation</li>
-                            <li>✅ Community skill marketplace</li>
-                            <li>✅ MIT License - modify anything</li>
+                <div class="premium-grid">
+                    <div class="premium-card">
+                        <h3>Notion Advanced</h3>
+                        <div class="price-tag">$14.99<span style="font-size: 1rem; color: #94a3b8;">/mo</span></div>
+                        <ul style="text-align: left; list-style: none; opacity: 0.9; line-height: 1.8;">
+                            <li>✅ AI Page Generation</li>
+                            <li>✅ Smart Database Sync</li>
+                            <li>✅ Content Intelligence</li>
                         </ul>
                     </div>
-                    
-                    <div style="padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); border-top: 4px solid #0366d6;">
-                        <div style="font-size: 2.5rem; margin-bottom: 1rem;">⚡</div>
-                        <h4 style="color: #333; margin-bottom: 1rem; font-size: 1.3rem;">Instant Superpowers</h4>
-                        <ul style="color: #666; line-height: 1.8; list-style: none; padding: 0;">
-                            <li>🎙️ "Hey JARVIS, launch my coding setup"</li>
-                            <li>🔍 "Find files containing React hooks"</li>
-                            <li>🧮 "Calculate compound interest and save as snippet"</li>
-                            <li>🪟 "Arrange windows for presentation mode"</li>
-                            <li>📋 "Search clipboard for API keys"</li>
-                            <li>🤖 "Create workflow to automate this"</li>
+                    <div class="premium-card" style="border-color: #6366f1; background: rgba(99, 102, 241, 0.1);">
+                        <h3>GitHub Copilot++</h3>
+                        <div class="price-tag">$19.99<span style="font-size: 1rem; color: #94a3b8;">/mo</span></div>
+                        <ul style="text-align: left; list-style: none; opacity: 0.9; line-height: 1.8;">
+                            <li>✅ Workflow Intelligence</li>
+                            <li>✅ Automated PR Reviews</li>
+                            <li>✅ Repo Health Monitoring</li>
                         </ul>
                     </div>
-                    
-                    <div style="padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); border-top: 4px solid #6f42c1;">
-                        <div style="font-size: 2.5rem; margin-bottom: 1rem;">👥</div>
-                        <h4 style="color: #333; margin-bottom: 1rem; font-size: 1.3rem;">Join the Community</h4>
-                        <ul style="color: #666; line-height: 1.8; list-style: none; padding: 0;">
-                            <li>⭐ Star on GitHub and follow development</li>
-                            <li>🛠️ Build skills for the marketplace (earn $$$)</li>
-                            <li>🤝 Contribute to core platform improvements</li>
-                            <li>💬 Join Discord for real-time collaboration</li>
-                            <li>📚 Share workflows and productivity tips</li>
-                            <li>🏆 Compete in community challenges</li>
+                    <div class="premium-card">
+                        <h3>Focus Pro</h3>
+                        <div class="price-tag">$9.99<span style="font-size: 1rem; color: #94a3b8;">/mo</span></div>
+                        <ul style="text-align: left; list-style: none; opacity: 0.9; line-height: 1.8;">
+                            <li>✅ Distraction Blocking</li>
+                            <li>✅ Deep Work Analytics</li>
+                            <li>✅ Wellness Integration</li>
                         </ul>
-                    </div>
-                </div>
-                
-                <div style="margin-top: 4rem; text-align: center;">
-                    <a href="https://github.com/repairman29/JARVIS" class="btn btn-primary" style="font-size: 1.2rem; padding: 1rem 2.5rem; margin-right: 1rem; background: #333; border-color: #333;">
-                        ⭐ Star on GitHub
-                    </a>
-                    <a href="https://github.com/repairman29/JARVIS/blob/main/docs/README.md" class="btn btn-secondary" style="font-size: 1.2rem; padding: 1rem 2.5rem;">
-                        📚 Documentation
-                    </a>
-                </div>
-                
-                <div style="margin-top: 2rem; font-size: 0.95rem; opacity: 0.8;">
-                    <strong>Alternative Installation:</strong> 
-                    <code style="background: rgba(255,255,255,0.2); padding: 0.3rem 0.6rem; border-radius: 4px; margin: 0 0.5rem;">git clone https://github.com/repairman29/JARVIS.git</code>
-                    • 
-                    <strong>Requires:</strong> Node.js 16+, Git
-                </div>
-            </div>
-        </section>
-
-        <section style="padding: 80px 0; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);" id="open-source">
-            <div class="container">
-                <h2 style="text-align: center; font-size: 2.8rem; margin-bottom: 1rem; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🌟 Open Source Leadership</h2>
-                <p style="text-align: center; font-size: 1.3rem; color: #666; margin-bottom: 3rem; max-width: 800px; margin-left: auto; margin-right: auto;">JARVIS is pioneering the open source conversational computing movement. Join thousands of developers building the future of human-computer interaction.</p>
-                
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
-                    <div style="background: white; padding: 2.5rem; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.1); border-left: 6px solid #28a745;">
-                        <div style="display: flex; align-items: center; margin-bottom: 1.5rem;">
-                            <div style="font-size: 3rem; margin-right: 1rem;">⭐</div>
-                            <div>
-                                <h3 style="color: #333; margin: 0;">Star & Contribute</h3>
-                                <p style="color: #666; margin: 0; font-size: 0.95rem;">Help us build the productivity platform of the future</p>
-                            </div>
-                        </div>
-                        <ul style="color: #666; line-height: 1.8; list-style: none; padding: 0; margin-bottom: 1.5rem;">
-                            <li>✅ Star the repository to show support</li>
-                            <li>✅ Report bugs and suggest features</li>
-                            <li>✅ Improve core skills and documentation</li>
-                            <li>✅ Add cross-platform compatibility</li>
-                        </ul>
-                        <a href="https://github.com/repairman29/JARVIS" style="color: #28a745; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center;">
-                            ⭐ Star on GitHub <span style="margin-left: 0.5rem;">→</span>
-                        </a>
-                    </div>
-                    
-                    <div style="background: white; padding: 2.5rem; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.1); border-left: 6px solid #0366d6;">
-                        <div style="display: flex; align-items: center; margin-bottom: 1.5rem;">
-                            <div style="font-size: 3rem; margin-right: 1rem;">🛠️</div>
-                            <div>
-                                <h3 style="color: #333; margin: 0;">Build Skills</h3>
-                                <p style="color: #666; margin: 0; font-size: 0.95rem;">Create powerful productivity tools for the community</p>
-                            </div>
-                        </div>
-                        <ul style="color: #666; line-height: 1.8; list-style: none; padding: 0; margin-bottom: 1.5rem;">
-                            <li>💰 Earn revenue through marketplace (70% share)</li>
-                            <li>✅ Use our comprehensive development framework</li>
-                            <li>✅ Get featured in community showcases</li>
-                            <li>✅ Access professional development support</li>
-                        </ul>
-                        <a href="https://github.com/repairman29/JARVIS/blob/main/CONTRIBUTING.md" style="color: #0366d6; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center;">
-                            🚀 Start Building <span style="margin-left: 0.5rem;">→</span>
-                        </a>
-                    </div>
-                    
-                    <div style="background: white; padding: 2.5rem; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.1); border-left: 6px solid #6f42c1;">
-                        <div style="display: flex; align-items: center; margin-bottom: 1.5rem;">
-                            <div style="font-size: 3rem; margin-right: 1rem;">💬</div>
-                            <div>
-                                <h3 style="color: #333; margin: 0;">Community Hub</h3>
-                                <p style="color: #666; margin: 0; font-size: 0.95rem;">Connect with productivity innovators worldwide</p>
-                            </div>
-                        </div>
-                        <ul style="color: #666; line-height: 1.8; list-style: none; padding: 0; margin-bottom: 1.5rem;">
-                            <li>💬 Join Discord for real-time collaboration</li>
-                            <li>✅ Share workflows and productivity tips</li>
-                            <li>✅ Get help from experienced community members</li>
-                            <li>✅ Participate in challenges and contests</li>
-                        </ul>
-                        <a href="https://github.com/repairman29/JARVIS/discussions" style="color: #6f42c1; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center;">
-                            💬 Join Discussions <span style="margin-left: 0.5rem;">→</span>
-                        </a>
-                    </div>
-                </div>
-                
-                <div style="text-align: center; padding: 3rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; color: white;">
-                    <h3 style="font-size: 1.8rem; margin-bottom: 1rem;">🚀 Ready to Transform Your Productivity?</h3>
-                    <p style="font-size: 1.1rem; margin-bottom: 2rem; opacity: 0.95;">Join the open source revolution. Install JARVIS, contribute to the platform, and help build the future of conversational computing.</p>
-                    
-                    <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem;">
-                        <a href="https://github.com/repairman29/JARVIS" class="btn" style="background: #333; color: white; border: 2px solid #333; font-size: 1.1rem; padding: 12px 30px;">
-                            ⭐ Star on GitHub
-                        </a>
-                        <a href="#installation" class="btn" style="background: transparent; color: white; border: 2px solid white; font-size: 1.1rem; padding: 12px 30px;">
-                            🚀 Install Now
-                        </a>
-                        <a href="https://github.com/repairman29/JARVIS/blob/main/CONTRIBUTING.md" class="btn" style="background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.5); font-size: 1.1rem; padding: 12px 30px;">
-                            🛠️ Contribute
-                        </a>
-                    </div>
-                    
-                    <div style="font-size: 0.95rem; opacity: 0.8;">
-                        <strong>Open Source:</strong> MIT License • <strong>Community:</strong> GitHub Discussions • <strong>Support:</strong> Discord & Documentation
                     </div>
                 </div>
             </div>
         </section>
-        <section style="padding: 80px 0; background: white;" id="premium">
-            <div class="container">
-                <h2 style="text-align: center; font-size: 2.8rem; margin-bottom: 1rem;">💎 Professional Premium Skills</h2>
-                <p style="text-align: center; font-size: 1.2rem; color: #666; margin-bottom: 3rem;">Advanced AI-powered skills for professionals and enterprises who need cutting-edge automation and intelligence.</p>
-                
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
-                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2.5rem; border-radius: 16px; color: white; text-align: center;">
-                        <div style="font-size: 3.5rem; margin-bottom: 1rem;">💼</div>
-                        <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Notion Advanced Pro</h3>
-                        <div style="font-size: 2rem; font-weight: bold; margin: 1rem 0;">$14.99<span style="font-size: 1rem; opacity: 0.8;">/month</span></div>
-                        <ul style="list-style: none; padding: 0; line-height: 1.8; text-align: left;">
-                            <li>🤖 AI-powered page generation</li>
-                            <li>📊 Smart database optimization</li>
-                            <li>🔄 Cross-workspace synchronization</li>
-                            <li>🧠 Content intelligence and analysis</li>
-                            <li>⚡ Workflow automation triggers</li>
-                        </ul>
-                        <div style="margin-top: 1.5rem;">
-                            <div style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 20px; display: inline-block; font-size: 0.9rem;">
-                                14-day free trial
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); padding: 2.5rem; border-radius: 16px; color: white; text-align: center;">
-                        <div style="font-size: 3.5rem; margin-bottom: 1rem;">⚡</div>
-                        <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">GitHub Copilot++ Pro</h3>
-                        <div style="font-size: 2rem; font-weight: bold; margin: 1rem 0;">$19.99<span style="font-size: 1rem; opacity: 0.8;">/month</span></div>
-                        <ul style="list-style: none; padding: 0; line-height: 1.8; text-align: left;">
-                            <li>🔍 Advanced AI code analysis</li>
-                            <li>🔧 Intelligent PR management</li>
-                            <li>📈 Repository health monitoring</li>
-                            <li>⚙️ Workflow optimization</li>
-                            <li>💡 AI-powered commit messages</li>
-                        </ul>
-                        <div style="margin-top: 1.5rem;">
-                            <div style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; border-radius: 20px; display: inline-block; font-size: 0.9rem;">
-                                14-day free trial
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); padding: 2.5rem; border-radius: 16px; color: #333; text-align: center;">
-                        <div style="font-size: 3.5rem; margin-bottom: 1rem;">🎯</div>
-                        <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Focus Pro</h3>
-                        <div style="font-size: 2rem; font-weight: bold; margin: 1rem 0;">$9.99<span style="font-size: 1rem; opacity: 0.8;">/month</span></div>
-                        <ul style="list-style: none; padding: 0; line-height: 1.8; text-align: left;">
-                            <li>🧠 AI-powered focus optimization</li>
-                            <li>📊 Advanced productivity analytics</li>
-                            <li>💪 Wellness data integration</li>
-                            <li>👥 Team collaboration features</li>
-                            <li>⚡ Environment automation</li>
-                        </ul>
-                        <div style="margin-top: 1.5rem;">
-                            <div style="background: rgba(255,255,255,0.8); padding: 0.5rem 1rem; border-radius: 20px; display: inline-block; font-size: 0.9rem; color: #333;">
-                                14-day free trial
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div style="text-align: center; padding: 2rem; background: #e8f4fd; border-radius: 12px; border: 2px solid #61dafb;">
-                    <h4 style="color: #0366d6; margin-bottom: 1rem;">🏢 Enterprise & Team Solutions Available</h4>
-                    <p style="color: #586069; margin-bottom: 1.5rem;">Custom skill development, team packages, enterprise deployment, and professional support services for organizations ready to transform their productivity at scale.</p>
-                    <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-                        <span style="background: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; color: #333;">Custom Development</span>
-                        <span style="background: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; color: #333;">Team Packages</span>
-                        <span style="background: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; color: #333;">Enterprise Support</span>
-                        <span style="background: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; color: #333;">Compliance & Security</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section style="padding: 80px 0; background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); color: white;" id="community">
-            <div class="container">
-                <h2 style="text-align: center; font-size: 2.8rem; margin-bottom: 1rem;">🤝 Join the Revolution</h2>
-                <p style="text-align: center; font-size: 1.3rem; margin-bottom: 3rem; opacity: 0.9;">Be part of the community building the future of human-computer interaction. Contribute code, ideas, and innovation to the world's most advanced open source productivity platform.</p>
-                
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
-                    <div style="background: rgba(255,255,255,0.1); padding: 2.5rem; border-radius: 16px; backdrop-filter: blur(10px);">
-                        <div style="display: flex; align-items: center; margin-bottom: 1.5rem;">
-                            <div style="font-size: 3rem; margin-right: 1rem;">👨‍💻</div>
-                            <h3 style="margin: 0; font-size: 1.4rem;">For Developers</h3>
-                        </div>
-                        <ul style="list-style: none; padding: 0; line-height: 1.8; opacity: 0.9;">
-                            <li>⭐ <strong>Star the repository</strong> and follow development</li>
-                            <li>🐛 <strong>Report bugs</strong> and suggest improvements</li>
-                            <li>🛠️ <strong>Build skills</strong> for the marketplace (earn revenue!)</li>
-                            <li>📚 <strong>Improve documentation</strong> and tutorials</li>
-                            <li>💬 <strong>Join discussions</strong> about features and roadmap</li>
-                        </ul>
-                        <div style="margin-top: 2rem;">
-                            <a href="https://github.com/repairman29/JARVIS" style="color: #61dafb; text-decoration: none; font-weight: 600;">
-                                ⭐ Star on GitHub →
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <div style="background: rgba(255,255,255,0.1); padding: 2.5rem; border-radius: 16px; backdrop-filter: blur(10px);">
-                        <div style="display: flex; align-items: center; margin-bottom: 1.5rem;">
-                            <div style="font-size: 3rem; margin-right: 1rem;">👥</div>
-                            <h3 style="margin: 0; font-size: 1.4rem;">For Users</h3>
-                        </div>
-                        <ul style="list-style: none; padding: 0; line-height: 1.8; opacity: 0.9;">
-                            <li>🚀 <strong>Install JARVIS</strong> and experience the future</li>
-                            <li>📝 <strong>Share workflows</strong> and productivity discoveries</li>
-                            <li>🎯 <strong>Request features</strong> through GitHub issues</li>
-                            <li>📖 <strong>Write tutorials</strong> and help others learn</li>
-                            <li>🌟 <strong>Spread the word</strong> about conversational computing</li>
-                        </ul>
-                        <div style="margin-top: 2rem;">
-                            <a href="#installation" style="color: #98d982; text-decoration: none; font-weight: 600;">
-                                🚀 Get Started →
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                
-                <div style="margin-top: 3rem; text-align: center; padding: 2rem; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 2rem;">
-                        <div>
-                            <div style="font-size: 2rem; font-weight: bold; color: #61dafb;" id="github-stars">⭐</div>
-                            <div style="opacity: 0.8; font-size: 0.9rem;">GitHub Stars</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 2rem; font-weight: bold; color: #98d982;" id="github-forks">🍴</div>
-                            <div style="opacity: 0.8; font-size: 0.9rem;">Forks</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 2rem; font-weight: bold; color: #ffd93d;" id="contributors">👥</div>
-                            <div style="opacity: 0.8; font-size: 0.9rem;">Contributors</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 2rem; font-weight: bold; color: #ff6b9d;" id="community-skills">🛠️</div>
-                            <div style="opacity: 0.8; font-size: 0.9rem;">Community Skills</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
     </main>
 
     <footer>
         <div class="container">
-            <div class="footer-links">
-                <a href="https://github.com/repairman29/JARVIS">GitHub</a>
-                <a href="https://github.com/repairman29/JARVIS/blob/main/docs/README.md">Documentation</a>
-                <a href="https://github.com/repairman29/JARVIS/blob/main/CONTRIBUTING.md">Contributing</a>
-                <a href="https://github.com/repairman29/JARVIS/issues">Issues</a>
-                <a href="https://github.com/repairman29/JARVIS/blob/main/ROADMAP.md">Roadmap</a>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 2rem; border-bottom: 1px solid #e2e8f0;">
+                <div class="logo">🧠 JARVIS</div>
+                <div class="nav-links">
+                    <a href="https://github.com/repairman29/JARVIS">GitHub</a>
+                    <a href="https://github.com/repairman29/JARVIS/issues">Issues</a>
+                    <a href="#">Terms</a>
+                    <a href="#">Privacy</a>
+                </div>
             </div>
-            <p style="opacity: 0.7;">&copy; 2026 JARVIS Project. Open source under MIT License.</p>
-            <p style="opacity: 0.5; font-size: 0.9rem; margin-top: 0.5rem;">Just A Rather Very Intelligent System</p>
+            <div style="text-align: center; padding-top: 2rem; color: var(--text-secondary); font-size: 0.9rem;">
+                <p>&copy; 2026 JARVIS Project. Open source under MIT License.</p>
+                <p style="margin-top: 0.5rem;">Built for the future of work.</p>
+            </div>
         </div>
     </footer>
 
     <script>
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+        function copyInstall() {
+            navigator.clipboard.writeText('curl -sSL https://install.jarvis.ai | bash');
+            const box = document.querySelector('.install-box');
+            box.style.borderColor = '#10b981';
+            setTimeout(() => {
+                box.style.borderColor = '#334155';
+            }, 1000);
+        }
+
+        // Add smooth reveal animation on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
                 }
             });
         });
-        
-        // Copy installation command to clipboard
-        function copyInstallCommand() {
-            const command = 'curl -sSL https://install.jarvis.ai | bash';
-            navigator.clipboard.writeText(command).then(() => {
-                // Show feedback
-                const btn = event.target;
-                const originalText = btn.textContent;
-                btn.textContent = '✅ Copied!';
-                btn.style.background = '#28a745';
-                setTimeout(() => {
-                    btn.textContent = originalText;
-                    btn.style.background = '#28a745';
-                }, 2000);
-            }).catch(err => {
-                console.log('Copy failed:', err);
-            });
-        }
-        
-        // Load GitHub stats dynamically
-        async function loadGitHubStats() {
-            try {
-                const response = await fetch('https://api.github.com/repos/repairman29/JARVIS');
-                const data = await response.json();
-                
-                document.getElementById('github-stars').textContent = data.stargazers_count || '⭐';
-                document.getElementById('github-forks').textContent = data.forks_count || '🍴';
-                
-                // Load contributors
-                const contributorsResponse = await fetch('https://api.github.com/repos/repairman29/JARVIS/contributors');
-                const contributors = await contributorsResponse.json();
-                document.getElementById('contributors').textContent = contributors.length || '👥';
-                
-                // Community skills count (mock for now)
-                document.getElementById('community-skills').textContent = '12+';
-                
-            } catch (error) {
-                console.log('GitHub stats loading failed:', error);
-                // Use fallback values
-                document.getElementById('github-stars').textContent = '⭐';
-                document.getElementById('github-forks').textContent = '🍴';  
-                document.getElementById('contributors').textContent = '1+';
-                document.getElementById('community-skills').textContent = '10+';
-            }
-        }
-        
-        // Add interactive animations
-        document.addEventListener('DOMContentLoaded', function() {
-            // Load GitHub stats
-            loadGitHubStats();
-            
-            // Animate elements on scroll
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, observerOptions);
-            
-            // Initially hide elements for animation
-            document.querySelectorAll('.feature, .stat').forEach(el => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(20px)';
-                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                observer.observe(el);
-            });
-            
-            // Add hover effects to CTA buttons
-            document.querySelectorAll('.btn').forEach(btn => {
-                btn.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-2px)';
-                    this.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
-                });
-                
-                btn.addEventListener('mouseleave', function() {
-                    this.style.transform = 'translateY(0)';
-                    this.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
-                });
-            });
+
+        document.querySelectorAll('.feature-card, .comparison-card, .premium-card').forEach((el) => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'all 0.6s ease-out';
+            observer.observe(el);
         });
-        
-        // Add GitHub star button functionality
-        function starOnGitHub() {
-            window.open('https://github.com/repairman29/JARVIS', '_blank');
-        }
     </script>
 </body>
 </html>
