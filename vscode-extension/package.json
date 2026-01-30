@@ -1,0 +1,114 @@
+{
+  "name": "upshift-vscode",
+  "displayName": "Upshift - AI Dependency Upgrades",
+  "description": "AI-powered dependency upgrades with inline warnings and one-click fixes",
+  "version": "0.1.0",
+  "publisher": "upshiftai",
+  "icon": "images/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/repairman29/upshift"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Linters"
+  ],
+  "keywords": [
+    "dependencies",
+    "npm",
+    "upgrade",
+    "security",
+    "ai"
+  ],
+  "activationEvents": [
+    "workspaceContains:package.json"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "upshift.scan",
+        "title": "Upshift: Scan Dependencies"
+      },
+      {
+        "command": "upshift.explain",
+        "title": "Upshift: Explain Package"
+      },
+      {
+        "command": "upshift.upgrade",
+        "title": "Upshift: Upgrade Package"
+      },
+      {
+        "command": "upshift.upgradeAll",
+        "title": "Upshift: Upgrade All (Safe)"
+      },
+      {
+        "command": "upshift.audit",
+        "title": "Upshift: Security Audit"
+      }
+    ],
+    "configuration": {
+      "title": "Upshift",
+      "properties": {
+        "upshift.apiToken": {
+          "type": "string",
+          "default": "",
+          "description": "Your Upshift API token for AI features"
+        },
+        "upshift.autoScan": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically scan on workspace open"
+        },
+        "upshift.showInlineWarnings": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show inline warnings for outdated dependencies"
+        },
+        "upshift.highlightVulnerabilities": {
+          "type": "boolean",
+          "default": true,
+          "description": "Highlight packages with known vulnerabilities"
+        }
+      }
+    },
+    "views": {
+      "explorer": [
+        {
+          "id": "upshiftDependencies",
+          "name": "Upshift Dependencies",
+          "when": "workspaceContains:package.json"
+        }
+      ]
+    },
+    "menus": {
+      "editor/context": [
+        {
+          "when": "resourceFilename == package.json",
+          "command": "upshift.scan",
+          "group": "upshift"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "esbuild src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node",
+    "watch": "npm run build -- --watch",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^2.22.0",
+    "esbuild": "^0.19.0",
+    "typescript": "^5.3.0"
+  },
+  "dependencies": {
+    "upshift-cli": "^0.2.0"
+  }
+}

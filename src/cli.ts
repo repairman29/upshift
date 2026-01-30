@@ -5,7 +5,9 @@ import { scanCommand } from "./commands/scan.js";
 import { explainCommand } from "./commands/explain.js";
 import { fixCommand } from "./commands/fix.js";
 import { upgradeCommand } from "./commands/upgrade.js";
+import { rollbackCommand } from "./commands/rollback.js";
 import { auditCommand } from "./commands/audit.js";
+import { interactiveCommand } from "./commands/interactive.js";
 import { initCommand } from "./commands/init.js";
 import { creditsCommand } from "./commands/credits.js";
 import { buyCreditsCommand } from "./commands/buy-credits.js";
@@ -22,12 +24,16 @@ program
   .description("AI-powered dependency upgrades with explanations and safe rollbacks.")
   .version(pkg.version);
 
-// Core commands
+// Core workflow
 program.addCommand(scanCommand());
 program.addCommand(explainCommand());
 program.addCommand(fixCommand());
 program.addCommand(upgradeCommand());
+program.addCommand(rollbackCommand());
 program.addCommand(auditCommand());
+
+// Interactive
+program.addCommand(interactiveCommand());
 
 // Setup
 program.addCommand(initCommand());
