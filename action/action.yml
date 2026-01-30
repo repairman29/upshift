@@ -1,0 +1,162 @@
+name: 'Upshift Dependency Scanner'
+description: 'Scan dependencies for updates, vulnerabilities, and breaking changes'
+author: 'Upshift AI'
+branding:
+  icon: 'arrow-up-circle'
+  color: 'green'
+
+inputs:
+  token:
+    description: 'GitHub token for PR comments'
+    required: false
+    default: ${{ github.token }}
+  upshift-token:
+    description: 'Upshift API token for AI features'
+    required: false
+  mode:
+    description: 'Scan mode: "scan", "audit", or "full"'
+    required: false
+    default: 'scan'
+  fail-on:
+    description: 'Fail the action on: "none", "vulnerabilities", "high", "critical"'
+    required: false
+    default: 'critical'
+  comment:
+    description: 'Post results as PR comment'
+    required: false
+    default: 'true'
+
+outputs:
+  outdated-count:
+    description: 'Number of outdated dependencies'
+    value: ${{ steps.scan.outputs.outdated-count }}
+  vulnerability-count:
+    description: 'Number of vulnerabilities'
+    value: ${{ steps.scan.outputs.vulnerability-count }}
+  critical-count:
+    description: 'Number of critical vulnerabilities'
+    value: ${{ steps.scan.outputs.critical-count }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install Upshift
+      shell: bash
+      run: npm install -g upshift-cli
+
+    - name: Run Scan
+      id: scan
+      shell: bash
+      env:
+        UPSHIFT_API_TOKEN: ${{ inputs.upshift-token }}
+      run: |
+        # Run scan and capture output
+        upshift scan --json > /tmp/scan-results.json 2>&1 || true
+        
+        # Extract counts
+        OUTDATED=$(jq '.outdated | length' /tmp/scan-results.json 2>/dev/null || echo "0")
+        VULNS=$(jq '.vulnerabilities.items | length' /tmp/scan-results.json 2>/dev/null || echo "0")
+        CRITICAL=$(jq '.vulnerabilities.counts.critical // 0' /tmp/scan-results.json 2>/dev/null || echo "0")
+        HIGH=$(jq '.vulnerabilities.counts.high // 0' /tmp/scan-results.json 2>/dev/null || echo "0")
+        
+        echo "outdated-count=$OUTDATED" >> $GITHUB_OUTPUT
+        echo "vulnerability-count=$VULNS" >> $GITHUB_OUTPUT
+        echo "critical-count=$CRITICAL" >> $GITHUB_OUTPUT
+        
+        # Generate markdown summary
+        {
+          echo "## 📦 Upshift Dependency Report"
+          echo ""
+          echo "| Metric | Count |"
+          echo "|--------|-------|"
+          echo "| Outdated packages | $OUTDATED |"
+          echo "| Vulnerabilities | $VULNS |"
+          echo "| Critical | $CRITICAL |"
+          echo "| High | $HIGH |"
+          echo ""
+          
+          if [ "$OUTDATED" -gt 0 ]; then
+            echo "### Outdated Packages"
+            echo ""
+            jq -r '.outdated[] | "- **\(.name)**: \(.current) → \(.latest)"' /tmp/scan-results.json 2>/dev/null || true
+            echo ""
+          fi
+          
+          if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then
+            echo "### ⚠️ Security Vulnerabilities"
+            echo ""
+            jq -r '.vulnerabilities.items[] | select(.severity == "critical" or .severity == "high") | "- **\(.name)** (\(.severity)): \(.via[0] // "Unknown")"' /tmp/scan-results.json 2>/dev/null || true
+            echo ""
+          fi
+          
+          echo "---"
+          echo "*Scanned by [Upshift](https://upshiftai.dev)*"
+        } > /tmp/scan-summary.md
+        
+        cat /tmp/scan-summary.md >> $GITHUB_STEP_SUMMARY
+
+    - name: Post PR Comment
+      if: inputs.comment == 'true' && github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ inputs.token }}
+        script: |
+          const fs = require('fs');
+          const summary = fs.readFileSync('/tmp/scan-summary.md', 'utf8');
+          
+          // Find existing comment
+          const { data: comments } = await github.rest.issues.listComments({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+          });
+          
+          const botComment = comments.find(c => 
+            c.user.type === 'Bot' && c.body.includes('Upshift Dependency Report')
+          );
+          
+          if (botComment) {
+            await github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: botComment.id,
+              body: summary,
+            });
+          } else {
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: summary,
+            });
+          }
+
+    - name: Check Thresholds
+      shell: bash
+      run: |
+        CRITICAL=${{ steps.scan.outputs.critical-count }}
+        HIGH=${{ steps.scan.outputs.high-count || '0' }}
+        VULNS=${{ steps.scan.outputs.vulnerability-count }}
+        FAIL_ON="${{ inputs.fail-on }}"
+        
+        if [ "$FAIL_ON" = "critical" ] && [ "$CRITICAL" -gt 0 ]; then
+          echo "::error::Found $CRITICAL critical vulnerabilities"
+          exit 1
+        fi
+        
+        if [ "$FAIL_ON" = "high" ] && [ "$((CRITICAL + HIGH))" -gt 0 ]; then
+          echo "::error::Found critical/high vulnerabilities"
+          exit 1
+        fi
+        
+        if [ "$FAIL_ON" = "vulnerabilities" ] && [ "$VULNS" -gt 0 ]; then
+          echo "::error::Found $VULNS vulnerabilities"
+          exit 1
+        fi
+        
+        echo "✅ Threshold check passed"

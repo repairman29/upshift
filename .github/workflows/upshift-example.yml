@@ -1,0 +1,26 @@
+# Example: Upshift Dependency Scanner
+# Copy this to your repo's .github/workflows/upshift.yml
+
+name: Dependency Scan
+
+on:
+  pull_request:
+    branches: [main, master]
+  schedule:
+    # Run weekly on Monday at 9am UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Scan Dependencies
+        uses: repairman29/upshift@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          mode: scan
+          fail-on: critical
+          comment: true

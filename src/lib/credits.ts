@@ -10,11 +10,11 @@ type CreditState = {
 
 const DEFAULT_CREDITS = 10;
 
-function showOutOfCreditsMessage(): void {
+function showOutOfCreditsMessage(needed: number = 1): void {
   console.log("");
-  console.log(chalk.yellow("⚠ Out of AI credits"));
+  console.log(chalk.yellow(`⚠ Not enough credits (need ${needed})`));
   console.log("");
-  console.log("  The --ai flag requires credits. Get more:");
+  console.log("  AI features require credits. Get more:");
   console.log("");
   console.log(chalk.cyan("  upshift buy-credits --pack small") + "   → 100 credits for $5");
   console.log(chalk.cyan("  upshift buy-credits --pack medium") + "  → 300 credits for $15");
@@ -22,33 +22,33 @@ function showOutOfCreditsMessage(): void {
   console.log("");
   console.log(chalk.cyan("  upshift subscribe --tier pro") + "       → $9/mo (100 credits included)");
   console.log("");
-  console.log(chalk.dim("  Tip: upshift explain <pkg> without --ai is always free."));
+  console.log(chalk.dim("  Credit costs: explain --ai = 1, fix = 3"));
   console.log("");
 }
 
-export async function consumeCredit(action: "explain"): Promise<void> {
+export async function consumeCredit(action: string, count: number = 1): Promise<void> {
   const endpoint = process.env.UPSHIFT_CREDITS_ENDPOINT;
   const token = process.env.UPSHIFT_API_TOKEN;
 
   if (endpoint && token) {
-    const ok = await consumeRemote(endpoint, token, action);
+    const ok = await consumeRemote(endpoint, token, action, count);
     if (ok) return;
   }
 
   const state = loadCredits();
-  if (state.balance <= 0) {
-    showOutOfCreditsMessage();
+  if (state.balance < count) {
+    showOutOfCreditsMessage(count);
     process.exit(2);
   }
 
   const next = {
-    balance: state.balance - 1,
+    balance: state.balance - count,
     updatedAt: new Date().toISOString(),
   };
   saveCredits(next);
 
   // Warn when credits are running low
-  if (next.balance > 0 && next.balance <= 3) {
+  if (next.balance > 0 && next.balance <= 5) {
     console.log("");
     console.log(chalk.yellow(`⚠ ${next.balance} credit${next.balance === 1 ? "" : "s"} remaining`));
     console.log(chalk.dim("  Run: upshift buy-credits --pack small"));
@@ -119,7 +119,8 @@ function getEnvCredits(): number | null {
 async function consumeRemote(
   endpoint: string,
   token: string,
-  action: string
+  action: string,
+  count: number = 1
 ): Promise<boolean> {
   try {
     const response = await fetch(`${endpoint}/credits/consume`, {
@@ -128,19 +129,19 @@ async function consumeRemote(
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ action }),
+      body: JSON.stringify({ action, count }),
     });
 
     if (!response.ok) {
       if (response.status === 402 || response.status === 429) {
-        showOutOfCreditsMessage();
+        showOutOfCreditsMessage(count);
         process.exit(2);
       }
       return false;
     }
     const data = (await response.json()) as { balance?: number };
-    if (typeof data.balance === "number" && data.balance <= 0) {
-      showOutOfCreditsMessage();
+    if (typeof data.balance === "number" && data.balance < 0) {
+      showOutOfCreditsMessage(count);
       process.exit(2);
     }
     return true;
