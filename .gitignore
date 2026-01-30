@@ -63,3 +63,7 @@ out/
 CREDENTIALS_NOTE.md
 EBAY_*.md
 reports/
+
+# Private strategy and business docs
+private_strategy/
+marketplace-platform/scripts/
