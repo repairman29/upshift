@@ -8,6 +8,8 @@ import { upgradeCommand } from "./commands/upgrade.js";
 import { rollbackCommand } from "./commands/rollback.js";
 import { auditCommand } from "./commands/audit.js";
 import { interactiveCommand } from "./commands/interactive.js";
+import { workspacesCommand } from "./commands/workspaces.js";
+import { notifyCommand } from "./commands/notify.js";
 import { initCommand } from "./commands/init.js";
 import { creditsCommand } from "./commands/credits.js";
 import { buyCreditsCommand } from "./commands/buy-credits.js";
@@ -32,8 +34,12 @@ program.addCommand(upgradeCommand());
 program.addCommand(rollbackCommand());
 program.addCommand(auditCommand());
 
-// Interactive
+// Interactive & Monorepo
 program.addCommand(interactiveCommand());
+program.addCommand(workspacesCommand());
+
+// Notifications
+program.addCommand(notifyCommand());
 
 // Setup
 program.addCommand(initCommand());

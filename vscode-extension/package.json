@@ -4,7 +4,6 @@
   "description": "AI-powered dependency upgrades with inline warnings and one-click fixes",
   "version": "0.1.0",
   "publisher": "upshiftai",
-  "icon": "images/icon.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/repairman29/upshift"

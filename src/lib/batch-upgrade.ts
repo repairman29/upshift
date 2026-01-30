@@ -1,9 +1,16 @@
 import chalk from "chalk";
 import ora from "ora";
-import { existsSync, mkdirSync, readFileSync, copyFileSync, readdirSync } from "fs";
+import { existsSync, mkdirSync, readFileSync, copyFileSync } from "fs";
 import path from "path";
 import semver from "semver";
-import { runCommand } from "./exec.js";
+import {
+  detectPackageManager,
+  getOutdatedPackages,
+  installPackage,
+  runTests,
+  getLockfileName,
+  type PackageManager,
+} from "./package-manager.js";
 
 export type BatchUpgradeOptions = {
   cwd: string;
@@ -27,13 +34,16 @@ export async function runBatchUpgrade(options: BatchUpgradeOptions): Promise<voi
 
   try {
     const packageManager = detectPackageManager(options.cwd);
-    if (packageManager !== "npm") {
-      throw new Error("Only npm is supported for batch upgrade currently.");
-    }
+    spinner.text = `Using ${packageManager}...`;
 
     // Get outdated packages
-    const outdated = await getOutdatedDependencies(options.cwd);
-    
+    const outdatedRaw = await getOutdatedPackages(options.cwd, packageManager);
+    const outdated: UpgradeCandidate[] = outdatedRaw.map(pkg => ({
+      ...pkg,
+      upgradeType: getUpgradeType(pkg.current, pkg.latest),
+      target: pkg.latest,
+    }));
+
     if (outdated.length === 0) {
       spinner.succeed("All dependencies are up to date!");
       return;
@@ -49,15 +59,15 @@ export async function runBatchUpgrade(options: BatchUpgradeOptions): Promise<voi
       return;
     }
 
-    spinner.succeed(`Found ${candidates.length} ${options.mode} upgrades`);
+    spinner.succeed(`Found ${candidates.length} ${options.mode} upgrades (${packageManager})`);
 
     // Display candidates
     process.stdout.write(chalk.bold("\nPackages to upgrade:\n\n"));
-    
+
     for (const pkg of candidates) {
       const typeColor = pkg.upgradeType === "major" ? chalk.red :
                         pkg.upgradeType === "minor" ? chalk.yellow : chalk.green;
-      
+
       process.stdout.write(
         `  ${chalk.cyan(pkg.name.padEnd(30))} ${pkg.current.padEnd(12)} → ${typeColor(pkg.target.padEnd(12))} ${chalk.gray(`(${pkg.upgradeType})`)}\n`
       );
@@ -80,7 +90,7 @@ export async function runBatchUpgrade(options: BatchUpgradeOptions): Promise<voi
     }
 
     // Create backup
-    const backupDir = createBackup(options.cwd);
+    const backupDir = createBackup(options.cwd, packageManager);
     process.stdout.write(chalk.gray(`\nBackup created: ${backupDir}\n\n`));
 
     // Upgrade packages one by one
@@ -89,13 +99,9 @@ export async function runBatchUpgrade(options: BatchUpgradeOptions): Promise<voi
 
     for (const pkg of candidates) {
       const pkgSpinner = ora(`Upgrading ${pkg.name}...`).start();
-      
+
       try {
-        await runCommand(
-          "npm",
-          ["install", `${pkg.name}@${pkg.target}`],
-          options.cwd
-        );
+        await installPackage(options.cwd, pkg.name, pkg.target, packageManager);
         pkgSpinner.succeed(`${pkg.name} ${pkg.current} → ${pkg.target}`);
         succeeded++;
       } catch (error) {
@@ -110,7 +116,7 @@ export async function runBatchUpgrade(options: BatchUpgradeOptions): Promise<voi
       if (testScript) {
         const testSpinner = ora("Running tests...").start();
         try {
-          await runCommand("npm", ["test"], options.cwd);
+          await runTests(options.cwd, packageManager);
           testSpinner.succeed("Tests passed");
         } catch {
           testSpinner.fail("Tests failed - consider rolling back with `upshift rollback`");
@@ -132,56 +138,14 @@ export async function runBatchUpgrade(options: BatchUpgradeOptions): Promise<voi
   }
 }
 
-function detectPackageManager(cwd: string): "npm" | "yarn" | "pnpm" {
-  const pnpmLock = path.join(cwd, "pnpm-lock.yaml");
-  const yarnLock = path.join(cwd, "yarn.lock");
-  const npmLock = path.join(cwd, "package-lock.json");
-  const pkgJson = path.join(cwd, "package.json");
-
-  if (existsSync(pnpmLock)) return "pnpm";
-  if (existsSync(yarnLock)) return "yarn";
-  if (existsSync(npmLock)) return "npm";
-  if (existsSync(pkgJson)) return "npm";
-
-  throw new Error("No package.json or lockfile found.");
-}
-
-async function getOutdatedDependencies(cwd: string): Promise<UpgradeCandidate[]> {
-  const result = await runCommand("npm", ["outdated", "--json"], cwd, [0, 1]);
-  const stdout = result.stdout.trim();
-  if (!stdout) return [];
-
-  const parsed = JSON.parse(stdout) as Record<
-    string,
-    { current: string; wanted: string; latest: string }
-  >;
-
-  return Object.entries(parsed).map(([name, info]) => {
-    const upgradeType = getUpgradeType(info.current, info.latest);
-    return {
-      name,
-      current: info.current,
-      wanted: info.wanted,
-      latest: info.latest,
-      upgradeType,
-      target: info.latest,
-    };
-  });
-}
-
 function getUpgradeType(current: string, target: string): "major" | "minor" | "patch" {
   const currentClean = semver.coerce(current)?.version;
   const targetClean = semver.coerce(target)?.version;
-  
+
   if (!currentClean || !targetClean) return "major";
 
-  const currentMajor = semver.major(currentClean);
-  const currentMinor = semver.minor(currentClean);
-  const targetMajor = semver.major(targetClean);
-  const targetMinor = semver.minor(targetClean);
-
-  if (targetMajor > currentMajor) return "major";
-  if (targetMinor > currentMinor) return "minor";
+  if (semver.major(targetClean) > semver.major(currentClean)) return "major";
+  if (semver.minor(targetClean) > semver.minor(currentClean)) return "minor";
   return "patch";
 }
 
@@ -192,18 +156,15 @@ function filterCandidates(
   if (mode === "all") {
     return candidates;
   }
-  
+
   if (mode === "minor") {
-    // Include minor and patch updates (exclude major)
     return candidates.filter(c => c.upgradeType !== "major").map(c => ({
       ...c,
-      // For minor mode, target the "wanted" version (respects semver range)
       target: c.wanted,
     }));
   }
-  
+
   if (mode === "patch") {
-    // Only patch updates
     return candidates.filter(c => c.upgradeType === "patch").map(c => ({
       ...c,
       target: c.wanted,
@@ -213,14 +174,15 @@ function filterCandidates(
   return candidates;
 }
 
-function createBackup(cwd: string): string {
+function createBackup(cwd: string, pm: PackageManager): string {
   const backupRoot = path.join(cwd, ".upshift", "backups");
   mkdirSync(backupRoot, { recursive: true });
   const stamp = new Date().toISOString().replace(/[:.]/g, "-");
   const backupDir = path.join(backupRoot, stamp);
   mkdirSync(backupDir, { recursive: true });
 
-  const files = ["package.json", "package-lock.json", "yarn.lock", "pnpm-lock.yaml"];
+  // Always backup package.json and the relevant lockfile
+  const files = ["package.json", getLockfileName(pm)];
   for (const file of files) {
     const src = path.join(cwd, file);
     if (existsSync(src)) {
