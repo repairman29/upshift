@@ -158,9 +158,9 @@
   </footer>
 
   <script>
-    // API endpoint - update when billing server is deployed
-    // For now, falls back to local storage if API unavailable
-    const API_BASE = 'https://api.upshiftai.dev';
+    // API endpoint for waitlist and billing
+    // Using Railway domain until custom domain SSL is provisioned
+    const API_BASE = 'https://upshift-api-production.up.railway.app';
 
     // Local storage for emails when API unavailable
     function getLocalEmails() {
