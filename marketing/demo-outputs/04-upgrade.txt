@@ -1,0 +1,14 @@
+$ upshift upgrade express
+
+✔ Upgrading express...
+
+Backup created: .upshift/backups/2024-01-30T14-32-00-000Z
+
+✔ express 4.18.2 → 5.0.0
+
+Running tests...
+✔ Tests passed
+
+✔ Upgrade complete
+
+Tip: Run `upshift rollback` to undo if needed.

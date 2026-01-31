@@ -1,0 +1,47 @@
+$ upshift explain express --ai --from 4.18.2 --to 5.0.0
+
+✔ AI analysis ready
+
+express
+Current: 4.18.2
+Target:  5.0.0
+Potential breaking changes: major version increase (1).
+
+🤖 AI Analysis:
+
+# Upgrading Express from 4.18.2 to 5.0.0
+
+## Breaking Changes
+
+1. **Response methods changed**
+   - `res.send()` no longer accepts objects directly
+   - Use `res.json()` for JSON responses instead
+
+2. **Body parser removed**
+   - Built-in `bodyParser` middleware is removed
+   - Use `express.json()` and `express.urlencoded()` instead
+
+3. **Error handling signature**
+   - Error handlers now require exactly 4 parameters
+   - Must be `(err, req, res, next)` - all four required
+
+4. **Path route matching**
+   - Stricter path matching in routes
+   - Trailing slashes are now significant
+
+## Code to Search For
+
+```
+res.send({        →  res.json({
+bodyParser.json() →  express.json()
+app.use(bodyParser →  app.use(express.json
+```
+
+## Migration Steps
+
+1. Replace all `res.send({...})` with `res.json({...})`
+2. Update body parser imports to use express built-ins
+3. Verify all error handlers have 4 parameters
+4. Test routes with/without trailing slashes
+
+Tip: run `upshift fix express` to auto-generate code changes.
