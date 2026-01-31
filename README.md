@@ -1,8 +1,14 @@
 # Upshift
 
-Upshift is a CLI that upgrades dependencies safely. It scans for outdated and vulnerable packages, explains breaking changes with risk assessment, applies upgrades, runs tests, and can roll back if something fails.
+[![npm version](https://img.shields.io/npm/v/upshift-cli.svg)](https://www.npmjs.com/package/upshift-cli)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![VS Code Extension](https://img.shields.io/visual-studio-marketplace/v/jeffadkins10463.upshift-vscode)](https://marketplace.visualstudio.com/items?itemName=jeffadkins10463.upshift-vscode)
 
-**Wedge:** Dependabot tells you *what* to upgrade; UpShift tells you *why*, *what breaks*, and *fixes the code*.
+**AI-powered dependency upgrades.** Stop reading changelogs—let AI tell you what breaks.
+
+Upshift scans for outdated and vulnerable packages, explains breaking changes with AI, generates code fixes, and upgrades safely with automatic rollback.
+
+> **Dependabot tells you *what* to upgrade. Upshift tells you *why*, *what breaks*, and *fixes the code*.**
 
 ## Status
 
@@ -31,30 +37,49 @@ node dist/cli.js --help
 
 ## Usage
 
-```
-upshift scan
-upshift scan --json
+### Scan & Explain
+```bash
+upshift scan                          # See all outdated packages
+upshift scan --json                   # Machine-readable output
 
-upshift explain react --from 18.2.0 --to 19.0.0
-upshift explain react --json
+upshift explain react --ai            # AI explains breaking changes
+upshift explain react --from 18 --to 19
 upshift explain react --risk          # low/medium/high risk score
-upshift explain react --changelog     # fetch changelog from GitHub
+upshift explain react --changelog     # Fetch changelog from GitHub
+```
 
-upshift upgrade react
+### Upgrade & Fix
+```bash
+upshift upgrade react                 # Upgrade with tests + auto-rollback
 upshift upgrade react --to 19.0.0
-upshift upgrade react --dry-run
+upshift upgrade --all                 # Batch upgrade all packages
+upshift upgrade --all-minor           # Only minor/patch updates
 
-upshift credits
-upshift credits --json
-upshift credits --add 5
-upshift credits --reset 10
+upshift fix react                     # AI generates code fixes
+upshift fix react --dry-run           # Preview changes without applying
 
-upshift buy-credits --pack small
-upshift subscribe --tier pro
-upshift subscribe --tier team
+upshift rollback                      # Restore previous state
+upshift rollback --list               # See available backups
+```
 
-upshift status
-upshift status --json
+### Interactive & Monorepo
+```bash
+upshift interactive                   # TUI for selecting packages
+upshift workspaces                    # Scan monorepo workspaces
+```
+
+### Notifications
+```bash
+upshift notify --slack https://...    # Send report to Slack
+upshift notify --discord https://...  # Send report to Discord
+```
+
+### Credits & Billing
+```bash
+upshift credits                       # Check credit balance
+upshift buy-credits --pack small      # Purchase credits
+upshift subscribe --tier pro          # Subscribe to Pro
+upshift status                        # Check subscription status
 ```
 
 ## What it does today
@@ -103,12 +128,21 @@ jobs:
 
 See `.github/workflows/example-scan.yml` for a full example.
 
-## What is coming next
+## What's available now
 
-- AI migration steps for breaking changes (code fixes)
-- VS Code extension
+- ✅ AI-powered explanations (`upshift explain --ai`)
+- ✅ AI code fixes (`upshift fix`)
+- ✅ VS Code extension ([install](https://marketplace.visualstudio.com/items?itemName=jeffadkins10463.upshift-vscode))
+- ✅ GitHub Action for CI/CD
+- ✅ Interactive mode (`upshift interactive`)
+- ✅ Monorepo support (`upshift workspaces`)
+- ✅ Slack/Discord notifications (`upshift notify`)
+
+## Coming next
+
 - GitHub App for repo-level scanning
 - Multi-repo dashboard (Radar)
+- Python support (pip/poetry)
 
 See [ROADMAP.md](ROADMAP.md) for the full plan.
 
