@@ -161,7 +161,7 @@
     },
     {
       "name": "daily_brief",
-      "description": "Get a one-shot daily brief: time, battery, power plan, memory summary, and top processes. Use for 'Good morning' or status check.",
+      "description": "Get a one-shot daily brief: time, weather, battery, power plan, memory summary, and top processes. Use for 'Good morning' or status check.",
       "parameters": {
         "type": "object",
         "properties": {
@@ -169,6 +169,15 @@
             "type": "number",
             "description": "Number of top processes by memory to include (default 3)",
             "default": 3
+          },
+          "includeWeather": {
+            "type": "boolean",
+            "description": "Include weather from wttr.in (default true)",
+            "default": true
+          },
+          "location": {
+            "type": "string",
+            "description": "Location for weather (city name or empty for auto-detect)"
           }
         }
       }

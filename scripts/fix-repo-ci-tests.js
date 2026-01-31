@@ -64,7 +64,13 @@ function putFile(repo, path, content, message) {
     `-f message="${message}"`,
     `-f content="${encoded}"`
   ].join(' ');
-  execSync(cmd, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+  try {
+    execSync(cmd, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+    return { ok: true };
+  } catch (error) {
+    const stderr = error && error.stderr ? error.stderr.toString() : '';
+    return { ok: false, error: stderr || error.message };
+  }
 }
 
 function detectRepoLanguage(repoInfo, rootEntries) {
@@ -82,15 +88,16 @@ function detectRepoLanguage(repoInfo, rootEntries) {
   return 'unknown';
 }
 
-function buildCiWorkflow(kind) {
+function buildCiWorkflow(kind, defaultBranch) {
+  const branch = defaultBranch || 'main';
   if (kind === 'node') {
     return [
       'name: CI',
       'on:',
       '  push:',
-      '    branches: [ "main" ]',
+      `    branches: [ "${branch}" ]`,
       '  pull_request:',
-      '    branches: [ "main" ]',
+      `    branches: [ "${branch}" ]`,
       'jobs:',
       '  build:',
       '    runs-on: ubuntu-latest',
@@ -110,9 +117,9 @@ function buildCiWorkflow(kind) {
       'name: CI',
       'on:',
       '  push:',
-      '    branches: [ "main" ]',
+      `    branches: [ "${branch}" ]`,
       '  pull_request:',
-      '    branches: [ "main" ]',
+      `    branches: [ "${branch}" ]`,
       'jobs:',
       '  build:',
       '    runs-on: ubuntu-latest',
@@ -135,9 +142,9 @@ function buildCiWorkflow(kind) {
       'name: CI',
       'on:',
       '  push:',
-      '    branches: [ "main" ]',
+      `    branches: [ "${branch}" ]`,
       '  pull_request:',
-      '    branches: [ "main" ]',
+      `    branches: [ "${branch}" ]`,
       'jobs:',
       '  build:',
       '    runs-on: ubuntu-latest',
@@ -153,9 +160,9 @@ function buildCiWorkflow(kind) {
       'name: CI',
       'on:',
       '  push:',
-      '    branches: [ "main" ]',
+      `    branches: [ "${branch}" ]`,
       '  pull_request:',
-      '    branches: [ "main" ]',
+      `    branches: [ "${branch}" ]`,
       'jobs:',
       '  build:',
       '    runs-on: ubuntu-latest',
@@ -177,29 +184,38 @@ function ensureTestsFolder(repo, rootEntries) {
     rootEntries.includes('test') ||
     rootEntries.includes('__tests__');
   if (hasTests) return false;
-  putFile(repo, 'tests/.gitkeep', '', 'Add tests folder');
-  return true;
+  const result = putFile(repo, 'tests/.gitkeep', '', 'Add tests folder');
+  return result.ok;
 }
 
 function ensureCiWorkflow(repo, repoInfo, rootEntries) {
   const workflows = listWorkflowFiles(repo);
   if (workflows.length > 0) return false;
   const kind = detectRepoLanguage(repoInfo, rootEntries);
-  const workflow = buildCiWorkflow(kind);
+  const workflow = buildCiWorkflow(kind, repoInfo.default_branch);
   if (!workflow) return false;
-  putFile(repo, '.github/workflows/ci.yml', workflow, 'Add CI workflow');
-  return true;
+  const result = putFile(repo, '.github/workflows/ci.yml', workflow, 'Add CI workflow');
+  return result.ok;
 }
 
 function processRepo(repoInfo) {
   const repo = repoInfo.name;
   const rootEntries = listRootEntries(repo);
   const actions = [];
+  const errors = [];
 
-  if (ensureTestsFolder(repo, rootEntries)) actions.push('tests');
-  if (ensureCiWorkflow(repo, repoInfo, rootEntries)) actions.push('ci');
+  try {
+    if (ensureTestsFolder(repo, rootEntries)) actions.push('tests');
+  } catch (error) {
+    errors.push(`tests: ${error.message || String(error)}`);
+  }
+  try {
+    if (ensureCiWorkflow(repo, repoInfo, rootEntries)) actions.push('ci');
+  } catch (error) {
+    errors.push(`ci: ${error.message || String(error)}`);
+  }
 
-  return actions;
+  return { actions, errors };
 }
 
 function main() {
@@ -213,11 +229,14 @@ function main() {
   let updated = 0;
 
   for (const repo of repos) {
-    const actions = processRepo(repo);
+    const result = processRepo(repo);
+    const actions = result.actions;
     processed += 1;
     if (actions.length > 0) {
       updated += 1;
       console.log(`${repo.name}: added ${actions.join(' + ')}`);
+    } else if (result.errors.length > 0) {
+      console.log(`${repo.name}: error (${result.errors.join('; ')})`);
     } else {
       console.log(`${repo.name}: ok`);
     }

@@ -829,7 +829,7 @@ const tools = {
     }
   },
 
-  daily_brief: async ({ topProcesses = 3 }) => {
+  daily_brief: async ({ topProcesses = 3, includeWeather = true, location }) => {
     try {
       const sys = await tools.get_system_info({ info: 'all' });
       if (!sys.success) {
@@ -853,12 +853,41 @@ const tools = {
         powerStr = ` • Power: ${si.powerPlan}`;
       }
       const procList = (procs.processes || []).slice(0, topProcesses).map(p => `${p.name || p.processName} (${Math.round((p.workingSetMB || p.memory || 0))} MB)`).join(', ') || '—';
-      const summary = [
+      
+      // Fetch weather from wttr.in (free, no API key)
+      let weatherStr = '';
+      let weatherData = null;
+      if (includeWeather) {
+        try {
+          const https = require('https');
+          const loc = location || '';
+          const weatherUrl = `https://wttr.in/${encodeURIComponent(loc)}?format=%c+%t+%C`;
+          weatherData = await new Promise((resolve, reject) => {
+            const req = https.get(weatherUrl, { headers: { 'User-Agent': 'JARVIS/1.0' }, timeout: 5000 }, (res) => {
+              let data = '';
+              res.on('data', chunk => data += chunk);
+              res.on('end', () => resolve(data.trim()));
+            });
+            req.on('error', reject);
+            req.on('timeout', () => { req.destroy(); reject(new Error('timeout')); });
+          });
+          if (weatherData && !weatherData.includes('Unknown') && !weatherData.includes('Sorry')) {
+            weatherStr = `Weather: ${weatherData}`;
+          }
+        } catch {
+          // Weather fetch failed silently
+        }
+      }
+      
+      const summaryLines = [
         `**${dateStr}** ${timeStr}`,
         `Battery: ${batteryStr}${powerStr}`,
         `Memory: ${memoryStr}`,
         `Top ${topProcesses} by RAM: ${procList}`
-      ].join('\n');
+      ];
+      if (weatherStr) summaryLines.splice(1, 0, weatherStr);
+      const summary = summaryLines.join('\n');
+      
       return {
         success: true,
         summary,
@@ -867,7 +896,8 @@ const tools = {
         battery: si.battery,
         memory: si.memory,
         powerPlan: si.powerPlan,
-        topProcesses: procs.processes || []
+        topProcesses: procs.processes || [],
+        weather: weatherData || null
       };
     } catch (error) {
       return {
@@ -1178,35 +1208,21 @@ return frontApp & "|" & winTitle
     // Get the color of the pixel under the cursor
     if (isWindows()) {
       try {
-        const ps = `
-Add-Type -AssemblyName System.Windows.Forms
-Add-Type -AssemblyName System.Drawing
-Add-Type @"
-using System;
-using System.Runtime.InteropServices;
-using System.Drawing;
-public class PixelColor {
-  [DllImport("user32.dll")] public static extern IntPtr GetDC(IntPtr hwnd);
-  [DllImport("user32.dll")] public static extern int ReleaseDC(IntPtr hwnd, IntPtr hdc);
-  [DllImport("gdi32.dll")] public static extern uint GetPixel(IntPtr hdc, int x, int y);
-  public static Color GetColorAt(int x, int y) {
-    IntPtr hdc = GetDC(IntPtr.Zero);
-    uint pixel = GetPixel(hdc, x, y);
-    ReleaseDC(IntPtr.Zero, hdc);
-    return Color.FromArgb((int)(pixel & 0x000000FF), (int)(pixel & 0x0000FF00) >> 8, (int)(pixel & 0x00FF0000) >> 16);
-  }
-}
-"@
-$pos = [System.Windows.Forms.Cursor]::Position
-$color = [PixelColor]::GetColorAt($pos.X, $pos.Y)
-$hex = '#{0:X2}{1:X2}{2:X2}' -f $color.R, $color.G, $color.B
-@{ x = $pos.X; y = $pos.Y; r = $color.R; g = $color.G; b = $color.B; hex = $hex } | ConvertTo-Json -Compress
-`;
-        const out = execPowerShell(ps);
+        // Use script file for reliable compilation
+        const scriptPath = path.join(__dirname, '..', '..', 'scripts', 'test-color-picker.ps1');
+        const out = execSync(`powershell -ExecutionPolicy Bypass -File "${scriptPath}"`, {
+          encoding: 'utf8',
+          timeout: 10000,
+          windowsHide: true
+        }).trim();
         const info = JSON.parse(out);
         
         if (copyToClipboard) {
-          execPowerShell(`Set-Clipboard -Value '${info.hex}'`);
+          execSync(`powershell -NoProfile -Command "Set-Clipboard -Value '${info.hex}'"`, {
+            encoding: 'utf8',
+            timeout: 5000,
+            windowsHide: true
+          });
         }
         
         return {
