@@ -78,6 +78,35 @@ You can also run the same three from the repo: `powershell -ExecutionPolicy Bypa
 
 ---
 
+## Message hangs ("is typing..." forever)
+
+If the bot shows "is typing..." but never sends a reply, **see what the gateway is doing**:
+
+1. **Run the gateway in a terminal** (so you see logs):
+   ```powershell
+   cd path\to\your\JARVIS-repo
+   npx clawdbot gateway run
+   ```
+2. **Send one short DM** to the bot (e.g. "Hi").
+3. **Watch the terminal** (or open the latest file in `%USERPROFILE%\.clawdbot\logs\`):
+   - **No new lines** → Discord isn’t reaching the gateway (token, intents, or pairing). Run `npx clawdbot doctor --fix`, turn on Message Content Intent in the Discord Developer Portal, restart gateway.
+   - **"No session found" / session errors** → Add your Discord user ID as a session alias (see "Add your Discord user ID as session alias" below), then restart.
+   - **"Context overflow"** → Prompt too large. In `%USERPROFILE%\.clawdbot\clawdbot.json`: set `agents.defaults.bootstrapMaxChars` to **3000**; remove any small-context fallback (e.g. Ollama) from `agents.defaults.model.fallbacks`; ensure primary and fallbacks use `contextWindow: 131072`. Restart.
+   - **"429" / rate limit** → Primary or fallback hit rate limit. Switch primary to another provider (e.g. OpenRouter Trinity) or wait for reset; see [FREE_TIER_FALLBACKS.md](FREE_TIER_FALLBACKS.md).
+   - **OpenRouter / API error** → Check `OPENROUTER_API_KEY` in `%USERPROFILE%\.clawdbot\.env`; try a different free model on OpenRouter if the current one is down or restricted.
+   - **Activity but no error** → Reply may be generated but not delivered (e.g. wrong session). Add Discord user ID as session alias and ensure `jarvis/AGENTS.md` says to reply with normal text, not `sessions_send`.
+
+**Quick CLI test (same machine):**  
+If **CLI works** but Discord hangs, the issue is Discord/session/alias. If **CLI also hangs**, the issue is model/context/API:
+
+```powershell
+npx clawdbot agent --session-id "ally" --message "Hi" --local
+```
+
+If CLI hangs: try setting **only** one provider (e.g. primary = `openrouter/arcee-ai/trinity-mini:free`, no fallbacks) and `bootstrapMaxChars: 2000` in `clawdbot.json`, then restart and test again.
+
+---
+
 ## Troubleshooting
 
 | Issue | Fix |

@@ -154,7 +154,7 @@ Precise. Reliable. Always on. No half measures.
 | **Always on** | Ready when you boot, no fumbling | Task Scheduler: "JARVIS ROG Ed" at logon ([scripts/add-jarvis-to-startup.ps1](scripts/add-jarvis-to-startup.ps1)) |
 | **Deadly toolkit** | One assistant, many skills — launch, calculate, search, screenshot, clipboard, marketplace | `jarvis/skills` + `skills/` in config; [ClawHub](https://clawhub.ai) + [Community hub](https://howtouseclawdbot.com/community.html) for more |
 | **Reach** | Same JARVIS from terminal, web, phone | Web UI (18789), CLI; **next:** Discord/Telegram ([scripts/DISCORD_ROG_ED.md](scripts/DISCORD_ROG_ED.md)) |
-| **Memory** | Remembers you and context across sessions | If your stack supports it, enable persistent memory; polish `jarvis/USER.md` (name, timezone, projects) |
+| **Memory** | Remembers you and context across sessions | If your stack supports it, enable persistent memory; polish `jarvis/USER.md` (name, timezone, projects). For MCP vs Clawdbot memory and “lightning fast” setup, see [scripts/MEMORY_AND_SPEED.md](scripts/MEMORY_AND_SPEED.md). |
 | **No mercy on errors** | Clear feedback, retries, no silent failures | Good model + fallbacks; check gateway logs (`.clawdbot/logs`) and [ROG_ALLY_SETUP.md](ROG_ALLY_SETUP.md) troubleshooting |
 
 **Keep going:** Discord (last step), then USER.md polish, memory if available, and voice on the Ally when you want hands-free. Every piece you add makes JARVIS one step closer to that "John Wick" level — precise, relentless, and always ready.
@@ -173,7 +173,7 @@ Concrete ways to level up this version:
 | **4. Discord (or Telegram)** (last) | Add `DISCORD_BOT_TOKEN` to `.env`, invite bot, pair. | Chat from phone or any device; see [scripts/DISCORD_ROG_ED.md](scripts/DISCORD_ROG_ED.md). |
 | **5. Web dashboard** | Use http://127.0.0.1:18789/ when the gateway is running. | Rich UI, history, no terminal needed. |
 | **6. Model & reliability** | Optional: add a fallback model in config, or a faster model for quick replies. | Fewer "no reply" or timeouts; better for handheld. |
-| **7. Memory** | If your stack supports it, enable persistent memory so JARVIS remembers context across sessions. | More coherent, personalized conversations. |
+| **7. Memory** | Enable OpenClaw memory + compaction for faster, context-aware replies: merge [scripts/clawdbot-memory-and-compaction.example.json](scripts/clawdbot-memory-and-compaction.example.json) into `%USERPROFILE%\.clawdbot\clawdbot.json` and set an embedding key (e.g. `OPENAI_API_KEY`). See [scripts/MEMORY_AND_SPEED.md](scripts/MEMORY_AND_SPEED.md). | More coherent, personalized conversations; smaller context → faster delivery. |
 | **8. USER.md** | Edit `jarvis/USER.md` with your name, timezone, projects, preferences. | JARVIS can reference you and your work. |
 | **9. HEARTBEAT (optional)** | Add a short `jarvis/HEARTBEAT.md` checklist for periodic runs. | Proactive checks (e.g. "anything needing attention today?"). |
 | **10. Voice (experimental)** | Try the voice-control skill on the Ally; tune wake word and latency. | Hands-free "Hey JARVIS" on the handheld. |
