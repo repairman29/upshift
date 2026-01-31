@@ -154,15 +154,10 @@ The landing page lives in `web/`. Deploy at **upshiftai.dev**:
 
 After importing, set **Root Directory** to `web`, then add domains `upshiftai.dev` and `www.upshiftai.dev` in Project → Settings → Domains. See `web/README.md`.
 
-## Docs
+## Documentation
 
-- Roadmap: `ROADMAP.md`
-- API endpoints: `docs/endpoint.md`
-- Pricing: `docs/pricing.md`
-- Stripe setup: `docs/stripe-setup.md`
-- Launch pack: `docs/launch.md`
-- Landing page copy: `docs/landing-page.md`
-- One-pager: `docs/one-pager.md`
-- Video script: `docs/video-script.md`
-- Blog post: `docs/blog-post.md`
+- [Roadmap](ROADMAP.md) — planned features
+- [Contributing](CONTRIBUTING.md) — how to contribute
+- [API Endpoints](docs/endpoint.md) — billing API reference
+- [Blog Post](docs/blog-post.md) — introduction article
 
