@@ -4,7 +4,9 @@
 
 **→ Make JARVIS epic on Windows (Raycast-style, marketplace, quick access):** [JARVIS_WINDOWS_EPIC.md](./JARVIS_WINDOWS_EPIC.md)  
 **→ Cool badassery ideas (one-liners, quick notes, timers, ROG tweaks):** [JARVIS_BADASSERY.md](./JARVIS_BADASSERY.md)  
-**→ Roadmap (phases + status):** [JARVIS_ROADMAP.md](./JARVIS_ROADMAP.md)
+**→ Roadmap (phases + status):** [JARVIS_ROADMAP.md](./JARVIS_ROADMAP.md)  
+**→ Office, email, calendar (Outlook, Gmail, M365, Google):** [docs/JARVIS_OFFICE_EMAIL_CALENDAR.md](./docs/JARVIS_OFFICE_EMAIL_CALENDAR.md) · **Auth now (live.com / gmail.com):** [scripts/AUTH_OFFICE_EMAIL.md](./scripts/AUTH_OFFICE_EMAIL.md)  
+**→ Reference for later (paths, auth, skills, docs):** [docs/JARVIS_REFERENCE.md](./docs/JARVIS_REFERENCE.md)
 
 ---
 
@@ -97,6 +99,12 @@ npx clawdbot agent --session-id "ally" --message "Open github.com" --local
 Use the same `--session-id "ally"` to keep context in one conversation.
 
 **Run the big one (Ollama, local):** Set GPU to 6 GB in Armoury Crate, then `ollama pull llama3.1` and `ollama run llama3.1`. For JARVIS, set primary model to `ollama/llama3.1` in `clawdbot.json` — see [ROG_ALLY_SETUP.md — Run the big one](./ROG_ALLY_SETUP.md#run-the-big-one-llama-31-8b).
+
+**Model split (chat vs background):** Use **Groq** for fast interactive chat (Discord, web, CLI) and **Ollama** for background agents and tasks (more economical, local). In `clawdbot.json`: set `agents.defaults.model.primary` to `groq/llama-3.1-8b-instant` (or another Groq model) and `agents.defaults.subagents.model` to `ollama/llama3.1`. Chat uses the primary model; subagents (e.g. `sessions_spawn`, background research) use the subagent model. Requires `GROQ_API_KEY` in `.env` and Ollama running for subagent tasks.
+
+**Smooth replies (no "Context overflow"):** If you see *"Context overflow: prompt too large for the model"* in CLI or Discord, the gateway may be using a small default context for Groq. Add an explicit **Groq** provider in `clawdbot.json` under `models.providers.groq` with your models and **`contextWindow: 131072`** (128k) so the system prompt fits. Example: see the `groq` block in your current `clawdbot.json`; restart the gateway after editing.
+
+**Quick first, full response later:** JARVIS is instructed (in `jarvis/AGENTS.md`) to answer **immediate needs briefly** (minimal Groq), then offer: *"I can do a fuller pass and have the full response delivered here in a few minutes—just say yes. Or say 'email it to me' and I’ll send it when it’s ready."* If they say yes, a background subagent (Ollama) produces the full response and it’s delivered in the same chat. For **email delivery**, install a Gmail or Outlook skill (e.g. from ClawHub) and give your address; JARVIS can then send the full response by email when the subagent finishes.
 
 ---
 

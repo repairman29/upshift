@@ -61,6 +61,23 @@ After that, you can chat with JARVIS from Discord (and from your phone if you us
 
 ---
 
+## 3-question test (quick / medium / full-response offer)
+
+Try these in order in a DM with the bot to verify: quick answer, one-sentence answer, and the “full response later” offer.
+
+1. **Quick:** *What is 15% of 80?*  
+   Expect: Short numeric answer (e.g. 12).
+
+2. **One sentence:** *In one sentence: what is quantum computing?*  
+   Expect: A single-sentence definition.
+
+3. **Fuller pass offer:** *Summarize how photosynthesis works in 2–3 sentences. If you can do a fuller pass and deliver it here in a few minutes, say so and I'll say yes.*  
+   Expect: A short summary, then an offer like *“I can do a fuller pass and have the full response delivered here in a few minutes—just say yes.”* Reply **yes** to get the full response in a few minutes (Ollama subagent).
+
+You can also run the same three from the repo: `powershell -ExecutionPolicy Bypass -File scripts\test-3-questions.ps1` (gateway must be running; CLI may hit context limits—Discord often works better).
+
+---
+
 ## Troubleshooting
 
 | Issue | Fix |
@@ -69,6 +86,7 @@ After that, you can chat with JARVIS from Discord (and from your phone if you us
 | "No session found" in DMs | Add a session-store alias (see [DISCORD_SETUP.md — No session found](../DISCORD_SETUP.md)). |
 | "Session Send: failed: timeout" | Reply may still appear in Discord; use a faster model or wait. |
 | Stuck on "processing" / never replies | Your **primary model** may be too slow (e.g. local Ollama 8B). Set primary to a fast model like `groq/llama-3.1-8b-instant` in `%USERPROFILE%\.clawdbot\clawdbot.json` under `agents.defaults.model.primary`, then restart the gateway. |
+| "Context overflow" / prompt too large (CLI or Discord) | Add an explicit **Groq** provider in `clawdbot.json` under `models.providers.groq` with `contextWindow: 131072` for your Groq models (see [JARVIS_ROG_ED.md](../JARVIS_ROG_ED.md) or ROG_ALLY_SETUP). Restart the gateway. |
 | Private app / default link error | OAuth2 → Default Authorization Link → **None** → Save; use URL Generator to invite. |
 
 Full details and optional config (guilds, channels): [DISCORD_SETUP.md](../DISCORD_SETUP.md).

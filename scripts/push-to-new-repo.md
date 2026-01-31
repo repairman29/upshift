@@ -30,17 +30,15 @@ Your Windows/ROG Ed. work is **committed** on `main`. Push it to a new repo with
 
 ## Option B: Create repo in browser, then push
 
-1. **Create a new repo on GitHub:**
-   - Go to https://github.com/new
-   - Name: `jarvis-rog-ed` (or any name you like)
-   - Description: `JARVIS ROG Ed. - AI assistant for ASUS ROG Ally (Windows 11)`
+1. **Create the repo on GitHub:**
+   - Go to **https://github.com/new?name=jarvis-rog-ed&description=JARVIS+ROG+Ed.+%E2%80%93+AI+assistant+for+ASUS+ROG+Ally+%28Windows+11%29**
+   - Or: https://github.com/new → Name: `jarvis-rog-ed`, Description: `JARVIS ROG Ed. - AI assistant for ASUS ROG Ally (Windows 11)`
    - Public, **do not** add README, .gitignore, or license (you already have them)
-   - Create repository
+   - Click **Create repository**
 
-2. **Add the new remote and push** (replace `YOUR_USERNAME` with your GitHub username):
+2. **Add the new remote and push** (remote `rog-ed` is already set for repairman29):
    ```powershell
-   cd path\to\JARVIS
-   git remote add rog-ed https://github.com/YOUR_USERNAME/jarvis-rog-ed.git
+   cd c:\Users\jeffa\JARVIS\JARVIS
    git push rog-ed main
    ```
 
@@ -55,6 +53,6 @@ Your Windows/ROG Ed. work is **committed** on `main`. Push it to a new repo with
 
 ## After pushing
 
-- Repo URL will be: **https://github.com/YOUR_USERNAME/jarvis-rog-ed**
+- Repo URL: **https://github.com/repairman29/jarvis-rog-ed**
 - For the public-facing README, either rename **README_ROG_ED.md** to **README.md** in the repo or set it as the repo description on GitHub.
-- To clone and work only from the new repo later: `git clone https://github.com/YOUR_USERNAME/jarvis-rog-ed.git` then work in that folder.
+- To clone and work only from the new repo later: `git clone https://github.com/repairman29/jarvis-rog-ed.git` then work in that folder.

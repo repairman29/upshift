@@ -278,6 +278,7 @@ Type your messages and press Enter; `/bye` or Ctrl+D to exit. To use it with JAR
 - **“clawdbot not found”** — Ensure Node.js and npm are in your PATH; try `npm install -g clawdbot` again and restart the terminal.
 - **Gateway won’t start** — Check that `CLAWDBOT_GATEWAY_TOKEN` is set in `.env` and that the port (e.g. 3033) isn’t in use.
 - **No reply from bot** — Verify your LLM API key in `.env` and that the model name in `clawdbot.json` matches your provider (e.g. `groq/llama-3.3-70b-versatile`).
+- **"Context overflow: prompt too large"** — Add an explicit Groq provider in `clawdbot.json` under `models.providers.groq` with `baseUrl`, `apiKey`, and `contextWindow: 131072` for your models (see [JARVIS_ROG_ED.md](./JARVIS_ROG_ED.md) smooth setup). Restart the gateway.
 - **Discord bot online but not replying** — Enable Message Content Intent in the Discord Developer Portal and confirm pairing (see [DISCORD_SETUP.md](./DISCORD_SETUP.md)).
 
 For more detail on config, skills, and personality, see [DEVELOPER_GUIDE.md](./DEVELOPER_GUIDE.md).

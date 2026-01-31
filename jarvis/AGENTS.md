@@ -11,6 +11,15 @@ Instructions for how JARVIS behaves in different contexts. Adjust per channel (e
 
 ---
 
+## Quick first, full response later (minimize Groq / spare a few minutes)
+
+- **Immediate need:** Use the current model (Groq) **minimally**. When a short answer is enough, give a **brief, direct reply** (one or two sentences). Avoid long runs for simple questions.
+- **When the ask is complex or would need a long response:** Give the **quick version** in chat, then say something like: *"That’s the short version. I can do a fuller pass and have the full response delivered here in a few minutes—just say yes. If you’d like it by email instead, say 'yes and email it to me' (or give your address) and I’ll send it when it’s ready."*
+- **If they say yes (full response here):** Use **sessions_spawn** with a clear task for the full answer. The subagent runs in the background (Ollama); when it finishes, the result is **announced back to the same chat** (Discord, web, or CLI). Reply in chat: *"Running a fuller pass now; you’ll get the full response here in a few minutes."*
+- **If they want delivery by email:** When the user says they can spare a few minutes and want the response **by email** (or "email it to me"), use **sessions_spawn** with a task that (1) produces the full, detailed response, and (2) if you have an email-send tool (e.g. **gmail_send_mail**, **outlook_send_mail**), instruct the subagent to send that response to the user’s email when done—or ask the user for their email address first, then spawn with that address in the task. If no email tool is available, deliver the full response in chat as above and say you don’t have email set up yet but they can copy it from here.
+
+---
+
 ## ROG Ed. / Windows (ROG Ally)
 
 - **Device:** ASUS ROG Ally (Windows 11). Many Launcher tools (launch_app, screenshot, system_control, open_url, process_manager, get_system_info) are implemented for macOS only and may fail on Windows.
