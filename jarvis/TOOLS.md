@@ -76,7 +76,7 @@ Tools and skills JARVIS can use. Call the appropriate tool when the user asks; t
 | `repo_file` | "show me file chunks from repo X path Y" |
 | `repo_map` | "repo map for JARVIS" |
 
-**Env:** `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (preferred) or `SUPABASE_ANON_KEY`.
+**Env:** `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (preferred) or `SUPABASE_ANON_KEY`. Resolved from `~/.clawdbot/.env` or **Supabase Vault** (app_secrets + `get_vault_secret_by_name`). Keep the index fresh with `node scripts/index-repos.js` (see Repo index & Vault below).
 
 ---
 
@@ -193,9 +193,48 @@ Tools and skills JARVIS can use. Call the appropriate tool when the user asks; t
 
 ---
 
+## Master product list (work top-down)
+
+**products.json** (repo root) is the ordered list of products; **array order = priority** (top = work first). See **PRODUCTS.md**.
+
+- When the user says “work top down”, “what should I work on?”, or “next product” — read `products.json` and use the first active product(s) in order.
+- Each entry: `name`, `repo` (GitHub repo name), `description`, optional `status` (`active` / `paused` / `archived`), optional **`shipAccess`** (`true` = JARVIS can ship: commit, push, deploy, run ops), optional **`deepWorkAccess`** (`true` = JARVIS can do full-cycle planning, development, execution). See **docs/JARVIS_FULL_ACCESS_ONE_PRODUCT.md** and **jarvis/DEEP_WORK_PRODUCT.md**.
+- For products with **`shipAccess: true`**, when the user says “ship [product],” “you have full access to [product],” or “run the operation for [product]” — JARVIS may commit, push, and run deploy/scripts for that repo (within guardrails: no destructive without explicit ask, never commit secrets). Ensure elevated exec is allowed for the channel and GITHUB_TOKEN (and deploy tokens) are available to the gateway.
+- For products with **`deepWorkAccess: true`**, when the user says "deep work on [product]," "full product cycle for [product]," or "plan, develop, and execute [product]" — JARVIS does **deep work**: planning (PRD, roadmap, metrics), development (issues, PRs, implementation, tests), and execution (ship, run operation). See **jarvis/DEEP_WORK_PRODUCT.md**. Ship access is still required for JARVIS to push/deploy; deepWorkAccess grants sustained full-cycle focus.
+- Edit the file to reorder, add, remove products, or grant/revoke shipAccess / deepWorkAccess.
+
+---
+
 ## Repairman29 Repo Automation (CLI / Scripts)
 
 Use these **repo scripts** for operations, deployment, and background work. Prefer these over ad‑hoc commands when the task matches.
+
+### Repo index & Supabase Vault
+
+Secrets for indexer and Supabase come from `~/.clawdbot/.env` or **Supabase Vault** (app_secrets + RPC `get_vault_secret_by_name`). See `docs/VAULT_MIGRATION.md` and `docs/sql/002_vault_helpers.sql`.
+
+| Command / Script | When to use |
+|------|-------------|
+| `node scripts/index-repos.js` | Index all repos from repos.json into Supabase (chunks + embeddings). Needs `GITHUB_TOKEN` (or SSH) and Ollama `nomic-embed-text`. |
+| `node scripts/index-repos.js --repo JARVIS --limit 1` | Index a single repo (e.g. JARVIS). Use after adding a repo or for a quick refresh. |
+| `node scripts/jarvis-safety-net.js` | Health checks: system, gateway, GitHub, Discord, **repo index freshness**, website. Writes snapshot to `~/.jarvis/health/`. |
+| `node scripts/jarvis-safety-net.js --repair` | Run safety net and attempt safe recovery actions. |
+| `node scripts/vault-healthcheck.js` | Verify Vault access (app_secrets + decrypted secrets via RPC). |
+| `powershell -ExecutionPolicy Bypass -File scripts\\add-repo-index-schedule.ps1` | Schedule daily repo index at 3 AM (Windows Task Scheduler). Run once. |
+
+**Ollama:** Indexer uses `nomic-embed-text`. Run `ollama pull nomic-embed-text` once.
+
+### Autonomous build (JARVIS building for you)
+
+| Command / Script | When to use |
+|------|-------------|
+| `node scripts/jarvis-autonomous-build.js` | **Autonomous build**: pull latest, validate all skills (JSON + JS), run optimize-jarvis --quick, build any in-repo subprojects that have a `build` script (discovered automatically). Non-interactive; for scheduled or scripted use. |
+| `scripts\run-autonomous-build.bat` | Run autonomous build from repo root (pass-through args: e.g. `--dry-run`, `--skip-pull`, `--skip-build`, `--log path`). |
+| `powershell -ExecutionPolicy Bypass -File scripts\\add-autonomous-build-schedule.ps1` | Schedule daily autonomous build at 4 AM (Windows Task Scheduler). Remove via Task Scheduler → "JARVIS Autonomous Build" → Delete. |
+
+See **docs/REPAIRMAN29_OPERATIONS.md** → "Autonomous Build (scheduled)".
+
+### Other repo scripts
 
 | Command / Script | When to use |
 |------|-------------|
@@ -210,3 +249,29 @@ Use these **repo scripts** for operations, deployment, and background work. Pref
 | `npx clawdbot gateway run` | Run gateway locally for interactive ops. |
 | `npx clawdbot agent --session-id <id> --message \"...\" --local` | Run a single agent turn in CLI. |
 | `npx clawdbot message send --channel discord --target user:<id> --message \"...\"` | Send a message to Discord via CLI (delivery check). |
+
+---
+
+## Platform CLIs (Maestro)
+
+JARVIS **conducts** these CLIs like a maestro: choose the right tool, run the right subcommand, interpret output, chain when needed, summarize. Use **exec** (or **bash** when elevated) when the user asks for deployments, payments, platform ops, or IDE/editor control. Require **elevated** or **exec** allowlist when configured.
+
+| CLI | When to use | Example commands |
+|-----|--------------|-------------------|
+| **Vercel** | Deploy frontends, env, previews, logs | `vercel deploy`, `vercel env pull`, `vercel logs`, `vercel link` |
+| **Railway** | Deploy backends, services, logs, vars | `railway up`, `railway logs`, `railway variables`, `railway link` |
+| **Stripe** | Webhooks, triggers, products, customers | `stripe listen`, `stripe trigger payment_intent.succeeded`, `stripe products list`, `stripe customers list` |
+| **Fly.io** | Deploy apps, scale, logs, secrets | `fly deploy`, `fly scale count 2`, `fly logs`, `fly secrets set KEY=val` |
+| **Cursor** | IDE/editor from terminal (when available) | `cursor .`, `cursor path/to/file` — open project or file in Cursor |
+| **Netlify** | Deploy sites, env, functions | `netlify deploy`, `netlify env:pull`, `netlify functions:list` |
+| **Cloudflare (Wrangler)** | Workers, pages, KV | `wrangler deploy`, `wrangler pages deploy`, `wrangler kv:key list` |
+
+**Conducting rules:**
+
+- **Pick the right instrument:** Deploy frontend → Vercel/Netlify. Deploy backend/service → Railway/Fly. Payments/webhooks → Stripe. Open IDE → Cursor.
+- **One command, then summarize:** Run the CLI command; report success, failure, or next step. Don’t guess—run it.
+- **Chain when asked:** "Deploy to Vercel and then trigger a Stripe sync" → run `vercel deploy`, then the Stripe command; report both.
+- **Env/auth:** These CLIs use their own login (e.g. `vercel login`, `railway login`, `stripe login`) or env vars (`VERCEL_TOKEN`, `RAILWAY_API_KEY`, `STRIPE_API_KEY`). If a command fails with auth, say what to run or set.
+- **Destructive commands:** For `fly apps destroy`, `railway delete`, or similar, confirm with the user before running.
+
+**Config:** Elevated/exec must be allowed for the channel (e.g. Discord user in `tools.elevated.allowFrom.discord`). See gateway config and TOOLS.md → repo scripts for repo-specific automation.

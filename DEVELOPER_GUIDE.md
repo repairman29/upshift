@@ -1117,21 +1117,13 @@ npm audit
 
 ### Operational Modes (Free vs Paid Stack)
 
-Switch between free and paid AI backends depending on your needs.
+Switch between free and paid AI backends. See **[GETTING_STARTED_MODES.md](GETTING_STARTED_MODES.md)** for the first-repo-pull summary.
 
-#### 🔵 Blue Mode (FREE)
+#### 🔵 Blue Mode (FREE + fallback)
 
-**Blue Cloud** — Free cloud APIs:
-```bash
-# Groq: FREE, 70B model, ~0.4 second responses!
-aider --model groq/llama-3.3-70b-versatile
-
-# Together AI: FREE tier
-aider --model together_ai/meta-llama/Llama-3.3-70B-Instruct-Turbo
-
-# Gemini: FREE, generous limits
-aider --model gemini/gemini-1.5-pro
-```
+**Blue Cloud** — Free cloud APIs with a waterfall of fallbacks:
+- **Primary:** Groq 8B (free, very fast)
+- **Fallbacks:** Groq 70B → OpenRouter (free) → Together (free Llama 3.3 70B)
 
 **Blue Offline** — 100% local, no internet:
 ```bash
@@ -1141,17 +1133,19 @@ aider --model ollama/qwen2.5-coder:7b
 
 **Cost: $0/month** — Everything free!
 
-#### 🟡 Yellow Mode (Premium)
+#### 🟡 Yellow Mode (Premium fallback)
 
-Full Cursor with GPT-5.2, Claude 4.5 Opus:
-```bash
-cursor agent --model opus-4.5-thinking --workspace ~/project "implement feature"
-```
+Same primary as Blue; add **OpenAI** or **Anthropic** (free tier or paid) as later fallbacks when Groq/OpenRouter/Together hit limits.
+
+#### 🔴 Hot Rod Mode (Paid services)
+
+**Primary:** Paid model (Claude, GPT-4o, etc.). **Fallbacks:** Your waterfall (e.g. Groq, OpenRouter, Together). Best quality and throughput when you need it; pay-per-use.
 
 **When to use each:**
-- **Blue Cloud**: Default for most tasks (free + fast)
+- **Blue**: Default for most tasks (free + fast + fallback chain)
 - **Blue Offline**: No internet, max privacy
-- **Yellow**: Complex multi-file changes, advanced reasoning
+- **Yellow**: Stronger fallback chain with OpenAI/Anthropic
+- **Hot Rod**: Complex multi-file changes, advanced reasoning, best model first
 
 ---
 

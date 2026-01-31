@@ -1004,6 +1004,174 @@ const tools = {
         type: type
       };
     }
+  },
+
+  focus_mode: async ({ action = 'on', duration }) => {
+    // Focus mode: mute audio + enable Windows Focus Assist (or macOS Do Not Disturb)
+    if (isWindows()) {
+      try {
+        if (action === 'on' || action === 'enable') {
+          // Mute system volume
+          const mutePs = `Add-Type -TypeDefinition "using System;using System.Runtime.InteropServices;public class V{ [DllImport(\\\"user32.dll\\\")]public static extern void keybd_event(byte b,byte s,uint f,UIntPtr e);public static void M(){ keybd_event(0xAD,0,0,UIntPtr.Zero);keybd_event(0xAD,0,2,UIntPtr.Zero);} }"; [V]::M()`;
+          execPowerShell(mutePs);
+          // Enable Focus Assist (Priority only mode via registry - requires restart of explorer or takes effect on next session)
+          // Note: Full Focus Assist control requires Windows Settings API; this sets the preference
+          try {
+            execPowerShell(`Set-ItemProperty -Path "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\CloudStore\\Store\\Cache\\DefaultAccount\\$$windows.data.notifications.quiethourssettings\\Current" -Name "Data" -Value ([byte[]](0x02,0x00,0x00,0x00,0x00,0x00,0x00,0x00)) -ErrorAction SilentlyContinue`);
+          } catch {
+            // Focus Assist registry may not exist; continue anyway - mute is the primary action
+          }
+          const msg = duration
+            ? `Focus mode enabled for ${duration} minutes. Audio muted. Say "focus mode off" when done.`
+            : 'Focus mode enabled. Audio muted. Say "focus mode off" when done.';
+          return {
+            success: true,
+            message: msg,
+            action: 'on',
+            duration: duration || null,
+            platform: 'windows',
+            effects: ['audio_muted', 'focus_assist_requested']
+          };
+        } else if (action === 'off' || action === 'disable') {
+          // Unmute (toggle mute key again)
+          const unmutePs = `Add-Type -TypeDefinition "using System;using System.Runtime.InteropServices;public class V{ [DllImport(\\\"user32.dll\\\")]public static extern void keybd_event(byte b,byte s,uint f,UIntPtr e);public static void M(){ keybd_event(0xAD,0,0,UIntPtr.Zero);keybd_event(0xAD,0,2,UIntPtr.Zero);} }"; [V]::M()`;
+          execPowerShell(unmutePs);
+          return {
+            success: true,
+            message: 'Focus mode disabled. Audio restored.',
+            action: 'off',
+            platform: 'windows',
+            effects: ['audio_toggled']
+          };
+        } else if (action === 'status') {
+          return {
+            success: true,
+            message: 'Focus mode status: check system tray for Focus Assist icon or volume indicator.',
+            action: 'status',
+            platform: 'windows'
+          };
+        } else {
+          return { success: false, message: `Unknown focus_mode action: ${action}. Use on, off, or status.` };
+        }
+      } catch (error) {
+        return {
+          success: false,
+          message: `Focus mode failed: ${error.message}`,
+          action: action
+        };
+      }
+    }
+    if (isMacOS()) {
+      try {
+        if (action === 'on' || action === 'enable') {
+          // Mute + DND on macOS
+          execCommand(`osascript -e "set volume with output muted"`);
+          // Toggle Do Not Disturb (requires macOS Monterey+)
+          try {
+            execCommand(`shortcuts run "Turn On Do Not Disturb" 2>/dev/null || osascript -e 'tell application "System Events" to keystroke "D" using {control down, option down, command down}'`);
+          } catch {
+            // DND shortcut may not exist
+          }
+          return {
+            success: true,
+            message: duration
+              ? `Focus mode enabled for ${duration} minutes. Audio muted.`
+              : 'Focus mode enabled. Audio muted.',
+            action: 'on',
+            duration: duration || null,
+            platform: 'macos',
+            effects: ['audio_muted', 'dnd_requested']
+          };
+        } else if (action === 'off' || action === 'disable') {
+          execCommand(`osascript -e "set volume without output muted"`);
+          return {
+            success: true,
+            message: 'Focus mode disabled. Audio restored.',
+            action: 'off',
+            platform: 'macos'
+          };
+        }
+        return { success: false, message: `Unknown focus_mode action: ${action}` };
+      } catch (error) {
+        return { success: false, message: `Focus mode failed: ${error.message}` };
+      }
+    }
+    return { success: false, message: 'Focus mode not supported on this platform.' };
+  },
+
+  get_active_window: async () => {
+    // Returns the currently focused window's app name and title
+    if (isWindows()) {
+      try {
+        const ps = `
+Add-Type @"
+using System;
+using System.Runtime.InteropServices;
+using System.Text;
+public class Win {
+  [DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
+  [DllImport("user32.dll")] public static extern int GetWindowText(IntPtr h, StringBuilder s, int n);
+  [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr h, out uint p);
+}
+"@
+$h = [Win]::GetForegroundWindow()
+$sb = New-Object System.Text.StringBuilder 256
+[Win]::GetWindowText($h, $sb, 256) | Out-Null
+$title = $sb.ToString()
+$pid = 0
+[Win]::GetWindowThreadProcessId($h, [ref]$pid) | Out-Null
+$proc = Get-Process -Id $pid -ErrorAction SilentlyContinue
+@{ app = $proc.ProcessName; title = $title; pid = $pid } | ConvertTo-Json -Compress
+`;
+        const out = execPowerShell(ps);
+        const info = JSON.parse(out);
+        return {
+          success: true,
+          app: info.app || 'unknown',
+          title: info.title || '',
+          pid: info.pid || null,
+          platform: 'windows'
+        };
+      } catch (error) {
+        return {
+          success: false,
+          message: `Failed to get active window: ${error.message}`,
+          platform: 'windows'
+        };
+      }
+    }
+    if (isMacOS()) {
+      try {
+        const script = `
+tell application "System Events"
+  set frontApp to name of first application process whose frontmost is true
+end tell
+tell application frontApp
+  if exists (window 1) then
+    set winTitle to name of window 1
+  else
+    set winTitle to ""
+  end if
+end tell
+return frontApp & "|" & winTitle
+`;
+        const out = execCommand(`osascript -e '${script.replace(/'/g, "'\\''")}'`);
+        const [app, title] = out.split('|');
+        return {
+          success: true,
+          app: app || 'unknown',
+          title: title || '',
+          platform: 'macos'
+        };
+      } catch (error) {
+        return {
+          success: false,
+          message: `Failed to get active window: ${error.message}`,
+          platform: 'macos'
+        };
+      }
+    }
+    return { success: false, message: 'get_active_window not supported on this platform.' };
   }
 };
 

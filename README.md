@@ -62,6 +62,7 @@ Advanced AI-powered skills for professionals: Notion Advanced Pro, GitHub Copilo
 | Document | Description |
 |----------|-------------|
 | [**Installation Guide**](https://repairman29.github.io/JARVIS/getting-started/) | Get JARVIS running in 5 minutes |
+| [**GETTING_STARTED_MODES.md**](./GETTING_STARTED_MODES.md) | 🔵 Blue (free + fallback) · 🟡 Yellow (premium fallback) · 🔴 Hot Rod (paid) |
 | [**JARVIS_WINDOWS_EPIC.md**](./JARVIS_WINDOWS_EPIC.md) | Make JARVIS epic on Windows (Raycast-style, quick access, marketplace) |
 | [**ROG_ALLY_SETUP.md**](./ROG_ALLY_SETUP.md) / [JARVIS_ROG_ED.md](./JARVIS_ROG_ED.md) | Run JARVIS on ASUS ROG Ally (handheld) |
 | [**DEVELOPER_GUIDE.md**](./DEVELOPER_GUIDE.md) | Complete setup and development guide |
@@ -95,7 +96,7 @@ Advanced AI-powered skills for professionals: Notion Advanced Pro, GitHub Copilo
 
 ### Multi-Agent
 - 🐝 **Swarm Mode** — Spawn parallel agents for 3x speed
-- 🔵/🟡 **Mode Switching** — Free (local) vs Premium (cloud) AI
+- 🔵/🟡/🔴 **Mode Switching** — Blue (free + fallback), Yellow (premium fallback), Hot Rod (paid) — [GETTING_STARTED_MODES.md](GETTING_STARTED_MODES.md)
 
 ---
 

@@ -5,8 +5,9 @@ Heartbeat should **drive production**: check queues, launch subagents, and advan
 
 ## Today (Production Mode — Beast-Mode focus)
 - [ ] Check if user needs anything (if no action items, continue checklist)
-- [ ] Focus repo: **BEAST-MODE** (primary). Defer other repos unless asked.
-- [ ] Scan for pending tasks: BEAST-MODE issues/PRs, recent failures, blocked threads
+- [ ] **Product order:** Use **products.json** (master list, top-down). Focus repo = first active product unless user says otherwise; then work down the list.
+- [ ] Focus repo: **BEAST-MODE** (primary) or next product from list. Defer other repos unless asked.
+- [ ] Scan for pending tasks: focus-repo issues/PRs, recent failures, blocked threads
 - [ ] If GitHub is available: run `github_status`; if OK, pick 1 BEAST-MODE action (issue, PR, workflow_dispatch)
 - [ ] If background work is needed: spawn subagents with clear deliverables and ETA
 - [ ] Note any follow-ups from recent chats (Discord, CLI, repo ops)

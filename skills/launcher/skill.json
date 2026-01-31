@@ -219,6 +219,33 @@
           }
         }
       }
+    },
+    {
+      "name": "focus_mode",
+      "description": "Enable or disable focus mode: mutes audio and enables Windows Focus Assist (or macOS Do Not Disturb). Use for 'focus mode', 'do not disturb', or 'help me concentrate'.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "description": "Action: on/enable, off/disable, or status",
+            "enum": ["on", "off", "enable", "disable", "status"],
+            "default": "on"
+          },
+          "duration": {
+            "type": "number",
+            "description": "Optional duration in minutes (informational; user says 'focus mode off' to disable)"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_active_window",
+      "description": "Get the currently active (focused) window's app name and title. Use to detect what the user is working on.",
+      "parameters": {
+        "type": "object",
+        "properties": {}
+      }
     }
   ]
 }

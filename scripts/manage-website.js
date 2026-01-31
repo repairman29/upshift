@@ -49,7 +49,7 @@ function callGitHubAPI(endpoint, method = 'GET', data = null) {
       curlCommand += ` -d '${JSON.stringify(data)}'`;
     }
     
-    curlCommand += ` https://api.github.com/${endpoint}`;
+    curlCommand += ` "https://api.github.com/${endpoint}"`;
     
     const response = execCommand(curlCommand);
     return JSON.parse(response);

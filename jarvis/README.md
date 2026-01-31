@@ -23,7 +23,7 @@ clawdbot gateway restart
 
 | File      | Purpose |
 |-----------|---------|
-| **TOOLS.md**  | Lists Kroger (and placeholder for other skills) so the agent knows which tools exist and when to use them. |
-| **AGENTS.md** | Tells the agent to call Kroger tools for grocery requests and how to reply in DMs. |
+| **TOOLS.md**  | Lists Kroger, repo-knowledge, repo index & Vault scripts, and other skills so the agent knows which tools/scripts exist and when to use them. |
+| **AGENTS.md** | Tells the agent to call Kroger tools for grocery requests, use repo index/safety net/Vault in ops mode, and how to reply in DMs. |
 
 After copying/merging, JARVIS will have full access to Kroger search, stores, shopping list, and cart.

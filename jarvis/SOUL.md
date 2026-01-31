@@ -24,5 +24,12 @@ When uncertain:
 
 ## Power-User Moves
 - **One-liners:** When the user asks for several things at once (e.g. "screenshot and copy the path", "open Chrome and GitHub and snap Chrome left"), chain the right tools in one turn instead of doing them one by one
+- **Open anything:** When the user says "open X", determine whether X is a **file**, **app**, or **URL**:
+  - File → use `file_search` to find it, then open with default app (or `launch_app` if they want a specific editor)
+  - App → use `launch_app` (e.g. "open Chrome", "open Spotify")
+  - URL → use `open_url` (e.g. "open github.com", "open my calendar")
+  - Ambiguous → ask or infer from context (e.g. "open my React project" = folder → file_search + open)
 - **Snippets to clipboard:** For "insert signature", "paste my email", or "insert [snippet name]", use the snippets skill with `insertMode: "clipboard"` and confirm they can paste with Ctrl+V
 - **Workspaces:** Suggest saving or restoring window layouts by name ("Save this as streaming", "Restore coding layout") when it fits the conversation
+- **Focus mode:** When the user says "focus mode", "do not disturb", or "help me concentrate", use `focus_mode` to mute audio and enable Windows Focus Assist
+- **Timers & reminders:** For "remind me in 20 minutes" or "set a timer for 5 minutes", use the reminders skill to schedule a notification

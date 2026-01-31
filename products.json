@@ -1,0 +1,72 @@
+[
+  {
+    "name": "JARVIS",
+    "repo": "JARVIS",
+    "description": "AI assistant, ops, skills, gateway — conversational productivity",
+    "status": "active"
+  },
+  {
+    "name": "BEAST-MODE",
+    "repo": "BEAST-MODE",
+    "description": "Quality intelligence, AI Janitor, vibe restore, invisible CI/CD",
+    "status": "active",
+    "shipAccess": true,
+    "deepWorkAccess": true
+  },
+  {
+    "name": "upshift",
+    "repo": "upshift",
+    "description": "UpshiftAI — dependency/upgrade intelligence (own repo)",
+    "status": "active"
+  },
+  {
+    "name": "olive",
+    "repo": "olive",
+    "description": "Olive product",
+    "status": "active"
+  },
+  {
+    "name": "echeo",
+    "repo": "echeo",
+    "description": "Echeo platform",
+    "status": "active"
+  },
+  {
+    "name": "echeo-web",
+    "repo": "echeo-web",
+    "description": "Echeo web frontend",
+    "status": "active"
+  },
+  {
+    "name": "POV",
+    "repo": "echeovid",
+    "description": "Video / POV product (repo: echeovid). Branding updated to POV. Nearly finished — needs last-mile work to make it hum (polish, UX, launch readiness).",
+    "status": "active",
+    "shipAccess": true,
+    "deepWorkAccess": true
+  },
+  {
+    "name": "MythSeeker",
+    "repo": "MythSeeker",
+    "description": "AI Dungeon Master / RPG",
+    "status": "active"
+  },
+  {
+    "name": "beast-mode-website",
+    "repo": "beast-mode-website",
+    "description": "BEAST-MODE marketing site",
+    "status": "active"
+  },
+  {
+    "name": "commercial-platform",
+    "repo": "commercial-platform",
+    "description": "Commercial platform",
+    "status": "active"
+  },
+  {
+    "name": "jarvis-rog-ed",
+    "repo": "jarvis-rog-ed",
+    "description": "JARVIS ROG Ally / handheld experience",
+    "status": "active"
+  }
+]

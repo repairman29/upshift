@@ -183,6 +183,29 @@ Clawdbot is set up as a product owner and development partner.
 - **Fallbacks:** ollama/qwen2.5-coder:7b, ollama/beast-mode-code-v3, together/Llama-3.3-70B
 - **Embeddings:** BAAI/bge-large-en-v1.5 (Together AI)
 
+## Repo index & Supabase Vault
+
+Cross-repo search uses Supabase (repo_sources, repo_chunks, repo_summaries). Secrets come from `~/.clawdbot/.env` or Supabase Vault (app_secrets + `get_vault_secret_by_name`).
+
+```bash
+# Index one repo (needs GITHUB_TOKEN in .env or Vault for HTTPS clone)
+node scripts/index-repos.js --repo JARVIS --limit 1
+
+# Index all repos from repos.json
+node scripts/index-repos.js
+
+# Safety net (health + repo index freshness)
+node scripts/jarvis-safety-net.js
+
+# Vault healthcheck
+node scripts/vault-healthcheck.js
+```
+
+- **Ollama:** Indexer uses `nomic-embed-text` for embeddings. Run `ollama pull nomic-embed-text` once.
+- **Vault:** See `docs/VAULT_MIGRATION.md` and `docs/sql/002_vault_helpers.sql`.
+- **Token rotation:** If `GITHUB_TOKEN` was ever used in a command or pasted in chat, rotate it in [GitHub → Settings → Developer settings → Personal access tokens](https://github.com/settings/tokens): revoke the old one, create a new token (repo scope), then update `GITHUB_TOKEN` in `~/.clawdbot/.env` (and in Vault if you migrated that key).
+- **Discord notifications:** The scheduled task runs `scripts/run-repo-index.bat`, which notifies when the job **starts** and **finishes** (or **fails**). Set `JARVIS_ALERT_WEBHOOK_URL` (or `DISCORD_WEBHOOK_URL`) in `~/.clawdbot/.env` to a [Discord channel webhook](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks) to receive JARVIS job alerts there. Same webhook is used for safety-net alerts.
+
 ## Key Paths
 
 | What | Path |

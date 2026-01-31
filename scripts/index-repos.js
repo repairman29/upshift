@@ -82,11 +82,23 @@ function listRepos() {
   return JSON.parse(result.output);
 }
 
+/** Convert sshUrl to clone URL; use HTTPS with token if GITHUB_TOKEN/GH_TOKEN set (avoids SSH). */
+function getCloneUrl(repo) {
+  const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
+  const isPlaceholder = !token || token.startsWith('vault://') || token.startsWith('your_');
+  if (!isPlaceholder && repo.sshUrl && repo.sshUrl.startsWith('git@github.com:')) {
+    const pathPart = repo.sshUrl.replace(/^git@github.com:/, '').replace(/\.git$/, '');
+    return `https://x-access-token:${token}@github.com/${pathPart}.git`;
+  }
+  return repo.sshUrl;
+}
+
 function cloneOrUpdateRepo(repo, cacheDir) {
   const repoPath = path.join(cacheDir, repo.name);
   if (!fs.existsSync(repoPath)) {
     log(`Cloning ${repo.name}...`, 'cyan');
-    const result = safeExec(`git clone --depth 1 "${repo.sshUrl}" "${repoPath}"`);
+    const cloneUrl = getCloneUrl(repo);
+    const result = safeExec(`git clone --depth 1 "${cloneUrl}" "${repoPath}"`);
     if (!result.ok) throw new Error(result.error);
   } else {
     log(`Updating ${repo.name}...`, 'cyan');
@@ -220,13 +232,14 @@ function buildSummary(repoPath, repoName) {
 
 async function supabaseRequest({ url, key }, pathSuffix, method, body, query) {
   const queryString = query ? `?${query}` : '';
+  const preferUpsert = query && query.includes('on_conflict') ? 'resolution=merge-duplicates,' : '';
   const response = await fetch(`${url}/rest/v1/${pathSuffix}${queryString}`, {
     method,
     headers: {
       'Content-Type': 'application/json',
       apikey: key,
       Authorization: `Bearer ${key}`,
-      Prefer: 'return=representation'
+      Prefer: `${preferUpsert}return=representation`
     },
     body: body ? JSON.stringify(body) : undefined
   });
@@ -382,6 +395,10 @@ Options:
   --cache <path>     Override cache directory
   --model <name>     Ollama embedding model (default: nomic-embed-text)
   --refresh          Force refresh (default behavior)
+
+Clone: Uses SSH by default. If you get "Host key verification failed", either:
+  1) Set GITHUB_TOKEN or GH_TOKEN in ~/.clawdbot/.env (repo read scope) to clone via HTTPS, or
+  2) Fix SSH: run "ssh -T git@github.com" once to add GitHub to known_hosts and ensure your key is loaded.
 `);
     return;
   }
@@ -406,6 +423,12 @@ Options:
 
   if (!supabaseUrl || !supabaseKey) {
     throw new Error('SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY (or SUPABASE_ANON_KEY) must be set. Use ~/.clawdbot/.env or Vault (app_secrets).');
+  }
+
+  const ghToken = await resolveEnv('GITHUB_TOKEN', env) || (await resolveEnv('GH_TOKEN', env));
+  if (ghToken && !ghToken.startsWith('vault://')) {
+    process.env.GITHUB_TOKEN = process.env.GITHUB_TOKEN || ghToken;
+    process.env.GH_TOKEN = process.env.GH_TOKEN || ghToken;
   }
 
   const embeddingModel = args.includes('--model')

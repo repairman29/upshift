@@ -18,6 +18,19 @@ You can keep the app private. To invite the bot, use **OAuth2 → URL Generator*
 
 ---
 
+## If you see "Failed to resolve Discord application id"
+
+The gateway log shows: `[discord] [default] channel exited: Failed to resolve Discord application id`. That means Clawdbot could not get the Discord application id—almost always because **DISCORD_BOT_TOKEN** is missing or invalid.
+
+**Fix:**
+
+1. Open **`%USERPROFILE%\.clawdbot\.env`** (Windows) or **`~/.clawdbot/.env`** (Linux/macOS).
+2. Ensure **`DISCORD_BOT_TOKEN=`** is set to your real **Bot Token** from [Discord Developer Portal](https://discord.com/developers/applications) → your app → **Bot** → Token (Copy/Reset). Remove any placeholder like `your_discord_bot_token`.
+3. From the JARVIS repo: **`node scripts/check-discord-bot.js`** — if this fails, the token is wrong or revoked; reset the token in the portal and update `.env`.
+4. Restart the gateway (e.g. close the Clawdbot window and run **`clawdbot gateway run`** or your start script again).
+
+---
+
 ## 1. Create the Discord bot
 
 1. Open [Discord Developer Portal](https://discord.com/developers/applications) → **Applications** → **New Application** (name it e.g. “Clawdbot”).
@@ -85,6 +98,8 @@ DISCORD_BOT_TOKEN=your_bot_token_here
 ```
 
 Use the **Bot Token** from **Bot** → Token in the Developer Portal (step 1), not the Application ID or Public Key. No quotes needed.
+
+**Optional – Supabase Vault:** You can store `DISCORD_BOT_TOKEN` in Supabase Vault instead of (or in addition to) `.env`. Migrate with `node scripts/vault-migrate-env.js`, then start the gateway with `node scripts/start-gateway-with-vault.js` so Clawdbot gets the token from Vault. See [docs/VAULT_MIGRATION.md](docs/VAULT_MIGRATION.md) for details.
 
 ---
 
@@ -179,3 +194,29 @@ Example (single server, single channel, mention required):
 ```
 
 If you only set `DISCORD_BOT_TOKEN` and don’t add `guilds`, the default is open for guilds; use `groupPolicy` and `guilds` to lock it down.
+
+---
+
+## Do I need to update Discord?
+
+**Discord app (desktop/mobile):** You don't need to update the Discord app for JARVIS's new behavior (Platform CLIs, maestro, etc.). Those live in the repo; restart the gateway and JARVIS uses them. If you want the latest Discord client features, update via **Discord → User Settings → Check for updates** (or your app store)—that's on you.
+
+**JARVIS config:** No Discord Developer Portal change is required. New agent instructions (e.g. `jarvis/AGENTS.md`, `jarvis/TOOLS.md`) are picked up when the gateway loads the workspace; restart the gateway after pulling repo changes.
+
+**Running platform CLIs from Discord (Vercel, Railway, Stripe, etc.):** For JARVIS to run `vercel deploy`, `stripe listen`, etc. when you ask in Discord, the gateway must allow **elevated exec** for your Discord user. Add your **Discord user ID** to the allowlist:
+
+1. Get your Discord user ID: Discord → User Settings → Advanced → Developer Mode → On. Right-click your avatar in any chat → **Copy User ID**.
+2. Edit **`%USERPROFILE%\.clawdbot\clawdbot.json`** (or `~/.openclaw/openclaw.json`). Under the top-level `"tools"` (create it if missing), add:
+
+```json
+"tools": {
+  "elevated": {
+    "enabled": true,
+    "allowFrom": {
+      "discord": ["YOUR_DISCORD_USER_ID"]
+    }
+  }
+}
+```
+
+Replace `YOUR_DISCORD_USER_ID` with your numeric ID (e.g. `123456789012345678`). Add more IDs to the array if others should be allowed. Save, then restart the gateway. After that, when you ask in Discord (e.g. "Deploy this to Vercel"), JARVIS can run the CLI and report back.

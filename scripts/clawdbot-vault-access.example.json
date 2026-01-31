@@ -1,0 +1,15 @@
+{
+  "tools": {
+    "elevated": {
+      "enabled": true,
+      "allowFrom": {
+        "discord": ["YOUR_DISCORD_USER_ID"]
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "bootstrapMaxChars": 5000
+    }
+  }
+}

@@ -5,24 +5,12 @@
  * in the Developer Portal and are not returned by the API.
  *
  * Run: node scripts/check-discord-bot.js
- * Reads DISCORD_BOT_TOKEN from %USERPROFILE%\.clawdbot\.env (or DISCORD_BOT_TOKEN env).
+ * Reads DISCORD_BOT_TOKEN from Supabase Vault (env/clawdbot/DISCORD_BOT_TOKEN),
+ * then %USERPROFILE%\.clawdbot\.env, then DISCORD_BOT_TOKEN env.
  */
 
-const fs = require('fs');
-const path = require('path');
 const https = require('https');
-
-function loadEnv() {
-  const envPath = path.join(process.env.USERPROFILE || process.env.HOME, '.clawdbot', '.env');
-  if (!fs.existsSync(envPath)) return {};
-  const text = fs.readFileSync(envPath, 'utf8');
-  const out = {};
-  for (const line of text.split('\n')) {
-    const m = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$/);
-    if (m) out[m[1]] = m[2].replace(/^["']|["']$/g, '').trim();
-  }
-  return out;
-}
+const { loadEnvFile, resolveEnv } = require('./vault.js');
 
 function get(url, token) {
   return new Promise((resolve, reject) => {
@@ -52,10 +40,10 @@ function get(url, token) {
 }
 
 async function main() {
-  const env = loadEnv();
-  const token = process.env.DISCORD_BOT_TOKEN || env.DISCORD_BOT_TOKEN;
+  const env = loadEnvFile();
+  const token = (await resolveEnv('DISCORD_BOT_TOKEN', env)) || process.env.DISCORD_BOT_TOKEN || env.DISCORD_BOT_TOKEN;
   if (!token) {
-    console.error('DISCORD_BOT_TOKEN not set. Add it to %USERPROFILE%\\.clawdbot\\.env');
+    console.error('DISCORD_BOT_TOKEN not set. Add it to Vault (env/clawdbot/DISCORD_BOT_TOKEN) or %USERPROFILE%\\.clawdbot\\.env');
     process.exit(1);
   }
 
