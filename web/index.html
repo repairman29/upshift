@@ -66,39 +66,45 @@
     <section class="demo" id="demo">
       <div class="wrap-wide">
         <h2>See it in action</h2>
-        <div class="terminal">
-          <div class="terminal-header">
-            <span class="terminal-dot red"></span>
-            <span class="terminal-dot yellow"></span>
-            <span class="terminal-dot green"></span>
-            <span class="terminal-title">terminal</span>
-          </div>
-          <div class="terminal-body">
-<pre><span class="cmd">$ upshift explain express --ai --from 4.18.0 --to 5.0.0</span>
-
-<span class="success">✔</span> AI analysis ready
-
-<span class="heading">🤖 AI Analysis:</span>
-<span class="subheading"># Upgrading Express from 4.18.0 to 5.0.0</span>
-
-<span class="subheading">## Breaking Changes</span>
-1. <span class="warn">res.send()</span> no longer accepts objects directly
-   → Use <span class="success">res.json()</span> for JSON responses
-
-2. Built-in <span class="warn">bodyParser</span> removed
-   → Use <span class="success">express.json()</span> instead
-
-3. Error handlers need 4 params: <span class="success">(err, req, res, next)</span>
-
-<span class="subheading">## Code to search for:</span>
-<span class="dim">res.send({ ... })  →  res.json({ ... })</span>
-<span class="dim">bodyParser.json()  →  express.json()</span>
-
-<span class="cmd">$ upshift upgrade express</span>
-<span class="success">✔</span> Upgraded express 4.18.0 → 5.0.0
-<span class="success">✔</span> Tests passed
-</pre>
-          </div>
+        <p class="demo-subtitle">Click any demo to see the full workflow</p>
+        
+        <!-- Main Demo Display -->
+        <div class="demo-main">
+          <img src="demos/6-full-workflow.gif" alt="Upshift full workflow demo" id="demo-display" />
+        </div>
+        
+        <!-- Demo Thumbnails -->
+        <div class="demo-grid">
+          <button class="demo-card active" data-demo="demos/6-full-workflow.gif" data-title="Full Workflow">
+            <span class="demo-icon">🚀</span>
+            <span class="demo-label">Full Workflow</span>
+            <span class="demo-time">~25s</span>
+          </button>
+          <button class="demo-card" data-demo="demos/1-scan.gif" data-title="Scan">
+            <span class="demo-icon">🔍</span>
+            <span class="demo-label">Scan</span>
+            <span class="demo-time">~8s</span>
+          </button>
+          <button class="demo-card" data-demo="demos/2-ai-explain.gif" data-title="AI Explain">
+            <span class="demo-icon">🤖</span>
+            <span class="demo-label">AI Explain</span>
+            <span class="demo-time">~8s</span>
+          </button>
+          <button class="demo-card" data-demo="demos/3-upgrade.gif" data-title="Safe Upgrade">
+            <span class="demo-icon">⬆️</span>
+            <span class="demo-label">Safe Upgrade</span>
+            <span class="demo-time">~9s</span>
+          </button>
+          <button class="demo-card" data-demo="demos/4-fix.gif" data-title="Code Fix">
+            <span class="demo-icon">🔧</span>
+            <span class="demo-label">Code Fix</span>
+            <span class="demo-time">~11s</span>
+          </button>
+          <button class="demo-card" data-demo="demos/5-interactive.gif" data-title="Interactive">
+            <span class="demo-icon">🖥️</span>
+            <span class="demo-label">Interactive</span>
+            <span class="demo-time">~9s</span>
+          </button>
         </div>
       </div>
     </section>
@@ -296,6 +302,22 @@
     });
 
     updateWaitlistCount();
+
+    // Demo gallery switching
+    const demoCards = document.querySelectorAll('.demo-card');
+    const demoDisplay = document.getElementById('demo-display');
+    
+    demoCards.forEach(card => {
+      card.addEventListener('click', () => {
+        // Update active state
+        demoCards.forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        
+        // Update displayed demo
+        const demoSrc = card.getAttribute('data-demo');
+        demoDisplay.src = demoSrc;
+      });
+    });
   </script>
 </body>
 </html>
