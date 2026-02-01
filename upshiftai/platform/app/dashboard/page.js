@@ -42,7 +42,7 @@ export default async function Dashboard() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'end', marginBottom: '16px' }}>
           <h2>Reports</h2>
           <div style={{ display: 'flex', gap: '8px' }}>
-            <Link href="https://upshiftai.dev/docs" className="btn btn-secondary" style={{ fontSize: '12px' }} target="_blank">
+            <Link href="https://upshiftai.dev/docs.html" className="btn btn-secondary" style={{ fontSize: '12px' }} target="_blank">
               📚 Documentation
             </Link>
             {pro && (
@@ -65,7 +65,7 @@ export default async function Dashboard() {
                 <span><span style={{ color: 'var(--text-dim)' }}>$</span> npx upshiftai-deps report . --upload</span>
               </div>
               <div style={{ marginTop: '24px' }}>
-                <Link href="https://upshiftai.dev/dev" target="_blank" style={{ fontSize: '13px', color: 'var(--accent-primary)' }}>
+                <Link href="https://upshiftai.dev/dev.html" target="_blank" style={{ fontSize: '13px', color: 'var(--accent-primary)' }}>
                   View CLI Reference →
                 </Link>
               </div>

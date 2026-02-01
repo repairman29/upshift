@@ -1,42 +1,31 @@
-# upshiftai — Ancient Dependency Lineage
+# upshiftai — AI-Powered Dependency Intelligence
 
-**Make upshiftai.dev actually help** when dependencies fork back to ancient sub-branches of projects of yore.
+**Find ancient dependencies. Let AI tell you what matters.**
 
-**Landing & docs:** Static site in `site/` (index + docs). Deployed to [upshiftai.dev](https://upshiftai.dev).
+UpshiftAI analyzes dependency trees across **npm**, **pip**, and **Go**. It surfaces ancient/deprecated packages, detects security vulnerabilities, and provides automated fixes.
 
-**Documentation & executability:** All of this is documented and executable via the **CLI**. The **UI** (static site in `site/`) is the same reference: open `site/index.html` or `site/docs.html` to see every command and option; copy-paste into your terminal to run. No backend required — the CLI does the work locally.
+**Live Platform:** [upshiftai.dev](https://upshiftai.dev)  
+**Dashboard:** [api.upshiftai.dev](https://api.upshiftai.dev)
 
-| Where | What |
-|-------|------|
-| **README** (this file) | Quick start, all command summaries, config (checkpoint, rollback, apply, HITL, webhooks). |
-| **upshiftai.dev/docs** | Full CLI reference (analyze, report, checkpoint, rollback, apply), config, events, roadmap. |
-| **upshiftai.dev/dev** | **For developers**: install, CLI at a glance, config, programmatic API, CI, webhooks, env vars. |
-| **upshiftai.dev** | Try-it block with main commands; links to full docs. |
-| **docs/DESIGN-SUGGESTIONS-AUTOMATIONS.md** | Who benefits, suggestions, automations, HITL, webhooks, rollbacks. |
-| **.upshiftai.example.json** | Example `.upshiftai.json` for webhooks and approval. |
+## Pricing & Business Model
 
-This module:
+UpshiftAI operates on a **Freemium** model:
 
-- **Resolves dependency trees** from your lockfile (npm and pip today; go later).
-- **Detects ancient/legacy/fork signals**: old versions, last publish age, deprecated, repo redirects, fork hints.
-- **Outputs a report** (JSON + optional markdown) you can feed into upshiftai or JARVIS.
+| Tier | Price | Features |
+| :--- | :--- | :--- |
+| **CLI (Self-Hosted)** | **Free** (MIT) | Unlimited local analysis, manual fixes, full reports. You run it. |
+| **Pro Cloud** | **$19/mo** | **1,000 AI queries/mo**. JARVIS conversational analysis, smart risk assessment, priority support. |
+| **Team Cloud** | **$99/mo** | **10,000 AI queries/mo**. Custom ML models, SSO, audit logs. |
 
-Use it locally or wire it into [upshiftai.dev](https://upshiftai.dev) as the engine for “can we actually fix this tree?”
+**The CLI is always free.** You only pay for hosted AI intelligence and cloud convenience.
 
 ---
 
 ## Quick start
 
 ```bash
-cd upshiftai
-npm install   # optional: no prod deps for core
-node bin/upshiftai-deps.js analyze ../path/to/project
-```
-
-Or from a project that has `package-lock.json`:
-
-```bash
-npx upshiftai-deps analyze .
+# Analyze your project (zero install)
+npx upshiftai-deps@0.2.1 analyze .
 ```
 
 Use `--no-registry` to skip registry lookups (faster). Use `--markdown` to append a markdown report, or `--csv` for spreadsheet output (includes replacement suggestions). Use `--summary` to print only the one-pager. Use `--exit-code` with `--max-ancient=N` and/or `--max-deprecated=N` to exit 1 when thresholds are exceeded (CI gates). Use `--no-audit` to skip npm audit. Use `--ecosystem=npm|pip|go` to force; otherwise auto-detects. Registry metadata is **cached** in `.upshiftai-tmp/cache` (24h TTL) and fetched **in parallel** (10 at a time) for speed.
@@ -148,7 +137,7 @@ Output is JSON (for pipelines) and optional markdown for humans.
 ## Integration
 
 - **upshiftai.dev**: Call the CLI or `import { analyze, applyNpmUpgrade, ... } from 'upshiftai-deps'`; use JSON and events for upgrade suggestions, replace flows, or PR automation.
-- **JARVIS / CLAWDBOT**: Add as a skill that runs analysis and summarizes “you have N ancient deps; here are the worst.”
+- **JARVIS / CLAWDBOT**: 🤖 **Pro Required**. Install the skill, set your API key, and ask JARVIS to "analyze dependencies" or "check health".
 - **CI**: Run `analyze` and gate on ancient/deprecated count; run `apply` with `--yes` and webhooks for observability and rollback.
 
 ---
