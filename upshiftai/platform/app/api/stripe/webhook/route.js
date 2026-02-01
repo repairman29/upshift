@@ -2,9 +2,21 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { setSubscription, setSubscriptionStatusBySubscriptionId } from '@/lib/store';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', { apiVersion: '2024-09-30.acacia' });
+// Initialize Stripe only when needed (not during build)
+let stripe = null;
+function getStripe() {
+  if (!stripe && process.env.STRIPE_SECRET_KEY) {
+    stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2024-09-30.acacia' });
+  }
+  return stripe;
+}
 
 export async function POST(req) {
+  const stripeInstance = getStripe();
+  if (!stripeInstance) {
+    return NextResponse.json({ error: 'Stripe not configured' }, { status: 500 });
+  }
+
   const body = await req.text();
   const sig = req.headers.get('stripe-signature');
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -13,7 +25,7 @@ export async function POST(req) {
   }
   let event;
   try {
-    event = stripe.webhooks.constructEvent(body, sig, secret);
+    event = stripeInstance.webhooks.constructEvent(body, sig, secret);
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 400 });
   }
