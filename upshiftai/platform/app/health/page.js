@@ -1,45 +1,37 @@
-import { createClient } from '@supabase/supabase-js';
-
-export const dynamic = 'force-dynamic';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../api/auth/[...nextauth]/route';
+import { hasPro, getSubscriptions } from '@/lib/store';
+import { isSupabaseConfigured } from '@/lib/supabase';
 
 export default async function HealthPage() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  
-  let status = 'unknown';
-  let error = null;
-  let userCount = null;
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id ?? null;
+  const pro = userId ? await hasPro(userId) : false;
+  const allSubs = await getSubscriptions();
+  const dbConfigured = isSupabaseConfigured();
 
-  try {
-    if (!url || !key) {
-      throw new Error(`Missing env vars: URL=${!!url}, KEY=${!!key}`);
-    }
-
-    const supabase = createClient(url, key);
-    const { count, error: dbError } = await supabase
-      .from('users')
-      .select('*', { count: 'exact', head: true });
-
-    if (dbError) throw dbError;
-    
-    status = 'connected';
-    userCount = count;
-  } catch (e) {
-    status = 'error';
-    error = e.message;
-  }
+  const debug = {
+    db: dbConfigured ? 'Supabase' : 'in-memory',
+    session: session
+      ? {
+          user: { id: session.user?.id, email: session.user?.email, name: session.user?.name },
+          expires: session.expires,
+        }
+      : null,
+    userId,
+    hasPro: pro,
+    subscriptionsSnapshot: allSubs,
+  };
 
   return (
-    <div style={{ padding: 40, fontFamily: 'monospace' }}>
-      <h1>System Health</h1>
-      <div>Status: <strong>{status}</strong></div>
-      {userCount !== null && <div>User Count: {userCount}</div>}
-      {error && <div style={{ color: 'red', marginTop: 20 }}>Error: {error}</div>}
-      <div style={{ marginTop: 20, color: '#666' }}>
-        Env Check:<br/>
-        URL: {url ? 'Set' : 'Missing'}<br/>
-        Key: {key ? 'Set' : 'Missing'}
-      </div>
+    <div className="platform-wrap" style={{ paddingTop: '1rem' }}>
+      <h1 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>Health / Debug</h1>
+      <p style={{ color: 'var(--muted)', marginBottom: '1.5rem' }}>
+        Session and subscription state (for diagnosing Pro / dashboard).
+      </p>
+      <pre className="pre-block" style={{ fontSize: '13px', lineHeight: 1.5 }}>
+        {JSON.stringify(debug, null, 2)}
+      </pre>
     </div>
   );
 }

@@ -11,3 +11,5 @@ Static site for [upshiftai.dev](https://upshiftai.dev). No build step.
 - **Any host:** Serve `index.html`, `docs.html`, `dev.html`, `pricing.html`, and `style.css` at the root.
 
 **Before deploy:** Replace placeholder GitHub links in the pages with your repo URL if you have one.
+
+**When releasing a new CLI version:** Update the version in the footer of all four pages (`index.html`, `docs.html`, `dev.html`, `pricing.html`): change `CLI v0.2.1` to the new version (e.g. `CLI v0.2.2`). Optionally keep `VERSION` at repo root in sync.

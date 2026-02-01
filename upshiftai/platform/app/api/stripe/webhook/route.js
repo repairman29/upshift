@@ -36,7 +36,7 @@ export async function POST(req) {
     const subscriptionId = typeof sub === 'string' ? sub : sub?.id;
     const customerId = session.customer;
     if (userId && (subscriptionId || customerId)) {
-      setSubscription(userId, {
+      await setSubscription(userId, {
         customerId: customerId || '',
         subscriptionId: subscriptionId || '',
         status: 'active',
@@ -46,11 +46,11 @@ export async function POST(req) {
   if (event.type === 'customer.subscription.updated') {
     const sub = event.data.object;
     const status = sub.status === 'active' ? 'active' : sub.status;
-    setSubscriptionStatusBySubscriptionId(sub.id, status);
+    await setSubscriptionStatusBySubscriptionId(sub.id, status);
   }
   if (event.type === 'customer.subscription.deleted') {
     const sub = event.data.object;
-    setSubscriptionStatusBySubscriptionId(sub.id, 'cancelled');
+    await setSubscriptionStatusBySubscriptionId(sub.id, 'cancelled');
   }
   return NextResponse.json({ received: true });
 }

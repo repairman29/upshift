@@ -19,7 +19,7 @@ async function main() {
   // Pro: $19/mo
   const proProduct = await stripe.products.create({
     name: 'UpshiftAI Pro',
-    description: 'Hosted dashboard, approval queue, priority support.',
+    description: 'Centralized reports, higher AI quotas, and priority support.',
   });
   const proPrice = await stripe.prices.create({
     product: proProduct.id,

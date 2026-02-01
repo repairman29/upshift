@@ -8,9 +8,11 @@ export default function SignIn() {
   const [password, setPassword] = useState('');
 
   return (
-    <div style={{ padding: '2rem', maxWidth: 400, margin: '0 auto' }}>
-      <h1 style={{ fontSize: '1.25rem', marginBottom: '1rem' }}>Sign in</h1>
-      <p style={{ color: '#888', marginBottom: '1rem' }}>MVP: use any email + password <code>demo</code> to sign in.</p>
+    <div className="platform-wrap" style={{ paddingTop: '2rem', maxWidth: 400 }}>
+      <h1 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>Sign in</h1>
+      <p style={{ color: 'var(--muted)', marginBottom: '1.5rem' }}>
+        Use any email + password <code>demo</code> to sign in.
+      </p>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -24,7 +26,6 @@ export default function SignIn() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          style={{ padding: '0.5rem', borderRadius: 6, border: '1px solid #2a2a2a', background: '#1a1a1a', color: '#e6e6e6' }}
         />
         <input
           type="password"
@@ -32,10 +33,17 @@ export default function SignIn() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          style={{ padding: '0.5rem', borderRadius: 6, border: '1px solid #2a2a2a', background: '#1a1a1a', color: '#e6e6e6' }}
         />
-        <button type="submit" style={{ padding: '0.6rem', background: '#3b82f6', color: '#fff', border: 'none', borderRadius: 6 }}>Sign in</button>
+        <button type="submit" className="btn btn-primary">Sign in</button>
       </form>
+      <p style={{ color: 'var(--muted)', marginTop: '1.5rem', marginBottom: '0.5rem' }}>Or</p>
+      <button
+        type="button"
+        onClick={() => signIn('github', { callbackUrl: '/dashboard' })}
+        className="btn btn-secondary"
+      >
+        Sign in with GitHub
+      </button>
     </div>
   );
 }

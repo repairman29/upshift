@@ -2,86 +2,91 @@ import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { authOptions } from '../../api/auth/[...nextauth]/route';
 import Link from 'next/link';
+import { getAiUsage, hasPro } from '@/lib/store';
+import CreateApiKeyBlock from './CreateApiKeyBlock';
 
 export default async function AIUsagePage() {
   const session = await getServerSession(authOptions);
-  
+
   if (!session) {
     redirect('/api/auth/signin');
   }
 
-  // Demo data (in production this would fetch from DB)
-  const demoApiKey = `uai_pro_${session.user.email?.replace('@', '_').replace('.', '_')}`;
-  const usage = 45;
-  const limit = 1000;
-  const percent = (usage / limit) * 100;
-  
-  return (
-    <div className="container" style={{ padding: '40px 24px' }}>
-      <div style={{ marginBottom: '32px' }}>
-        <Link href="/dashboard" style={{ color: 'var(--text-muted)', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '12px' }}>
-          ← Back to Dashboard
-        </Link>
-        <h1>AI Usage & API Keys</h1>
-      </div>
-      
-      <div className="card" style={{ marginBottom: '32px' }}>
-        <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3>Usage</h3>
-          <span className="badge badge-pro">PRO PLAN</span>
-        </div>
-        
-        <div style={{ marginBottom: '24px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '14px' }}>
-            <span>Monthly Quota</span>
-            <span style={{ fontWeight: 600 }}>{usage} / {limit} queries</span>
-          </div>
-          <div style={{ height: '8px', background: 'var(--bg-body)', borderRadius: '4px', overflow: 'hidden' }}>
-            <div style={{ width: `${percent}%`, background: 'var(--success)', height: '100%' }} />
-          </div>
-        </div>
-        
-        <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
-          Resets on <strong>March 1, 2026</strong>. Need more? <a href="mailto:support@upshiftai.dev" style={{ color: 'var(--accent-primary)' }}>Contact us</a>.
-        </div>
-      </div>
+  const usage = await getAiUsage(session.user.id);
+  const pro = await hasPro(session.user.id);
+  const displayKey = `uai_${pro ? 'pro' : 'free'}_${(session.user.email || session.user.id).toString().replace('@', '_').replace(/\./g, '_')}`;
+  const resetDate = new Date(usage.resetAt).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' });
+  const pct = usage.limit > 0 ? Math.min(100, (usage.count / usage.limit) * 100) : 0;
 
-      <div className="card" style={{ marginBottom: '32px' }}>
-        <div className="card-header">
-          <h3>Your API Key</h3>
+  return (
+    <div className="platform-wrap" style={{ paddingTop: '1rem' }}>
+      <h1 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>🤖 AI Usage & API Keys</h1>
+
+      <div className="card">
+        <h2>🚀 {pro ? 'Pro' : 'Free'} Plan</h2>
+        <div style={{ marginBottom: '1rem' }}>
+          <strong>Usage this month:</strong> {usage.count} / {usage.limit.toLocaleString()} AI queries
         </div>
-        <p style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '16px' }}>
-          Use this key to authenticate JARVIS skills and CI integrations.
-        </p>
-        
-        <div style={{ display: 'flex', gap: '12px' }}>
-          <code style={{ flex: 1, padding: '12px', fontSize: '14px', background: '#000', border: '1px solid var(--border)', display: 'block' }}>
-            {demoApiKey}
-          </code>
-          <button className="btn btn-secondary">Copy</button>
+        <div
+          style={{
+            background: 'var(--border)',
+            height: '20px',
+            borderRadius: '10px',
+            overflow: 'hidden',
+            marginBottom: '1rem',
+          }}
+        >
+          <div
+            style={{
+              background: 'var(--accent)',
+              height: '100%',
+              width: `${pct}%`,
+            }}
+          />
+        </div>
+        <div style={{ fontSize: '0.9rem', color: 'var(--muted)' }}>
+          <strong>Remaining:</strong> {usage.remaining.toLocaleString()} queries | <strong>Resets:</strong> {resetDate}
         </div>
       </div>
 
       <div className="card">
-        <div className="card-header">
-          <h3>Setup Instructions</h3>
-        </div>
-        
-        <div style={{ marginBottom: '24px' }}>
-          <h4 style={{ fontSize: '14px', marginBottom: '8px' }}>1. Local Environment</h4>
-          <code style={{ display: 'block', padding: '12px', background: '#000', fontSize: '13px' }}>
-            export UPSHIFTAI_API_KEY={demoApiKey}
-          </code>
-        </div>
+        <h3>🔑 Your API Key</h3>
+        <p style={{ color: 'var(--muted)', marginBottom: '1rem' }}>
+          Use a key to access AI features in JARVIS. Create a persistent key below, or use the display key for demo.
+        </p>
+        <CreateApiKeyBlock />
+        <p style={{ color: 'var(--muted)', fontSize: '0.9rem', marginTop: '1rem' }}>
+          Display key (session-based): <code style={{ wordBreak: 'break-all' }}>{displayKey}</code>
+        </p>
+      </div>
 
-        <div>
-          <h4 style={{ fontSize: '14px', marginBottom: '8px' }}>2. Ask JARVIS</h4>
-          <code style={{ display: 'block', padding: '12px', background: '#000', fontSize: '13px', color: 'var(--text-muted)' }}>
-            "Analyze my dependencies"<br/>
-            "Check for ancient packages"<br/>
-            "How's my dependency health?"
-          </code>
+      <div className="card">
+        <h3>⚙️ Setup Instructions</h3>
+        <p><strong>Environment Variable:</strong></p>
+        <div className="pre-block">
+          export UPSHIFTAI_API_KEY=your_key_here
         </div>
+        <p><strong>JARVIS Usage:</strong></p>
+        <div className="pre-block" style={{ fontSize: '0.9rem' }}>
+          # Now you can ask JARVIS:<br />
+          &quot;Analyze my dependencies&quot;<br />
+          &quot;Check for ancient packages&quot;<br />
+          &quot;How&apos;s my dependency health?&quot;
+        </div>
+      </div>
+
+      <div className="card" style={{ borderColor: 'var(--accent)', background: 'rgba(59, 130, 246, 0.08)' }}>
+        <h3>🚀 {pro ? 'Pro' : 'Free'} Features</h3>
+        <p style={{ color: 'var(--muted)', marginBottom: '1rem' }}>You have access to:</p>
+        <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 1rem', color: 'var(--muted)' }}>
+          <li>✅ {usage.limit.toLocaleString()} AI queries/month</li>
+          <li>✅ JARVIS conversational analysis</li>
+          <li>✅ Smart risk assessment</li>
+          <li>✅ Predictive vulnerability scoring</li>
+        </ul>
+        <Link href="/dashboard" className="btn btn-primary">
+          ← Back to Dashboard
+        </Link>
       </div>
     </div>
   );

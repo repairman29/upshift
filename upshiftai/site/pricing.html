@@ -3,213 +3,112 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Pricing — UpshiftAI</title>
-  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-  <!-- Font Preloading -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css">
+  <title>Pricing &amp; packaging — UpshiftAI</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="header">
-    <div class="container">
-      <a href="/" class="logo">
-        <div class="logo-mark"></div>
-        <span>UpshiftAI</span>
-      </a>
-      <nav class="desktop-nav">
-        <a href="/">Features</a>
-        <a href="pricing.html" class="active">Pricing</a>
-        <a href="docs.html">Docs</a>
+  <header class="site-header">
+    <div class="wrap">
+      <a href="." class="logo">UpshiftAI</a>
+      <nav>
+        <a href=".">Home</a>
+        <a href="docs.html">How it works</a>
         <a href="dev.html">Developers</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="https://github.com/repairman29/CLAWDBOT/tree/main/upshiftai" class="nav-cta" target="_blank" rel="noopener">GitHub</a>
       </nav>
-      <div class="header-actions">
-        <a href="https://github.com/repairman29/upshift/tree/main/upshiftai" class="btn btn-ghost" target="_blank">GitHub</a>
-        <a href="https://api.upshiftai.dev/dashboard" class="btn btn-primary">Dashboard</a>
-      </div>
     </div>
   </header>
 
-  <main>
-    <section class="hero" style="padding-bottom: 40px;">
-      <div class="container" style="text-align: center;">
-        <h1 class="headline">Simple, transparent pricing</h1>
-        <p class="subheadline">Free for individuals. Powerful for teams.</p>
-      </div>
-    </section>
+  <main class="docs-content">
+    <div class="wrap">
+      <h1>Pricing &amp; packaging</h1>
+      <p><strong>🤖 AI-Powered Dependency Intelligence</strong> — JARVIS conversational analysis, smart suggestions, and predictive vulnerability detection. Basic CLI analysis is free forever.</p>
 
-    <section class="pricing">
-      <div class="container">
-        <div class="feature-grid" style="grid-template-columns: repeat(3, 1fr); align-items: start;">
-          
-          <!-- Self-Hosted / Free Tier -->
-          <div class="feature-card" style="display: flex; flex-direction: column; height: 100%;">
-            <div style="margin-bottom: 20px;">
-              <h3 style="font-size: 20px; margin-bottom: 8px;">Self-Hosted</h3>
-              <div style="font-size: 36px; font-weight: 700; color: var(--text-main);">$0<span style="font-size: 16px; font-weight: 400; color: var(--text-muted);">/mo</span></div>
-              <p style="font-size: 14px; margin-top: 8px;">Open Source (MIT). Run it yourself.</p>
-            </div>
-            <a href="https://github.com/repairman29/upshift" class="btn btn-secondary full-width" style="margin-bottom: 24px;">View on GitHub</a>
-            <ul class="benefit-list" style="margin-top: 0;">
-              <li><strong>You host & manage everything</strong></li>
-              <li>Unlimited CLI analysis</li>
-              <li>Bring your own AI keys</li>
-              <li>Manual updates & maintenance</li>
-              <li>Community support</li>
-            </ul>
-          </div>
+      <h2>Packaging (how you get it)</h2>
+      <ul>
+        <li><strong>CLI</strong> — <code>npx upshiftai-deps</code> or global install. Full feature set: analyze, report, checkpoint, rollback, apply. Runs locally; no account required.</li>
+        <li><strong>npm package</strong> — <code>upshiftai-deps</code>. Use as a library: <code>import { analyze, applyNpmUpgrade, ... } from 'upshiftai-deps'</code>. Same capabilities as CLI.</li>
+        <li><strong>Open source</strong> — <a href="https://github.com/repairman29/CLAWDBOT/tree/main/upshiftai" target="_blank" rel="noopener">GitHub (CLAWDBOT/upshiftai)</a>. Clone, fork, self-host. MIT.</li>
+        <li><strong>Hosted platform</strong> — <a href="https://github.com/repairman29/CLAWDBOT/tree/main/upshiftai/platform" target="_blank" rel="noopener">platform/</a> in the repo: Next.js app with auth, dashboard, reports API, Stripe Pro checkout. Deploy and charge.</li>
+      </ul>
 
-          <!-- Cloud Pro Tier -->
-          <div class="feature-card" style="border-color: var(--accent-primary); background: rgba(59, 130, 246, 0.05); display: flex; flex-direction: column; height: 100%; position: relative;">
-            <div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--accent-primary); color: white; padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Cloud Hosted</div>
-            <div style="margin-bottom: 20px;">
-              <h3 style="font-size: 20px; margin-bottom: 8px; color: var(--accent-primary);">Pro Cloud</h3>
-              <div style="font-size: 36px; font-weight: 700; color: var(--text-main);">$19<span style="font-size: 16px; font-weight: 400; color: var(--text-muted);">/mo</span></div>
-              <p style="font-size: 14px; margin-top: 8px;">We host it. You get AI superpowers.</p>
-            </div>
-            <a href="https://api.upshiftai.dev/dashboard" class="btn btn-primary full-width" style="margin-bottom: 24px;">Start Trial</a>
-            <ul class="benefit-list" style="margin-top: 0;">
-              <li><strong>Fully Managed Service</strong></li>
-              <li>1,000 AI queries/month included</li>
-              <li>Zero-config JARVIS integration</li>
-              <li>Hosted dashboard & history</li>
-              <li>Priority support</li>
-            </ul>
-          </div>
+      <h2>Pay now (get to revenue sooner)</h2>
+      <p>You don’t have to wait for the hosted dashboard. Support the project or buy help today:</p>
+      <ul>
+        <li><strong>Sponsor</strong> — <a href="https://github.com/sponsors/repairman29" target="_blank" rel="noopener">GitHub Sponsors</a> or your Open Collective. Recurring support; we’ll thank you and keep the CLI free.</li>
+        <li><strong>Paid support / audit</strong> — Need a dependency audit, upgrade runbook, or HITL setup? <a href="mailto:support@upshiftai.dev?subject=UpshiftAI%20support%20or%20audit">Contact us</a> for Pro support (hourly or per-repo audit). We run the report, annotate “something old” chains, and deliver a prioritized fix list + optional call.</li>
+        <li><strong>Pro founding</strong> — Lock in a low Pro price now; get hosted dashboard + approval queue when we launch. See Pro tier below.</li>
+      </ul>
 
-          <!-- Team Tier -->
-          <div class="feature-card" style="display: flex; flex-direction: column; height: 100%;">
-            <div style="margin-bottom: 20px;">
-              <h3 style="font-size: 20px; margin-bottom: 8px;">Team Cloud</h3>
-              <div style="font-size: 36px; font-weight: 700; color: var(--text-main);">$99<span style="font-size: 16px; font-weight: 400; color: var(--text-muted);">/mo</span></div>
-              <p style="font-size: 14px; margin-top: 8px;">For scaling engineering teams.</p>
-            </div>
-            <a href="mailto:sales@upshiftai.dev" class="btn btn-secondary full-width" style="margin-bottom: 24px;">Contact Sales</a>
-            <ul class="benefit-list" style="margin-top: 0;">
-              <li><strong>Everything in Pro Cloud, plus:</strong></li>
-              <li>10,000 AI queries/month</li>
-              <li>Custom ML models</li>
-              <li>SSO & Audit logs</li>
-              <li>Dedicated support channel</li>
-              <li>VPC / Private Cloud available</li>
-            </ul>
-          </div>
+      <h2>Pricing tiers</h2>
 
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <h3>Free</h3>
+          <p class="price">$0</p>
+          <p class="price-desc">Forever</p>
+          <ul>
+            <li>CLI: analyze, report, health, checkpoint, rollback</li>
+            <li>Basic automated fixes (npm/pip/go)</li>
+            <li>Static suggestions from built-in map</li>
+            <li><strong>🤖 10 AI queries/month</strong> (JARVIS skill)</li>
+            <li>Unlimited projects, local use</li>
+            <li>Community support (GitHub)</li>
+          </ul>
+          <a href="index.html#try" class="btn btn-secondary">Get started</a>
+        </div>
+        <div class="pricing-card pricing-card-featured">
+          <h3>Pro</h3>
+          <p class="price">$19<span class="price-unit">/mo</span></p>
+          <p class="price-desc">🤖 AI-Powered Intelligence</p>
+          <ul>
+            <li>Everything in Free</li>
+            <li><strong>🤖 1,000 AI queries/month</strong></li>
+            <li><strong>JARVIS conversational analysis</strong></li>
+            <li><strong>Smart risk assessment &amp; suggestions</strong></li>
+            <li><strong>Predictive vulnerability scoring</strong></li>
+            <li>Hosted dashboard (coming Q2): centralized reports</li>
+            <li>Priority support</li>
+          </ul>
+          <a href="mailto:pro@upshiftai.dev?subject=Pro%20AI%20features" class="btn btn-primary">Upgrade to Pro</a>
+        </div>
+        <div class="pricing-card">
+          <h3>Team / Enterprise</h3>
+          <p class="price">From $99<span class="price-unit">/mo</span></p>
+          <p class="price-desc">🧠 Custom AI Training</p>
+          <ul>
+            <li>Everything in Pro</li>
+            <li><strong>🤖 10,000 AI queries/month</strong></li>
+            <li><strong>Custom recommendation engine</strong></li>
+            <li><strong>ML models trained on your repos</strong></li>
+            <li><strong>Upgrade impact analysis</strong></li>
+            <li>SSO, org policies, SLA</li>
+            <li>On-prem deployment</li>
+            <li>Dedicated support</li>
+          </ul>
+          <a href="mailto:enterprise@upshiftai.dev?subject=Team%20AI%20features" target="_blank" rel="noopener" class="btn btn-secondary">Contact</a>
         </div>
       </div>
-    </section>
+      <p class="pricing-note">Pro: pay now to lock in $19/mo; you get dashboard access when we launch. Free tier stays free. Replace pro@ / enterprise@ / support@ with your real addresses or a payment link (Stripe, Lemon Squeezy). Full playbook: <code>docs/MONETIZATION-SOONER.md</code> in the repo.</p>
 
-    <section class="deep-dive">
-      <div class="container">
-        <div class="section-header">
-          <h2>Compare Features</h2>
-        </div>
-        <div style="overflow-x: auto;">
-          <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
-            <thead>
-              <tr style="text-align: left; border-bottom: 1px solid var(--border);">
-                <th style="padding: 16px; color: var(--text-muted); font-weight: 500;">Feature</th>
-                <th style="padding: 16px; color: var(--text-main); width: 20%;">Free</th>
-                <th style="padding: 16px; color: var(--accent-primary); width: 20%;">Pro</th>
-                <th style="padding: 16px; color: var(--text-main); width: 20%;">Team</th>
-              </tr>
-            </thead>
-            <tbody style="font-size: 14px;">
-              <tr style="border-bottom: 1px solid var(--border-light);">
-                <td style="padding: 16px;">CLI Analysis (npm/pip/go)</td>
-                <td style="padding: 16px;">Unlimited</td>
-                <td style="padding: 16px;">Unlimited</td>
-                <td style="padding: 16px;">Unlimited</td>
-              </tr>
-              <tr style="border-bottom: 1px solid var(--border-light);">
-                <td style="padding: 16px;">Automated Fixes</td>
-                <td style="padding: 16px;">Yes</td>
-                <td style="padding: 16px;">Yes</td>
-                <td style="padding: 16px;">Yes</td>
-              </tr>
-              <tr style="border-bottom: 1px solid var(--border-light);">
-                <td style="padding: 16px;">AI Queries / Month</td>
-                <td style="padding: 16px;">10</td>
-                <td style="padding: 16px; font-weight: 700; color: var(--accent-primary);">1,000</td>
-                <td style="padding: 16px; font-weight: 700;">10,000</td>
-              </tr>
-              <tr style="border-bottom: 1px solid var(--border-light);">
-                <td style="padding: 16px;">JARVIS Conversation</td>
-                <td style="padding: 16px; opacity: 0.5;">Limited</td>
-                <td style="padding: 16px;">Full Access</td>
-                <td style="padding: 16px;">Full Access</td>
-              </tr>
-              <tr style="border-bottom: 1px solid var(--border-light);">
-                <td style="padding: 16px;">Custom ML Models</td>
-                <td style="padding: 16px; opacity: 0.5;">-</td>
-                <td style="padding: 16px; opacity: 0.5;">-</td>
-                <td style="padding: 16px;">Yes</td>
-              </tr>
-              <tr style="border-bottom: 1px solid var(--border-light);">
-                <td style="padding: 16px;">SSO & Audit Logs</td>
-                <td style="padding: 16px; opacity: 0.5;">-</td>
-                <td style="padding: 16px; opacity: 0.5;">-</td>
-                <td style="padding: 16px;">Yes</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
+      <h2>What counts as usage</h2>
+      <p>Right now: nothing is metered. The CLI and npm package run on your machine; we don’t send dependency trees to our servers. When we add hosted features (Pro/Team), we’ll define usage (e.g. reports per month, seats) and publish it here.</p>
 
-    <section class="integration">
-      <div class="container">
-        <div class="section-header">
-          <h2>Frequently Asked Questions</h2>
-        </div>
-        <div class="feature-grid" style="grid-template-columns: 1fr 1fr; text-align: left;">
-          <div>
-            <h3 style="font-size: 16px; margin-bottom: 8px;">Do I need a credit card for Free tier?</h3>
-            <p style="font-size: 14px; color: var(--text-muted);">No. The Free tier is free forever and includes unlimited local CLI usage. You only pay if you need high-volume AI features.</p>
-          </div>
-          <div>
-            <h3 style="font-size: 16px; margin-bottom: 8px;">What counts as an AI query?</h3>
-            <p style="font-size: 14px; color: var(--text-muted);">Conversational questions to JARVIS ("analyze my deps"), smart risk assessments, and AI-powered suggestions count. Basic CLI commands do not count.</p>
-          </div>
-          <div>
-            <h3 style="font-size: 16px; margin-bottom: 8px;">Can I use this for commercial projects?</h3>
-            <p style="font-size: 14px; color: var(--text-muted);">Yes! UpshiftAI is open source (MIT) and free for commercial use. You only pay for hosted AI cloud features.</p>
-          </div>
-          <div>
-            <h3 style="font-size: 16px; margin-bottom: 8px;">How does JARVIS integration work?</h3>
-            <p style="font-size: 14px; color: var(--text-muted);">Install the skill in your CLAWDBOT agent. Set your API key from the dashboard to unlock conversational analysis.</p>
-          </div>
-        </div>
-      </div>
-    </section>
+      <h2>Summary</h2>
+      <ul>
+        <li><strong>Free</strong> — Complete CLI + 10 AI queries/month. Perfect for individual developers.</li>
+        <li><strong>Pro ($19/mo)</strong> — 1,000 AI queries + JARVIS conversational analysis. Essential for teams using AI-powered development.</li>
+        <li><strong>Team ($99+/mo)</strong> — 10,000 AI queries + custom ML models. Enterprise AI intelligence.</li>
+        <li><strong>API Key Required</strong> — Set <code>UPSHIFTAI_API_KEY</code> environment variable to use AI features.</li>
+      </ul>
+      <p><strong>🚀 Start free, upgrade when you need more AI intelligence.</strong></p>
+    </div>
   </main>
 
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-brand">
-          <span class="logo-text">UpshiftAI</span>
-          <p>Dependency intelligence for the modern web.</p>
-        </div>
-        <div class="footer-links">
-          <div class="col">
-            <h4>Product</h4>
-            <a href="/">Features</a>
-            <a href="pricing.html">Pricing</a>
-            <a href="docs.html">Changelog</a>
-          </div>
-          <div class="col">
-            <h4>Resources</h4>
-            <a href="docs.html">Documentation</a>
-            <a href="dev.html">API Reference</a>
-            <a href="https://github.com/repairman29/upshift/tree/main/upshiftai">GitHub</a>
-          </div>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2026 UpshiftAI. Open Source (MIT).</p>
-      </div>
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><a href=".">UpshiftAI</a> — ancient dependency lineage. <strong>CLI v0.2.1</strong>. Part of the <a href="https://github.com/repairman29/CLAWDBOT" target="_blank" rel="noopener">CLAWDBOT</a> ecosystem. <a href="https://github.com/sponsors/repairman29" target="_blank" rel="noopener">Sponsor</a> · <a href="pricing.html">Pricing</a></p>
     </div>
   </footer>
 </body>

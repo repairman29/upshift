@@ -16,7 +16,7 @@ export default function CheckoutButton() {
     }
   };
   return (
-    <button type="button" onClick={handleClick} disabled={loading} style={{ padding: '0.5rem 1rem', background: '#3b82f6', color: '#fff', border: 'none', borderRadius: 6 }}>
+    <button type="button" onClick={handleClick} disabled={loading} className="btn btn-primary">
       {loading ? '…' : 'Upgrade to Pro'}
     </button>
   );

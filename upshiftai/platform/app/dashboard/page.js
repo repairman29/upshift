@@ -10,98 +10,37 @@ export default async function Dashboard() {
   if (!session) {
     redirect('/api/auth/signin');
   }
+  const userId = session.user?.id;
+  const reports = await getReportsByUser(userId);
+  const pro = await hasPro(userId);
 
-  try {
-    const userId = session.user?.id;
-    const reports = (await getReportsByUser(userId)) || [];
-    const pro = await hasPro(userId);
-
-    return (
-      <div className="container" style={{ padding: '40px 24px' }}>
-        <div className="dash-header">
-          <h1>Dashboard</h1>
-          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-            <span style={{ fontSize: '14px', color: 'var(--text-muted)' }}>{session.user.email}</span>
-            <Link href="/api/auth/signout" className="btn btn-secondary">Sign out</Link>
-            {!pro && <CheckoutButton />}
-          </div>
-        </div>
-
-        {!pro && (
-          <div className="card" style={{ background: 'rgba(59, 130, 246, 0.1)', borderColor: 'var(--accent-primary)', marginBottom: '32px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <h3 style={{ fontSize: '16px', color: 'var(--accent-primary)', marginBottom: '4px' }}>Upgrade to Pro</h3>
-                <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-muted)' }}>Get JARVIS integration, hosted reports, and priority support.</p>
-              </div>
-              <CheckoutButton />
-            </div>
-          </div>
-        )}
-
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'end', marginBottom: '16px' }}>
-          <h2>Reports</h2>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <Link href="https://upshiftai.dev/docs.html" className="btn btn-secondary" style={{ fontSize: '12px' }} target="_blank">
-              📚 Documentation
-            </Link>
-            {pro && (
-              <Link href="/dashboard/ai-usage" className="btn btn-secondary" style={{ fontSize: '12px' }}>
-                🤖 AI Usage & Keys
-              </Link>
-            )}
-          </div>
-        </div>
-
-        <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-          {reports.length === 0 ? (
-            <div style={{ padding: '48px', textAlign: 'center' }}>
-              <div style={{ fontSize: '32px', marginBottom: '16px' }}>⚡️</div>
-              <h3 style={{ fontSize: '16px', marginBottom: '8px' }}>Ready to analyze</h3>
-              <p style={{ color: 'var(--text-muted)', fontSize: '14px', maxWidth: '400px', margin: '0 auto 24px' }}>
-                Run your first analysis to see reports here.
-              </p>
-              <div style={{ background: 'rgba(0,0,0,0.3)', display: 'inline-flex', alignItems: 'center', gap: '12px', padding: '12px 16px', borderRadius: '6px', border: '1px solid var(--border-light)', fontFamily: 'monospace', fontSize: '13px' }}>
-                <span><span style={{ color: 'var(--text-dim)' }}>$</span> npx upshiftai-deps report . --upload</span>
-              </div>
-              <div style={{ marginTop: '24px' }}>
-                <Link href="https://upshiftai.dev/dev.html" target="_blank" style={{ fontSize: '13px', color: 'var(--accent-primary)' }}>
-                  View CLI Reference →
-                </Link>
-              </div>
-            </div>
-          ) : (
-            <div>
-              {reports.map((r) => (
-                <div key={r.id} className="list-item">
-                  <div>
-                    <Link href={`/dashboard/reports/${r.id}`} style={{ fontWeight: 500, display: 'block', marginBottom: '4px' }}>
-                      {r.project_name || r.projectName || 'Untitled Project'}
-                    </Link>
-                    <div style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'flex', gap: '8px' }}>
-                      <span>{r.ecosystem || 'npm'}</span>
-                      <span>•</span>
-                      <span>{new Date(r.created_at || r.createdAt || Date.now()).toLocaleDateString()}</span>
-                    </div>
-                  </div>
-                  <Link href={`/dashboard/reports/${r.id}`} className="btn btn-secondary" style={{ height: '32px', fontSize: '12px' }}>
-                    View Report
-                  </Link>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+  return (
+    <div className="platform-wrap" style={{ paddingTop: '1rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+        <h1 style={{ fontSize: '1.5rem', margin: 0 }}>Dashboard</h1>
+        {!pro && <CheckoutButton />}
       </div>
-    );
-  } catch (e) {
-    return (
-      <div className="container" style={{ padding: '40px' }}>
-        <div className="card" style={{ borderColor: 'var(--danger)' }}>
-          <h3 style={{ color: 'var(--danger)' }}>Dashboard Error</h3>
-          <p style={{ color: 'var(--text-muted)' }}>{e.message}</p>
+
+      {!pro && (
+        <div className="card">
+          <p style={{ margin: 0, color: 'var(--muted)' }}>Pro: $19/mo — centralized reports, higher AI quotas, and priority support so your team ships with confidence.</p>
         </div>
-      </div>
-    );
-  }
+      )}
+
+      <h2 style={{ fontSize: '1.1rem', marginBottom: '0.75rem' }}>Reports</h2>
+      <p style={{ color: 'var(--muted)', marginBottom: '1rem' }}>🤖 <strong style={{ color: 'var(--text)' }}>AI-powered analysis:</strong> Set <code>UPSHIFTAI_API_KEY</code> to enable JARVIS conversational dependency intelligence. <Link href="/dashboard/ai-usage" style={{ color: 'var(--accent)' }}>Get your API key →</Link></p>
+      {reports.length === 0 ? (
+        <p style={{ color: 'var(--muted)' }}>No reports yet.</p>
+      ) : (
+        <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+          {reports.map((r) => (
+            <li key={r.id} style={{ borderBottom: '1px solid var(--border)', padding: '0.75rem 0' }}>
+              <Link href={`/dashboard/reports/${r.id}`} style={{ color: 'var(--accent)', textDecoration: 'none' }}>{r.projectName}</Link>
+              <span style={{ color: 'var(--muted)', marginLeft: '0.5rem' }}>{r.ecosystem} · {new Date(r.createdAt).toLocaleDateString()}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
 }

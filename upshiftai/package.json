@@ -1,7 +1,7 @@
 {
   "name": "upshiftai-deps",
   "version": "0.2.1",
-  "description": "AI-powered dependency intelligence. Find ancient packages, security vulns, and fix them automatically. npm, pip, go.",
+  "description": "Analyze dependency trees and surface ancient/legacy/forked branches for upshiftai.dev",
   "type": "module",
   "main": "src/index.js",
   "bin": {

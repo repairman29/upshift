@@ -5,11 +5,11 @@ import { hasPro, createApiKey, getUserIdByApiKey } from '@/lib/store';
 export async function GET(req) {
   const session = await getServerSession(authOptions);
   const apiKey = req.headers.get('x-upshiftai-key') || req.headers.get('authorization')?.replace('Bearer ', '');
-  const userId = session?.user?.id ?? (apiKey ? getUserIdByApiKey(apiKey) : null);
+  const userId = session?.user?.id ?? (apiKey ? await getUserIdByApiKey(apiKey) : null);
   if (!userId) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 });
   }
-  const pro = hasPro(userId);
+  const pro = await hasPro(userId);
   return Response.json({
     userId,
     email: session?.user?.email ?? null,
@@ -23,6 +23,6 @@ export async function POST(req) {
   if (!session?.user?.id) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 });
   }
-  const key = createApiKey(session.user.id);
+  const key = await createApiKey(session.user.id);
   return Response.json({ apiKey: key });
 }
