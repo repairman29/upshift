@@ -1,4 +1,4 @@
-// File: /Users/jeffadkins/CLAWDBOT/upshiftai/platform/app/api/me/route.js
+// File: /Users/jeffadkins/upshift/upshiftai/platform/app/api/me/route.js
 import * as entry from '../../../../../app/api/me/route.js'
 import type { NextRequest } from 'next/server.js'
 

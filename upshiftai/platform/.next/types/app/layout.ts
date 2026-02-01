@@ -1,4 +1,4 @@
-// File: /Users/jeffadkins/CLAWDBOT/upshiftai/platform/app/layout.js
+// File: /Users/jeffadkins/upshift/upshiftai/platform/app/layout.js
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

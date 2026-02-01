@@ -1,4 +1,4 @@
-// File: /Users/jeffadkins/CLAWDBOT/upshiftai/platform/app/api/stripe/webhook/route.js
+// File: /Users/jeffadkins/upshift/upshiftai/platform/app/api/stripe/webhook/route.js
 import * as entry from '../../../../../../app/api/stripe/webhook/route.js'
 import type { NextRequest } from 'next/server.js'
 

@@ -10,42 +10,88 @@ export default async function Dashboard() {
   if (!session) {
     redirect('/api/auth/signin');
   }
-  const userId = session.user?.id;
-  const reports = getReportsByUser(userId);
-  const pro = hasPro(userId);
 
-  return (
-    <div style={{ padding: '2rem', maxWidth: 720, margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-        <h1 style={{ fontSize: '1.5rem', margin: 0 }}>Dashboard</h1>
-        <div style={{ display: 'flex', gap: '1rem' }}>
-          <Link href="/api/auth/signout" style={{ color: '#888', textDecoration: 'none' }}>Sign out</Link>
-          {!pro && (
-            <CheckoutButton />
+  try {
+    const userId = session.user?.id;
+    const reports = (await getReportsByUser(userId)) || [];
+    const pro = await hasPro(userId);
+
+    return (
+      <div className="container" style={{ padding: '40px 24px' }}>
+        <div className="dash-header">
+          <h1>Dashboard</h1>
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <span style={{ fontSize: '14px', color: 'var(--text-muted)' }}>{session.user.email}</span>
+            <Link href="/api/auth/signout" className="btn btn-secondary">Sign out</Link>
+            {!pro && <CheckoutButton />}
+          </div>
+        </div>
+
+        {!pro && (
+          <div className="card" style={{ background: 'rgba(59, 130, 246, 0.1)', borderColor: 'var(--accent-primary)', marginBottom: '32px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <h3 style={{ fontSize: '16px', color: 'var(--accent-primary)', marginBottom: '4px' }}>Upgrade to Pro</h3>
+                <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-muted)' }}>Get JARVIS integration, hosted reports, and priority support.</p>
+              </div>
+              <CheckoutButton />
+            </div>
+          </div>
+        )}
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'end', marginBottom: '16px' }}>
+          <h2>Reports</h2>
+          {pro && (
+            <Link href="/dashboard/ai-usage" className="btn btn-secondary" style={{ fontSize: '12px' }}>
+              🤖 AI Usage & Keys
+            </Link>
+          )}
+        </div>
+
+        <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+          {reports.length === 0 ? (
+            <div style={{ padding: '48px', textAlign: 'center' }}>
+              <div style={{ fontSize: '32px', marginBottom: '16px' }}>📉</div>
+              <h3 style={{ fontSize: '16px', marginBottom: '8px' }}>No reports yet</h3>
+              <p style={{ color: 'var(--text-muted)', fontSize: '14px', maxWidth: '400px', margin: '0 auto 24px' }}>
+                Run an analysis from your terminal to see it here.
+              </p>
+              <div style={{ background: 'rgba(0,0,0,0.3)', display: 'inline-block', padding: '12px 16px', borderRadius: '6px', fontFamily: 'monospace', fontSize: '13px' }}>
+                <span style={{ color: 'var(--text-dim)' }}>$</span> npx upshiftai-deps report . --upload
+              </div>
+            </div>
+          ) : (
+            <div>
+              {reports.map((r) => (
+                <div key={r.id} className="list-item">
+                  <div>
+                    <Link href={`/dashboard/reports/${r.id}`} style={{ fontWeight: 500, display: 'block', marginBottom: '4px' }}>
+                      {r.project_name || r.projectName || 'Untitled Project'}
+                    </Link>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'flex', gap: '8px' }}>
+                      <span>{r.ecosystem || 'npm'}</span>
+                      <span>•</span>
+                      <span>{new Date(r.created_at || r.createdAt || Date.now()).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                  <Link href={`/dashboard/reports/${r.id}`} className="btn btn-secondary" style={{ height: '32px', fontSize: '12px' }}>
+                    View Report
+                  </Link>
+                </div>
+              ))}
+            </div>
           )}
         </div>
       </div>
-
-      {!pro && (
-        <div style={{ background: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 8, padding: '1rem', marginBottom: '1.5rem' }}>
-          <p style={{ margin: 0, color: '#888' }}>Pro: $19/mo — hosted reports, approval queue, priority support. We charge because we can.</p>
+    );
+  } catch (e) {
+    return (
+      <div className="container" style={{ padding: '40px' }}>
+        <div className="card" style={{ borderColor: 'var(--danger)' }}>
+          <h3 style={{ color: 'var(--danger)' }}>Dashboard Error</h3>
+          <p style={{ color: 'var(--text-muted)' }}>{e.message}</p>
         </div>
-      )}
-
-      <h2 style={{ fontSize: '1.1rem', marginBottom: '0.75rem' }}>Reports</h2>
-      <p style={{ color: '#888', marginBottom: '1rem' }}>🤖 <strong>AI-powered analysis:</strong> Set <code style={{ background: '#1a1a1a', padding: '0.2rem 0.4rem', borderRadius: 4, color: '#f8f9fa' }}>UPSHIFTAI_API_KEY</code> to enable JARVIS conversational dependency intelligence. <Link href="/dashboard/ai-usage" style={{ color: '#007bff' }}>Get your API key →</Link></p>
-      {reports.length === 0 ? (
-        <p style={{ color: '#888' }}>No reports yet.</p>
-      ) : (
-        <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-          {reports.map((r) => (
-            <li key={r.id} style={{ borderBottom: '1px solid #2a2a2a', padding: '0.75rem 0' }}>
-              <Link href={`/dashboard/reports/${r.id}`} style={{ color: '#3b82f6', textDecoration: 'none' }}>{r.projectName}</Link>
-              <span style={{ color: '#888', marginLeft: '0.5rem' }}>{r.ecosystem} · {new Date(r.createdAt).toLocaleDateString()}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
+      </div>
+    );
+  }
 }

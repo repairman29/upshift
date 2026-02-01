@@ -1,4 +1,4 @@
-// File: /Users/jeffadkins/CLAWDBOT/upshiftai/platform/app/auth/signin/page.js
+// File: /Users/jeffadkins/upshift/upshiftai/platform/app/auth/signin/page.js
 import * as entry from '../../../../../app/auth/signin/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

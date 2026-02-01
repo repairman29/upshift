@@ -1,4 +1,4 @@
-// File: /Users/jeffadkins/CLAWDBOT/upshiftai/platform/app/dashboard/page.js
+// File: /Users/jeffadkins/upshift/upshiftai/platform/app/dashboard/page.js
 import * as entry from '../../../../app/dashboard/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

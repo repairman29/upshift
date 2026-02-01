@@ -10,131 +10,78 @@ export default async function AIUsagePage() {
     redirect('/api/auth/signin');
   }
 
-  // For demo, generate API key from email
+  // Demo data (in production this would fetch from DB)
   const demoApiKey = `uai_pro_${session.user.email?.replace('@', '_').replace('.', '_')}`;
+  const usage = 45;
+  const limit = 1000;
+  const percent = (usage / limit) * 100;
   
   return (
-    <div style={{ padding: '2rem', maxWidth: '800px' }}>
-      <h1>🤖 AI Usage & API Keys</h1>
-      
-      <div style={{ 
-        background: '#f8f9fa', 
-        padding: '1.5rem', 
-        borderRadius: '8px', 
-        marginBottom: '2rem',
-        border: '1px solid #e9ecef'
-      }}>
-        <h2>🚀 Pro Plan</h2>
-        <div style={{ marginBottom: '1rem' }}>
-          <strong>Usage this month:</strong> 45 / 1,000 AI queries
-        </div>
-        
-        <div style={{
-          background: '#e9ecef',
-          height: '20px',
-          borderRadius: '10px',
-          overflow: 'hidden',
-          marginBottom: '1rem'
-        }}>
-          <div style={{
-            background: '#28a745',
-            height: '100%',
-            width: '4.5%',
-          }} />
-        </div>
-        
-        <div style={{ fontSize: '0.9rem', color: '#6c757d' }}>
-          <strong>Remaining:</strong> 955 queries | <strong>Resets:</strong> March 1, 2026
-        </div>
-      </div>
-
-      <div style={{
-        background: '#f8f9fa',
-        padding: '1.5rem',
-        borderRadius: '8px',
-        marginBottom: '2rem',
-        border: '1px solid #e9ecef'
-      }}>
-        <h3>🔑 Your API Key</h3>
-        <p style={{ color: '#6c757d', marginBottom: '1rem' }}>
-          Use this key to access AI features in JARVIS:
-        </p>
-        <div style={{
-          background: '#1a1a1a',
-          padding: '1rem',
-          borderRadius: '4px',
-          fontFamily: 'monospace',
-          color: '#f8f9fa',
-          marginBottom: '1rem',
-          wordBreak: 'break-all'
-        }}>
-          {demoApiKey}
-        </div>
-      </div>
-
-      <div style={{
-        background: '#f8f9fa',
-        padding: '1.5rem',
-        borderRadius: '8px',
-        marginBottom: '2rem',
-        border: '1px solid #e9ecef'
-      }}>
-        <h3>⚙️ Setup Instructions</h3>
-        <p><strong>Environment Variable:</strong></p>
-        <div style={{
-          background: '#1a1a1a',
-          padding: '1rem',
-          borderRadius: '4px',
-          fontFamily: 'monospace',
-          color: '#f8f9fa',
-          marginBottom: '1rem'
-        }}>
-          export UPSHIFTAI_API_KEY={demoApiKey}
-        </div>
-        
-        <p><strong>JARVIS Usage:</strong></p>
-        <div style={{
-          background: '#1a1a1a',
-          padding: '1rem',
-          borderRadius: '4px',
-          fontFamily: 'monospace',
-          color: '#f8f9fa',
-          fontSize: '0.9rem'
-        }}>
-          # Now you can ask JARVIS:<br/>
-          "Analyze my dependencies"<br/>
-          "Check for ancient packages"<br/>
-          "How's my dependency health?"
-        </div>
-      </div>
-
-      <div style={{
-        background: '#fff3cd',
-        padding: '1.5rem',
-        borderRadius: '8px',
-        border: '1px solid #ffeaa7'
-      }}>
-        <h3>🚀 Pro Features Unlocked</h3>
-        <p>You have access to:</p>
-        <div style={{ marginBottom: '1rem' }}>
-          <strong>✅ 1,000 AI queries/month</strong><br/>
-          <strong>✅ JARVIS conversational analysis</strong><br/>
-          <strong>✅ Smart risk assessment</strong><br/>
-          <strong>✅ Predictive vulnerability scoring</strong>
-        </div>
-        <Link 
-          href="/dashboard" 
-          style={{
-            background: '#007bff',
-            color: 'white',
-            padding: '0.5rem 1rem',
-            borderRadius: '4px',
-            textDecoration: 'none',
-            display: 'inline-block'
-          }}
-        >
+    <div className="container" style={{ padding: '40px 24px' }}>
+      <div style={{ marginBottom: '32px' }}>
+        <Link href="/dashboard" style={{ color: 'var(--text-muted)', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '12px' }}>
           ← Back to Dashboard
         </Link>
+        <h1>AI Usage & API Keys</h1>
+      </div>
+      
+      <div className="card" style={{ marginBottom: '32px' }}>
+        <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h3>Usage</h3>
+          <span className="badge badge-pro">PRO PLAN</span>
+        </div>
+        
+        <div style={{ marginBottom: '24px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '14px' }}>
+            <span>Monthly Quota</span>
+            <span style={{ fontWeight: 600 }}>{usage} / {limit} queries</span>
+          </div>
+          <div style={{ height: '8px', background: 'var(--bg-body)', borderRadius: '4px', overflow: 'hidden' }}>
+            <div style={{ width: `${percent}%`, background: 'var(--success)', height: '100%' }} />
+          </div>
+        </div>
+        
+        <div style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
+          Resets on <strong>March 1, 2026</strong>. Need more? <a href="mailto:support@upshiftai.dev" style={{ color: 'var(--accent-primary)' }}>Contact us</a>.
+        </div>
+      </div>
+
+      <div className="card" style={{ marginBottom: '32px' }}>
+        <div className="card-header">
+          <h3>Your API Key</h3>
+        </div>
+        <p style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '16px' }}>
+          Use this key to authenticate JARVIS skills and CI integrations.
+        </p>
+        
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <code style={{ flex: 1, padding: '12px', fontSize: '14px', background: '#000', border: '1px solid var(--border)', display: 'block' }}>
+            {demoApiKey}
+          </code>
+          <button className="btn btn-secondary">Copy</button>
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="card-header">
+          <h3>Setup Instructions</h3>
+        </div>
+        
+        <div style={{ marginBottom: '24px' }}>
+          <h4 style={{ fontSize: '14px', marginBottom: '8px' }}>1. Local Environment</h4>
+          <code style={{ display: 'block', padding: '12px', background: '#000', fontSize: '13px' }}>
+            export UPSHIFTAI_API_KEY={demoApiKey}
+          </code>
+        </div>
+
+        <div>
+          <h4 style={{ fontSize: '14px', marginBottom: '8px' }}>2. Ask JARVIS</h4>
+          <code style={{ display: 'block', padding: '12px', background: '#000', fontSize: '13px', color: 'var(--text-muted)' }}>
+            "Analyze my dependencies"<br/>
+            "Check for ancient packages"<br/>
+            "How's my dependency health?"
+          </code>
+        </div>
       </div>
     </div>
   );
