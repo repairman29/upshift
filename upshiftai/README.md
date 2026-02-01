@@ -2,16 +2,16 @@
 
 **Make upshiftai.dev actually help** when dependencies fork back to ancient sub-branches of projects of yore.
 
-**Landing & docs:** Static site in `site/` (index + docs). Deploy `site/` to upshiftai.dev (Vercel, Netlify, GitHub Pages, or any static host).
+**Landing & docs:** Static site in `site/` (index + docs). Deployed to [upshiftai.dev](https://upshiftai.dev).
 
 **Documentation & executability:** All of this is documented and executable via the **CLI**. The **UI** (static site in `site/`) is the same reference: open `site/index.html` or `site/docs.html` to see every command and option; copy-paste into your terminal to run. No backend required — the CLI does the work locally.
 
 | Where | What |
 |-------|------|
 | **README** (this file) | Quick start, all command summaries, config (checkpoint, rollback, apply, HITL, webhooks). |
-| **site/docs.html** | Full CLI reference (analyze, report, checkpoint, rollback, apply), config, events, roadmap. |
-| **site/dev.html** | **For developers**: install, CLI at a glance, config, programmatic API, CI, webhooks, env vars. |
-| **site/index.html** | Try-it block with main commands; links to full docs. |
+| **upshiftai.dev/docs** | Full CLI reference (analyze, report, checkpoint, rollback, apply), config, events, roadmap. |
+| **upshiftai.dev/dev** | **For developers**: install, CLI at a glance, config, programmatic API, CI, webhooks, env vars. |
+| **upshiftai.dev** | Try-it block with main commands; links to full docs. |
 | **docs/DESIGN-SUGGESTIONS-AUTOMATIONS.md** | Who benefits, suggestions, automations, HITL, webhooks, rollbacks. |
 | **.upshiftai.example.json** | Example `.upshiftai.json` for webhooks and approval. |
 

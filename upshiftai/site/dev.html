@@ -4,134 +4,171 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Developers — UpshiftAI</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <!-- Font Preloading -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <header class="site-header">
-    <div class="wrap">
-      <a href="." class="logo">UpshiftAI</a>
-      <nav>
-        <a href=".">Home</a>
-        <a href="docs.html">How it works</a>
-        <a href="dev.html">Developers</a>
+  <header class="header">
+    <div class="container">
+      <a href="/" class="logo">
+        <div class="logo-mark"></div>
+        <span>UpshiftAI</span>
+      </a>
+      <nav class="desktop-nav">
+        <a href="/">Features</a>
         <a href="pricing.html">Pricing</a>
-        <a href="https://github.com/repairman29/CLAWDBOT/tree/main/upshiftai" class="nav-cta" target="_blank" rel="noopener">GitHub</a>
+        <a href="docs.html">Docs</a>
+        <a href="dev.html" class="active">Developers</a>
       </nav>
+      <div class="header-actions">
+        <a href="https://github.com/repairman29/upshift/tree/main/upshiftai" class="btn btn-ghost" target="_blank">GitHub</a>
+        <a href="https://api.upshiftai.dev/dashboard" class="btn btn-primary">Dashboard</a>
+      </div>
     </div>
   </header>
 
-  <main class="docs-content">
-    <div class="wrap">
-      <h1>For developers — v0.2.1</h1>
-      <p><strong>🤖 AI-POWERED:</strong> JARVIS conversational analysis requires Pro subscription ($19/mo). Basic CLI remains free forever.</p>
-      <p>Everything you need: CLI installation, AI setup, programmatic API, CI integration, webhooks.</p>
+  <main>
+    <section class="hero" style="padding: 40px 0;">
+      <div class="container">
+        <h1 class="headline" style="font-size: 40px; margin-bottom: 16px;">Developers</h1>
+        <p class="subheadline" style="max-width: 600px;">
+          Integrate dependency intelligence into your workflows. CLI, CI/CD, and programmatic API.
+        </p>
+      </div>
+    </section>
 
-      <h2>Install</h2>
-      <ul>
-        <li><strong>npx</strong> (no install): <code>npx upshiftai-deps analyze .</code></li>
-        <li><strong>npm</strong>: <code>npm install -g upshiftai-deps</code> then <code>upshiftai-deps &lt;cmd&gt;</code>.</li>
-        <li><strong>From repo</strong>: <code>git clone https://github.com/repairman29/CLAWDBOT.git && cd CLAWDBOT/upshiftai && npm install && node bin/upshiftai-deps.js &lt;cmd&gt;</code>.</li>
-      </ul>
-      <p>Node 18+ required. No backend — runs locally.</p>
+    <section class="deep-dive" style="padding-top: 0; background: transparent; border: none;">
+      <div class="container">
+        
+        <h2 style="font-size: 24px; margin-bottom: 24px;">Installation</h2>
+        <div class="feature-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 60px;">
+          <div class="feature-card">
+            <h3>Zero Install (npx)</h3>
+            <div class="copy-command" style="margin-top: 12px;">
+              <span class="prompt">$</span>
+              <span class="command">npx upshiftai-deps analyze .</span>
+            </div>
+          </div>
+          <div class="feature-card">
+            <h3>Global Install</h3>
+            <div class="copy-command" style="margin-top: 12px;">
+              <span class="prompt">$</span>
+              <span class="command">npm install -g upshiftai-deps</span>
+            </div>
+          </div>
+        </div>
 
-      <h2>CLI at a glance — v0.2.1</h2>
-      <pre class="code"><code># Analysis with security audits (NEW: Go proxy, pip-audit)
-upshiftai-deps analyze [path] [--summary] [--exit-code] [--no-audit] [--ecosystem=npm|pip|go]
-upshiftai-deps report [path] [--summary] [--json] [--diff] [--licenses] [--pdf]
-upshiftai-deps health [path] [--exit-code] [--json]  # NEW: CI health check
+        <h2 style="font-size: 24px; margin-bottom: 24px;">Programmatic API</h2>
+        <p style="color: var(--text-muted); margin-bottom: 24px;">Use UpshiftAI as a library in your own Node.js tools.</p>
+        
+        <div class="terminal-window" style="height: auto; margin-bottom: 60px;">
+          <div class="terminal-header">
+            <div class="dots">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+            </div>
+            <div class="terminal-title">script.js</div>
+          </div>
+          <div class="terminal-body">
+            <div style="font-family: 'JetBrains Mono', monospace; line-height: 1.6;">
+              <div><span style="color: var(--accent-primary);">import</span> { analyze, applyNpmUpgrade } <span style="color: var(--accent-primary);">from</span> <span style="color: var(--success);">'upshiftai-deps'</span>;</div>
+              <br>
+              <div style="color: var(--text-dim);">// 1. Analyze a project</div>
+              <div><span style="color: var(--accent-primary);">const</span> report = <span style="color: var(--accent-primary);">await</span> analyze(<span style="color: var(--success);">'./frontend'</span>, {</div>
+              <div>&nbsp;&nbsp;fetchRegistry: <span style="color: var(--accent-primary);">true</span>,</div>
+              <div>&nbsp;&nbsp;ancientMonths: <span style="color: var(--warning);">24</span></div>
+              <div>});</div>
+              <br>
+              <div>console.log(<span style="color: var(--success);">`Found ${report.summary.ancient} ancient deps`</span>);</div>
+              <br>
+              <div style="color: var(--text-dim);">// 2. Upgrade a package</div>
+              <div><span style="color: var(--accent-primary);">await</span> applyNpmUpgrade(<span style="color: var(--success);">'./frontend'</span>, <span style="color: var(--success);">'lodash'</span>, <span style="color: var(--success);">'latest'</span>);</div>
+            </div>
+          </div>
+        </div>
 
-# Automated fixes (NEW: pip support)
-upshiftai-deps apply fix [path] [--dry-run] [--yes] [--limit N]  # NEW: batch fixes
-upshiftai-deps fix &lt;pkg&gt; [path] [--dry-run] [--yes]             # NEW: one-shot
+        <h2 style="font-size: 24px; margin-bottom: 24px;">CI Integration</h2>
+        <p style="color: var(--text-muted); margin-bottom: 24px;">Fail builds if dependencies are too old or have security vulnerabilities.</p>
 
-# Manual operations
-upshiftai-deps checkpoint [path] [--list]
-upshiftai-deps rollback [path] [--dry-run] [--checkpoint &lt;TS&gt;]
-upshiftai-deps apply upgrade|replace &lt;args&gt;  # works for npm + pip</code></pre>
-      <p>Full options: <a href="docs.html">How it works</a>.</p>
+        <div class="terminal-window" style="height: auto; margin-bottom: 60px;">
+          <div class="terminal-header">
+            <div class="dots">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+            </div>
+            <div class="terminal-title">.github/workflows/audit.yml</div>
+          </div>
+          <div class="terminal-body">
+            <div style="font-family: 'JetBrains Mono', monospace; line-height: 1.6;">
+              <div><span style="color: var(--accent-primary);">name:</span> Dependency Audit</div>
+              <div><span style="color: var(--accent-primary);">on:</span> [push]</div>
+              <br>
+              <div><span style="color: var(--accent-primary);">jobs:</span></div>
+              <div>&nbsp;&nbsp;<span style="color: var(--accent-primary);">upshiftai:</span></div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: var(--accent-primary);">runs-on:</span> ubuntu-latest</div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: var(--accent-primary);">steps:</span></div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span style="color: var(--accent-primary);">uses:</span> actions/checkout@v3</div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span style="color: var(--accent-primary);">run:</span> npx upshiftai-deps health . --exit-code</div>
+            </div>
+          </div>
+        </div>
 
-      <h2>Config</h2>
-      <p>Project root: <code>.upshiftai.json</code>. Or <code>--config path</code> or env <code>UPSHIFTAI_CONFIG</code>.</p>
-      <pre class="code"><code>{
-  "webhooks": ["https://your-server.com/hooks/upshiftai"],
-  "approval": {
-    "mode": "prompt",
-    "requireFor": ["replace", "major"],
-    "webhookUrl": "https://your-server.com/approve",
-    "timeoutMs": 60000
-  }
-}</code></pre>
-      <ul>
-        <li><strong>webhooks</strong> — we POST every event (checkpoint.created, apply.started, apply.completed, apply.failed, rollback.triggered, rollback.completed).</li>
-        <li><strong>approval.mode</strong> — <code>prompt</code> (CLI y/n), <code>webhook</code> (we POST; you respond <code>{ "approved": true }</code>), <code>none</code>.</li>
-        <li><strong>approval.requireFor</strong> — e.g. <code>["replace", "major"]</code> so replace and major upgrades require approval.</li>
-      </ul>
-      <p>Copy from <code>.upshiftai.example.json</code> in the repo.</p>
+        <h2 style="font-size: 24px; margin-bottom: 24px;">Configuration</h2>
+        <p style="color: var(--text-muted); margin-bottom: 24px;">Create <code>.upshiftai.json</code> in your project root.</p>
+        
+        <div class="terminal-window" style="height: auto;">
+          <div class="terminal-body">
+            <div style="font-family: 'JetBrains Mono', monospace; line-height: 1.6;">
+              <div>{</div>
+              <div>&nbsp;&nbsp;<span style="color: var(--success);">"webhooks"</span>: [<span style="color: var(--success);">"https://api.your-company.com/hooks/deps"</span>],</div>
+              <div>&nbsp;&nbsp;<span style="color: var(--success);">"approval"</span>: {</div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: var(--success);">"mode"</span>: <span style="color: var(--success);">"prompt"</span>,</div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: var(--success);">"requireFor"</span>: [<span style="color: var(--success);">"replace"</span>, <span style="color: var(--success);">"major"</span>]</div>
+              <div>&nbsp;&nbsp;}</div>
+              <div>}</div>
+            </div>
+          </div>
+        </div>
 
-      <h2>Programmatic API</h2>
-      <p>From a Node app or script (ESM):</p>
-      <pre class="code"><code>import { analyze, analyzeWithMarkdown, reportToCsv } from 'upshiftai-deps';
-import { createCheckpoint, rollback } from 'upshiftai-deps';
-import { loadConfig } from 'upshiftai-deps';
-import { on, emit } from 'upshiftai-deps';
-import { applyNpmUpgrade, applyNpmReplace } from 'upshiftai-deps';
-
-const report = await analyze('/path/to/project', { fetchRegistry: true });
-const { report: r, markdown } = await analyzeWithMarkdown('/path/to/project');
-const csv = reportToCsv(r, { includeSuggestions: true });
-
-createCheckpoint('/path', { reason: 'before-upgrade' });
-rollback('/path');
-
-on('rollback.triggered', (payload) => console.log('Rollback', payload));
-const result = await applyNpmUpgrade('/path', 'lodash', 'latest', { config: loadConfig('/path') });</code></pre>
-
-      <h2>CI</h2>
-      <pre class="code"><code># Example: analyze and fail if ancient count &gt; threshold
-- run: npx upshiftai-deps analyze . --no-registry
-  # Or with registry: npx upshiftai-deps analyze .
-# Parse JSON and gate (e.g. jq). Or run report and attach artifact:
-- run: npx upshiftai-deps report . --output report.md
-- uses: actions/upload-artifact@v4
-  with: name: dependency-report
-        path: report.md
-
-# Apply with approval skipped (use only if you gate elsewhere):
-- run: npx upshiftai-deps apply upgrade some-pkg . --yes
-  # Set UPSHIFTAI_CONFIG or .upshiftai.json with approval.mode none for full automation.</code></pre>
-
-      <h2>Webhooks (events)</h2>
-      <p>We POST JSON to each URL in <code>webhooks</code>. Body shape: <code>{ event, timestamp, ...payload }</code>.</p>
-      <table>
-        <thead><tr><th>event</th><th>payload</th></tr></thead>
-        <tbody>
-          <tr><td>checkpoint.created</td><td>path, files</td></tr>
-          <tr><td>apply.started</td><td>action, pkg, targetVersion / targetPackage</td></tr>
-          <tr><td>apply.completed</td><td>action, pkg, before, after (or newPkg, newVersion)</td></tr>
-          <tr><td>apply.failed</td><td>action, pkg, error</td></tr>
-          <tr><td>rollback.triggered</td><td>reason, checkpoint</td></tr>
-          <tr><td>rollback.completed</td><td>restored</td></tr>
-        </tbody>
-      </table>
-      <p>Your endpoint can run <code>upshiftai-deps rollback &lt;path&gt;</code> or your own revert on <code>rollback.triggered</code> / <code>apply.failed</code>.</p>
-
-      <h2>Env vars</h2>
-      <ul>
-        <li><code>UPSHIFTAI_CONFIG</code> — path to config file (overrides project <code>.upshiftai.json</code> when set).</li>
-      </ul>
-
-      <h2>Where to read more</h2>
-      <ul>
-        <li><a href="docs.html">How it works</a> — full CLI reference and config.</li>
-        <li><a href="pricing.html">Pricing &amp; packaging</a> — tiers and how we ship.</li>
-        <li>Repo <strong>README</strong> and <strong>docs/DESIGN-SUGGESTIONS-AUTOMATIONS.md</strong> — design and rollout.</li>
-      </ul>
-    </div>
+      </div>
+    </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="wrap">
-      <p><a href=".">UpshiftAI</a> — ancient dependency lineage. Part of the <a href="https://github.com/repairman29/CLAWDBOT" target="_blank" rel="noopener">CLAWDBOT</a> ecosystem. <a href="https://github.com/sponsors/repairman29" target="_blank" rel="noopener">Sponsor</a> · <a href="pricing.html">Pricing</a></p>
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <span class="logo-text">UpshiftAI</span>
+          <p>Dependency intelligence for the modern web.</p>
+        </div>
+        <div class="footer-links">
+          <div class="col">
+            <h4>Product</h4>
+            <a href="/">Features</a>
+            <a href="pricing.html">Pricing</a>
+            <a href="https://api.upshiftai.dev/dashboard">Dashboard</a>
+          </div>
+          <div class="col">
+            <h4>Resources</h4>
+            <a href="docs.html">Documentation</a>
+            <a href="dev.html">Developers</a>
+            <a href="https://github.com/repairman29/upshift/tree/main/upshiftai">GitHub</a>
+          </div>
+          <div class="col">
+            <h4>Legal</h4>
+            <a href="https://github.com/repairman29/upshift/blob/main/LICENSE">License</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 UpshiftAI. Open Source (MIT).</p>
+      </div>
     </div>
   </footer>
 </body>

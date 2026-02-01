@@ -3,153 +3,181 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>How it works — UpshiftAI</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Documentation — UpshiftAI</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <!-- Font Preloading -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <header class="site-header">
-    <div class="wrap">
-      <a href="." class="logo">UpshiftAI</a>
-      <nav>
-        <a href=".">Home</a>
-        <a href="docs.html">How it works</a>
-        <a href="dev.html">Developers</a>
+  <header class="header">
+    <div class="container">
+      <a href="/" class="logo">
+        <div class="logo-mark"></div>
+        <span>UpshiftAI</span>
+      </a>
+      <nav class="desktop-nav">
+        <a href="/">Features</a>
         <a href="pricing.html">Pricing</a>
-        <a href="https://github.com/repairman29/CLAWDBOT/tree/main/upshiftai" class="nav-cta" target="_blank" rel="noopener">GitHub</a>
+        <a href="docs.html" class="active">Docs</a>
+        <a href="dev.html">Developers</a>
       </nav>
+      <div class="header-actions">
+        <a href="https://github.com/repairman29/upshift/tree/main/upshiftai" class="btn btn-ghost" target="_blank">GitHub</a>
+        <a href="https://api.upshiftai.dev/dashboard" class="btn btn-primary">Dashboard</a>
+      </div>
     </div>
   </header>
 
-  <main class="docs-content">
-    <div class="wrap">
-      <h1>How it works — v0.2.1</h1>
-      <p><strong>NEW:</strong> AI monetization, JARVIS gating, Go proxy integration, pip-audit security scanning, pip automated fixes.</p>
-      <p>UpshiftAI analyzes dependency trees across npm, pip, and Go. Flags ancient/deprecated/vulnerable packages with security audits (npm audit, pip-audit). Automated fixes with checkpoint, verify, rollback, and human-in-the-loop approval workflows.</p>
+  <main>
+    <section class="hero" style="padding: 40px 0;">
+      <div class="container">
+        <h1 class="headline" style="font-size: 40px; margin-bottom: 16px;">Documentation</h1>
+        <p class="subheadline" style="max-width: 600px;">
+          Learn how to analyze dependency trees, fix ancient packages, and automate security workflows with UpshiftAI v0.2.1.
+        </p>
+      </div>
+    </section>
 
-      <h2>What you can run (CLI)</h2>
-      <p>Everything is executable from the CLI. Install once, then run from your project or any path:</p>
-      <ul>
-        <li><strong>analyze</strong> — resolve tree, fetch registry metadata, output JSON/markdown/CSV.</li>
-        <li><strong>report</strong> — full “deep throat” report (direct + transitive, “something old” chains, optional PDF).</li>
-        <li><strong>checkpoint</strong> — save manifest + lockfile so you can roll back later.</li>
-        <li><strong>rollback</strong> — restore from the last checkpoint.</li>
-        <li><strong>apply upgrade</strong> / <strong>apply replace</strong> — upgrade one package or replace one with another (with checkpoint, verify, auto-rollback on failure, and optional HITL/webhooks).</li>
-      </ul>
+    <section class="deep-dive" style="padding-top: 0; background: transparent; border: none;">
+      <div class="container">
+        
+        <h2 style="font-size: 24px; margin-bottom: 24px;">Core Concepts</h2>
+        <div class="feature-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 60px;">
+          <div class="feature-card">
+            <h3 style="color: var(--accent-primary);">1. Analyze</h3>
+            <p>Resolves full trees (npm/pip/Go), fetches registry metadata, and runs security audits.</p>
+          </div>
+          <div class="feature-card">
+            <h3 style="color: var(--accent-primary);">2. Report</h3>
+            <p>Generates "deep throat" reports with transitive chains and risk assessments.</p>
+          </div>
+          <div class="feature-card">
+            <h3 style="color: var(--accent-primary);">3. Fix</h3>
+            <p>Automated upgrades and replacements with checkpoint safety.</p>
+          </div>
+          <div class="feature-card">
+            <h3 style="color: var(--accent-primary);">4. Safety</h3>
+            <p>Checkpoints save state before changes; rollbacks restore it instantly.</p>
+          </div>
+        </div>
 
-      <h2>CLI reference (all commands)</h2>
-      <p>Run <code>npx upshiftai-deps</code> or <code>node bin/upshiftai-deps.js</code> from the <code>upshiftai</code> directory.</p>
+        <h2 style="font-size: 24px; margin-bottom: 24px;">CLI Reference</h2>
+        <p style="color: var(--text-muted); margin-bottom: 24px;">Run <code>npx upshiftai-deps@0.2.1</code> or install globally.</p>
 
-      <h3>analyze</h3>
-      <pre class="code"><code>upshiftai-deps analyze [path] [--summary] [--exit-code] [--max-ancient=N] [--max-deprecated=N] [--markdown] [--csv] [--no-registry] [--no-audit] [--ecosystem=npm|pip|go]</code></pre>
-      <p>Auto-detects npm (package-lock.json), pip (requirements.txt / pyproject.toml), or go (go.mod). Fetches GOPROXY, npm registry, PyPI metadata. Runs npm audit or pip-audit when available. Use <code>--exit-code</code> for CI gates, <code>--summary</code> for one-pager only.</p>
+        <div style="display: grid; gap: 32px;">
+          <div>
+            <h3 style="font-size: 18px; margin-bottom: 12px;">Analysis & Reporting</h3>
+            <div class="copy-command" style="margin-bottom: 12px;">
+              <span class="prompt">#</span>
+              <span class="command" style="color: var(--text-muted);">JSON analysis with security audit</span>
+            </div>
+            <div class="copy-command">
+              <span class="prompt">$</span>
+              <span class="command">npx upshiftai-deps analyze . --summary --exit-code</span>
+            </div>
+          </div>
 
-      <h3>report</h3>
-      <pre class="code"><code>upshiftai-deps report [path] [--summary] [--json] [--diff] [--licenses] [--output FILE] [--pdf] [--pip-tree FILE.json] [--full-tree] [--no-full-tree] [--project-name NAME] [--project-url URL]</code></pre>
-      <p>Full dependency report with one-pager risk assessment, security audit sections (npm audit/pip-audit), and "something old" chains. <code>--summary</code> for one-pager only. <code>--json --diff</code> compares to last run. <code>--licenses</code> adds license analysis.</p>
+          <div>
+            <div class="copy-command" style="margin-bottom: 12px;">
+              <span class="prompt">#</span>
+              <span class="command" style="color: var(--text-muted);">Full report (Markdown/PDF)</span>
+            </div>
+            <div class="copy-command">
+              <span class="prompt">$</span>
+              <span class="command">npx upshiftai-deps report . --pdf --licenses</span>
+            </div>
+          </div>
 
-      <h3>checkpoint</h3>
-      <pre class="code"><code>upshiftai-deps checkpoint [path] [--reason "..."]</code></pre>
-      <p>Saves <code>package.json</code> + <code>package-lock.json</code> (npm) or <code>pyproject.toml</code> + <code>requirements*.txt</code> (pip) into <code>.upshiftai-tmp/checkpoints/&lt;timestamp&gt;/</code>.</p>
+          <h3 style="font-size: 18px; margin-bottom: 12px; margin-top: 24px;">Automated Fixes (npm + pip)</h3>
+          <div>
+            <div class="copy-command" style="margin-bottom: 12px;">
+              <span class="prompt">#</span>
+              <span class="command" style="color: var(--text-muted);">Batch fix ancient deps</span>
+            </div>
+            <div class="copy-command">
+              <span class="prompt">$</span>
+              <span class="command">npx upshiftai-deps apply fix . --dry-run --yes</span>
+            </div>
+          </div>
 
-      <h3>rollback</h3>
-      <pre class="code"><code>upshiftai-deps rollback [path] [--dry-run]</code></pre>
-      <p>Restores manifest/lockfile from the latest checkpoint. Use <code>--dry-run</code> to see what would be restored.</p>
+          <div>
+            <div class="copy-command" style="margin-bottom: 12px;">
+              <span class="prompt">#</span>
+              <span class="command" style="color: var(--text-muted);">One-shot package fix</span>
+            </div>
+            <div class="copy-command">
+              <span class="prompt">$</span>
+              <span class="command">npx upshiftai-deps fix moment . --yes</span>
+            </div>
+          </div>
+        </div>
 
-      <h3>apply upgrade</h3>
-      <pre class="code"><code>upshiftai-deps apply upgrade &lt;pkg&gt; [path] [--version VER] [--dry-run] [--yes]</code></pre>
-      <p>Checkpoint → upgrade <code>&lt;pkg&gt;</code> to <code>--version</code> (default latest) → <code>npm install</code> → verify (<code>npm ls</code>). On failure, restores checkpoint and emits rollback events. Use <code>--yes</code> to skip approval when config requires it.</p>
+        <div style="margin-top: 60px;">
+          <h2 style="font-size: 24px; margin-bottom: 24px;">Signals & Risk</h2>
+          <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr style="text-align: left; border-bottom: 1px solid var(--border);">
+                <th style="padding: 16px; color: var(--text-muted);">Signal</th>
+                <th style="padding: 16px; color: var(--text-muted);">Meaning</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--border-light);">
+                <td style="padding: 16px; font-family: 'JetBrains Mono', monospace; color: var(--accent-primary);">age</td>
+                <td style="padding: 16px;">Months since last publish (>24 months = ancient)</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border-light);">
+                <td style="padding: 16px; font-family: 'JetBrains Mono', monospace; color: var(--accent-primary);">deprecated</td>
+                <td style="padding: 16px;">Marked deprecated in registry (npm/PyPI)</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border-light);">
+                <td style="padding: 16px; font-family: 'JetBrains Mono', monospace; color: var(--accent-primary);">audit</td>
+                <td style="padding: 16px;">Known vulnerabilities (npm audit / pip-audit)</td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border-light);">
+                <td style="padding: 16px; font-family: 'JetBrains Mono', monospace; color: var(--accent-primary);">fork_hint</td>
+                <td style="padding: 16px;">Package name suggests a fork (-legacy, -fork)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-      <h3>apply replace</h3>
-      <pre class="code"><code>upshiftai-deps apply replace &lt;old&gt; &lt;new&gt; [path] [--version VER] [--dry-run] [--yes]</code></pre>
-      <p>Checkpoint → remove <code>&lt;old&gt;</code>, add <code>&lt;new&gt;</code> (with optional <code>--version</code>) → install → verify. Works for npm AND pip. Same rollback and event behavior as upgrade.</p>
-
-      <h3>apply fix (NEW in v0.2.1)</h3>
-      <pre class="code"><code>upshiftai-deps apply fix [path] [--dry-run] [--yes] [--limit N]</code></pre>
-      <p>Batch automated fixes for direct ancient/deprecated deps with suggestions. Works for npm AND pip. One checkpoint for the whole run.</p>
-
-      <h3>fix &lt;pkg&gt; (NEW in v0.2.1)</h3>
-      <pre class="code"><code>upshiftai-deps fix &lt;pkg&gt; [path] [--dry-run] [--yes]</code></pre>
-      <p>One-shot package upgrade/replace. Auto-detects ecosystem (npm/pip), applies suggestion if available, otherwise upgrades to latest.</p>
-
-      <h3>health (NEW in v0.2.1)</h3>
-      <pre class="code"><code>upshiftai-deps health [path] [--exit-code] [--json]</code></pre>
-      <p>Quick health check: OK/WARN/FAIL status with counts (ancient, deprecated, high/critical vulns). Use <code>--exit-code</code> for CI integration.</p>
-
-      <h2>Config: webhooks &amp; HITL</h2>
-      <p>Put <code>.upshiftai.json</code> in the project root (or set <code>UPSHIFTAI_CONFIG</code> or use <code>--config path</code>). Copy from <code>.upshiftai.example.json</code>.</p>
-      <pre class="code"><code>{
-  "webhooks": ["https://your-server.com/hooks/upshiftai"],
-  "approval": {
-    "mode": "prompt",
-    "requireFor": ["replace", "major"],
-    "webhookUrl": "https://your-server.com/approve",
-    "timeoutMs": 60000
-  }
-}</code></pre>
-      <ul>
-        <li><strong>webhooks</strong> — we POST every event (checkpoint.created, apply.started, apply.completed, apply.failed, rollback.triggered, rollback.completed) to these URLs. Your endpoint can run <code>upshiftai-deps rollback</code> or your own revert on <code>rollback.triggered</code> / <code>apply.failed</code>.</li>
-        <li><strong>approval.mode</strong> — <code>prompt</code> (CLI “y/n”), <code>webhook</code> (POST to <code>webhookUrl</code>; we wait for <code>{ "approved": true }</code>), or <code>none</code>.</li>
-        <li><strong>approval.requireFor</strong> — e.g. <code>["replace", "major"]</code>: replace and major upgrades require approval; patch/minor can run without.</li>
-      </ul>
-
-      <h2>Signals in the report</h2>
-      <table>
-        <thead>
-          <tr><th>Signal</th><th>Meaning</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>age</td><td>Months since last publish (e.g. &gt;24 = ancient).</td></tr>
-          <tr><td>deprecated</td><td>npm <code>deprecated</code> or PyPI deprecated classifier.</td></tr>
-          <tr><td>fork_hint</td><td>Package name suggests a fork (<code>-fork</code>, <code>-legacy</code>, etc.).</td></tr>
-          <tr><td>oldPython</td><td>requires_python indicates Python 2 or very old 3.x.</td></tr>
-          <tr><td>depth</td><td>Depth in tree (root = 0).</td></tr>
-          <tr><td>why</td><td>Which parent(s) pulled in this package.</td></tr>
-        </tbody>
-      </table>
-
-      <h2>Output formats</h2>
-      <ul>
-        <li><strong>JSON</strong> — default for <code>analyze</code>; full report for pipelines.</li>
-        <li><strong>--markdown</strong> — human-readable table of problematic packages.</li>
-        <li><strong>--csv</strong> — spreadsheet: name, version, depth, ancient, deprecated, forkHint, reasons, replacement, note.</li>
-        <li><strong>report</strong> — full markdown (and optional <code>--output FILE</code>, <code>--pdf</code>).</li>
-      </ul>
-
-      <h2>Integration</h2>
-      <ul>
-        <li><strong>upshiftai.dev</strong> — Call the CLI or <code>import { analyze, applyNpmUpgrade, ... } from 'upshiftai-deps'</code> and use JSON/events for upgrade suggestions, replace flows, or PR automation.</li>
-        <li><strong>JARVIS / CLAWDBOT</strong> — 🤖 **Pro subscription required**. Install the skill, set API key, and ask JARVIS to analyze dependencies conversationally.</li>
-        <li><strong>CI</strong> — Run <code>analyze</code> and gate on ancient/deprecated count; run <code>apply</code> with <code>--yes</code> and webhooks for observability and rollback.</li>
-      </ul>
-
-      <h2>Documentation index</h2>
-      <ul>
-        <li><a href="dev.html">Developers</a> — install, CLI at a glance, config, programmatic API, CI, webhooks, env vars.</li>
-        <li><a href="pricing.html">Pricing &amp; packaging</a> — tiers (Free / Pro / Team), packaging (CLI, npm, open source).</li>
-        <li><strong>README</strong> (repo) — quick start, all command summaries, config.</li>
-        <li><strong>docs/DESIGN-SUGGESTIONS-AUTOMATIONS.md</strong> — who benefits, suggestions, automations, HITL, webhooks, rollbacks.</li>
-        <li><strong>.upshiftai.example.json</strong> — example config for webhooks and approval.</li>
-      </ul>
-
-      <h2>Roadmap</h2>
-      <ul>
-        <li>npm lockfile + registry metadata (done)</li>
-        <li>Ancient/legacy/fork heuristics (done)</li>
-        <li>pip requirements.txt + pyproject.toml + PyPI metadata (done)</li>
-        <li>go mod (done)</li>
-        <li>Full report + transitive “something old” chains (done)</li>
-        <li>Checkpoint &amp; rollback (done)</li>
-        <li>Apply upgrade/replace + HITL + webhooks (done)</li>
-        <li>Suggest replacements npm + pip (done)</li>
-        <li>pip apply (upgrade/replace) (done)</li>
-        <li><strong>v0.2.1 NEW:</strong> AI monetization, Go proxy metadata, pip-audit security, pip apply fix/fix &lt;pkg&gt;, JARVIS skill (done)</li>
-      </ul>
-    </div>
+      </div>
+    </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="wrap">
-      <p><a href=".">UpshiftAI</a> — ancient dependency lineage. Part of the <a href="https://github.com/repairman29/CLAWDBOT" target="_blank" rel="noopener">CLAWDBOT</a> ecosystem. <a href="https://github.com/sponsors/repairman29" target="_blank" rel="noopener">Sponsor</a> · <a href="pricing.html">Pricing</a></p>
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <span class="logo-text">UpshiftAI</span>
+          <p>Dependency intelligence for the modern web.</p>
+        </div>
+        <div class="footer-links">
+          <div class="col">
+            <h4>Product</h4>
+            <a href="/">Features</a>
+            <a href="pricing.html">Pricing</a>
+            <a href="https://api.upshiftai.dev/dashboard">Dashboard</a>
+          </div>
+          <div class="col">
+            <h4>Resources</h4>
+            <a href="docs.html">Documentation</a>
+            <a href="dev.html">Developers</a>
+            <a href="https://github.com/repairman29/upshift/tree/main/upshiftai">GitHub</a>
+          </div>
+          <div class="col">
+            <h4>Legal</h4>
+            <a href="https://github.com/repairman29/upshift/blob/main/LICENSE">License</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 UpshiftAI. Open Source (MIT).</p>
+      </div>
     </div>
   </footer>
 </body>

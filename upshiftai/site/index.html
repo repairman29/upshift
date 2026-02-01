@@ -1,187 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UpshiftAI – AI-powered dependency intelligence</title>
-  <meta name="description" content="Find ancient dependencies across npm, pip, and Go. AI-powered analysis, security audits, and automated fixes." />
-  <meta property="og:title" content="UpshiftAI – AI-powered dependency intelligence" />
-  <meta property="og:description" content="Find ancient dependencies across npm, pip, and Go. AI-powered analysis, security audits, and automated fixes." />
-  <meta property="og:type" content="website" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="UpshiftAI – AI-powered dependency intelligence" />
-  <meta name="twitter:description" content="Find ancient dependencies across npm, pip, and Go. AI-powered analysis, security audits, and automated fixes." />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UpshiftAI – AI that keeps pace with your thoughts.</title>
+  <meta name="description" content="Turn dependency chaos into clarity. Scan, analyze, and fix ancient code in seconds." />
+  
+  <!-- Fonts: Inter for UI, JetBrains Mono for Code -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="style.css" />
-  <!-- Analytics -->
+  <link rel="stylesheet" href="style.css">
   <script defer data-domain="upshiftai.dev" src="https://plausible.io/js/script.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 </head>
 <body>
+
+  <!-- 1. Identity & Navigation (Minimalist) -->
   <header class="header">
-    <div class="wrap">
-      <a href="/" class="logo">UpshiftAI</a>
-      <nav>
-        <a href="#demo">Demo</a>
-        <a href="#pricing">Pricing</a>
+    <div class="container">
+      <a href="/" class="logo">
+        <div class="logo-mark"></div>
+        <span>UpshiftAI</span>
+      </a>
+      <nav class="desktop-nav">
+        <a href="#how-it-works">Features</a>
+        <a href="pricing.html">Pricing</a>
         <a href="docs.html">Docs</a>
-        <a href="https://github.com/repairman29/upshift/tree/main/upshiftai" class="nav-gh" target="_blank" rel="noopener">GitHub</a>
+        <a href="dev.html">Developers</a>
       </nav>
+      <div class="header-actions">
+        <a href="https://github.com/repairman29/upshift/tree/main/upshiftai" class="btn btn-ghost" target="_blank">GitHub</a>
+        <a href="https://api.upshiftai.dev/dashboard" class="btn btn-primary">Dashboard</a>
+      </div>
     </div>
   </header>
 
   <main>
+    <!-- 2. The Hero (Gutenberg Diagram: Value -> Action) -->
     <section class="hero">
-      <div class="wrap-wide">
-        <p class="hero-tag">AI-powered • CLI • npm/pip/go</p>
-        <h1>Find ancient dependencies.<br />Let AI tell you what matters.</h1>
-        <p class="hero-lead">Scan for outdated dependencies across npm, pip, and Go. Get AI-powered risk assessment and automated fixes with security audits.</p>
-        <div class="install-hero">
-          <code>npx upshiftai-deps@0.2.1 analyze .</code>
-          <button class="copy-btn" onclick="navigator.clipboard.writeText('npx upshiftai-deps@0.2.1 analyze .')">Copy</button>
-        </div>
-        <div class="hero-ctas">
-          <a href="#demo" class="btn btn-primary">See Demo</a>
-          <a href="https://github.com/repairman29/upshift/tree/main/upshiftai" class="btn btn-secondary gh-btn" target="_blank" rel="noopener">
-            <svg height="16" viewBox="0 0 16 16" width="16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
-            Star on GitHub
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <section class="value">
-      <div class="wrap">
-        <h2>Make dependency lineage work for you</h2>
-        <ul class="value-list">
-          <li><strong>Analyze & report</strong> — resolve the full tree (npm/pip/go), detect ancient/deprecated/fork hints, output JSON/markdown/CSV or a full “deep throat” report with transitive “something old” chains.</li>
-          <li><strong>Checkpoint & rollback</strong> — save manifest + lockfile before changes; restore with one command so automations are safe.</li>
-          <li><strong>Apply with HITL</strong> — upgrade or replace packages with checkpoint, verify, and auto-rollback on failure. Risky actions (replace, major) go through approval (prompt or webhook); everything else runs with listeners and webhooks so you can observe or revert.</li>
-        </ul>
-      </div>
-    </section>
-
-    <section id="try" class="try">
-      <div class="wrap">
-        <h2>Try it (CLI)</h2>
-        <p>Everything is executable from the CLI. From the <code>upshiftai</code> directory or via <code>npx upshiftai-deps</code>:</p>
-        <pre class="code"><code># Analyze (JSON / markdown / CSV)
-upshiftai-deps analyze [path] [--markdown] [--csv] [--no-registry] [--ecosystem=npm|pip|go]
-
-# Full report (direct + transitive, “something old” chains, optional --pdf)
-upshiftai-deps report [path] [--output FILE] [--pdf] [--no-full-tree]
-
-# Checkpoint before changes, rollback to restore
-upshiftai-deps checkpoint [path] [--reason "..."]
-upshiftai-deps rollback [path] [--dry-run]
-
-# Apply automated fixes (npm AND pip; checkpoint, verify, auto-rollback)
-upshiftai-deps apply fix [path] [--dry-run] [--yes] [--limit N]
-upshiftai-deps fix &lt;pkg&gt; [path] [--dry-run] [--yes]
-
-# Health check (OK/WARN/FAIL status for CI)
-upshiftai-deps health [path] [--exit-code] [--json]</code></pre>
-        <p>Use <code>.upshiftai.json</code> (see <code>.upshiftai.example.json</code>) for webhooks and approval policy. Full reference: <a href="docs.html">How it works</a>.</p>
-      </div>
-    </section>
-
-    <section class="problem">
-      <div class="wrap">
-        <h2>Ancient dependencies are everywhere</h2>
-        <ul>
-          <li>Dependencies fork back to projects of yore</li>
-          <li>Security vulnerabilities in old packages</li>  
-          <li>Mixed ecosystems (npm + pip + Go) need unified analysis</li>
-          <li>Teams delay upgrades and accumulate technical debt</li>
-        </ul>
-      </div>
-    </section>
-
-    <section class="solution" id="how">
-      <div class="wrap">
-        <h2>UpshiftAI makes ancient dependencies visible</h2>
-        <p class="pipeline">Scan → <strong>AI Analyze</strong> → Fix → Test → Rollback</p>
-        <ol class="steps">
-          <li><strong>Scan</strong> npm, pip, and Go for ancient/deprecated packages</li>
-          <li><strong>AI Analyze</strong> risk assessment with security audit integration</li>
-          <li><strong>Fix</strong> with automated upgrades and smart replacements</li>
-          <li><strong>Test</strong> with checkpoint safety and verification</li>
-          <li><strong>Rollback</strong> automatically if anything fails</li>
-        </ol>
-      </div>
-    </section>
-
-    <section class="today">
-      <div class="wrap">
-        <h2>What you get today</h2>
-        <ul>
-          <li>Multi-ecosystem scanning (npm, pip, go)</li>
-          <li>AI risk assessment with security audits</li>
-          <li>JARVIS conversational analysis (Pro subscription)</li>
-          <li>Automated fixes with rollback safety</li>
-          <li>CI integration with health checks</li>
-          <li>Enterprise webhooks and approval workflows</li>
-        </ul>
-        <h3>Coming next</h3>
-        <ul>
-          <li>Custom ML models (Team tier)</li>
-          <li>VS Code extension integration</li>
-          <li>Multi-repo dashboard</li>
-          <li>Predictive vulnerability detection</li>
-        </ul>
-      </div>
-    </section>
-    <section class="pricing" id="pricing">
-      <div class="wrap-wide">
-        <h2>Pricing</h2>
-        <div class="pricing-grid">
-          <div class="plan">
-            <h3>Free</h3>
-            <p>Unlimited CLI analysis, 10 AI queries/month to try conversational features. Perfect for individual developers.</p>
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <div class="badge">v0.2.1 Now Available</div>
+          <h1 class="headline">AI that keeps pace with your thoughts.</h1>
+          <p class="subheadline">
+            Dependency upgrades shouldn't be archaeology. UpshiftAI turns the chaos of ancient code into a clear, conversational path forward.
+          </p>
+          
+          <div class="hero-cta-group">
+            <div class="copy-command">
+              <span class="prompt">$</span>
+              <span class="command">npx upshiftai-deps analyze .</span>
+              <button class="copy-btn" aria-label="Copy command">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              </button>
+            </div>
+            <a href="docs.html" class="link-arrow">Read the docs <span class="arrow">→</span></a>
           </div>
-          <div class="plan plan-featured">
-            <h3>Pro — $19/mo</h3>
-            <p>1,000 AI queries/month, JARVIS conversational analysis, smart risk assessment, priority support.</p>
-          </div>
-          <div class="plan">
-            <h3>Team — $99/mo</h3>
-            <p>10,000 AI queries/month, custom ML models, enterprise features, dedicated support.</p>
+
+          <div class="social-proof">
+            <span>Trusted by developers at</span>
+            <div class="logos">
+              <!-- Placeholder logos for visual weight - replace with real ones later -->
+              <span class="proof-logo">Startup Inc</span>
+              <span class="proof-logo">TechFlow</span>
+              <span class="proof-logo">DevCorp</span>
+            </div>
           </div>
         </div>
-        <p class="pricing-note">AI features require API key. Basic CLI is always free. <a href="pricing.html" style="color: var(--accent);">View detailed pricing →</a></p>
-      </div>
-    </section>
 
-    <section class="cta">
-      <div class="wrap">
-        <h2>Upgrade dependencies with AI intelligence</h2>
-        <div style="margin: 1.5rem 0;">
-          <a href="docs.html" class="btn btn-primary">Get Started</a>
-          <a href="https://api.upshiftai.dev/dashboard" class="btn btn-secondary">Get API Key</a>
+        <!-- 3. Zero-Configuration Preview (Interactive Terminal) -->
+        <div class="hero-visual">
+          <div class="terminal-window">
+            <div class="terminal-header">
+              <div class="dots">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+              </div>
+              <div class="terminal-title">~/project/legacy-app</div>
+            </div>
+            <div class="terminal-body" id="interactive-terminal">
+              <div class="terminal-line">
+                <span class="prompt">user@dev:~$</span>
+                <span class="input type-effect" id="type-target"></span><span class="cursor">_</span>
+              </div>
+              <div id="terminal-output"></div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
+
+    <!-- 4. Progressive Disclosure (The "Why") -->
+    <section class="value-prop" id="how-it-works">
+      <div class="container">
+        <div class="section-header">
+          <h2>Order from Chaos</h2>
+          <p>Most tools just list problems. UpshiftAI understands context.</p>
+        </div>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-icon">🔍</div>
+            <h3>Universal Scan</h3>
+            <p>One command scans npm, pip, and Go. No configuration files needed. It just finds what's hiding in your tree.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🛡️</div>
+            <h3>Security First</h3>
+            <p>Integrated audits (npm audit + pip-audit) prioritize risks not just by age, but by vulnerability severity.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🤖</div>
+            <h3>Conversational Fix</h3>
+            <p>Don't just read logs. Ask JARVIS: "What should I upgrade first?" and get a strategy, not a list.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Indistractable UI Showcase -->
+    <section class="deep-dive">
+      <div class="container">
+        <div class="showcase-layout">
+          <div class="showcase-text">
+            <h2>The Quiet Assistant</h2>
+            <p>
+              Dark mode designed for focus. High-contrast alerts only when they matter. 
+              Drill down into "something old" chains without losing your place.
+            </p>
+            <ul class="benefit-list">
+              <li>Analyze deep transitive chains</li>
+              <li>Visualize "blast radius" of upgrades</li>
+              <li>Checkpoint & Rollback safety net</li>
+            </ul>
+          </div>
+          <div class="showcase-image">
+            <!-- Representing the UI -->
+            <div class="ui-mockup">
+              <div class="ui-header">Dependency Report</div>
+              <div class="ui-row danger">
+                <span class="status">🔴 High</span>
+                <span class="pkg">lodash@4.17.15</span>
+                <span class="meta">Ancient (4y)</span>
+              </div>
+              <div class="ui-row warning">
+                <span class="status">🟡 Med</span>
+                <span class="pkg">axios@0.19.0</span>
+                <span class="meta">Deprecated</span>
+              </div>
+              <div class="ui-row success">
+                <span class="status">🟢 Low</span>
+                <span class="pkg">react@18.2.0</span>
+                <span class="meta">Current</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. The Investment Phase (Pick your Path) -->
+    <section class="integration" id="install">
+      <div class="container">
+        <div class="section-header">
+          <h2>Choose your workflow</h2>
+          <p>CLI for speed. Platform for teams.</p>
+        </div>
+
+        <div class="path-grid">
+          <div class="path-card">
+            <div class="badge-sm">Free Forever</div>
+            <h3>The CLI</h3>
+            <p>Perfect for local development and ad-hoc checks.</p>
+            <div class="code-block">
+              npx upshiftai-deps analyze .
+            </div>
+            <a href="docs.html" class="btn btn-secondary full-width">Read the Docs</a>
+          </div>
+          <div class="path-card featured">
+            <div class="badge-sm accent">Pro Power</div>
+            <h3>The Platform</h3>
+            <p>For teams that need history, dashboards, and AI intelligence.</p>
+            <ul class="check-list">
+              <li>JARVIS Conversational AI</li>
+              <li>Usage Tracking & Quotas</li>
+              <li>Team Management</li>
+            </ul>
+            <a href="pricing.html" class="btn btn-primary full-width">View Pricing</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <footer class="footer">
-    <div class="wrap">
-      <p><a href="/">UpshiftAI</a> · AI-powered dependency intelligence</p>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <span class="logo-text">UpshiftAI</span>
+          <p>Dependency intelligence for the modern web.</p>
+        </div>
+        <div class="footer-links">
+          <div class="col">
+            <h4>Product</h4>
+            <a href="#how-it-works">Features</a>
+            <a href="pricing.html">Pricing</a>
+            <a href="https://api.upshiftai.dev/dashboard">Dashboard</a>
+          </div>
+          <div class="col">
+            <h4>Resources</h4>
+            <a href="docs.html">Documentation</a>
+            <a href="dev.html">Developers</a>
+            <a href="https://github.com/repairman29/upshift/tree/main/upshiftai">GitHub</a>
+          </div>
+          <div class="col">
+            <h4>Legal</h4>
+            <a href="https://github.com/repairman29/upshift/blob/main/LICENSE">License</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 UpshiftAI. Open Source (MIT).</p>
+      </div>
     </div>
   </footer>
 
-  <script>
-    // Copy button functionality
-    document.querySelector('.copy-btn').addEventListener('click', function() {
-      const text = 'npx upshiftai-deps@0.2.1 analyze .';
-      navigator.clipboard.writeText(text).then(() => {
-        this.textContent = 'Copied!';
-        setTimeout(() => {
-          this.textContent = 'Copy';
-        }, 2000);
-      });
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
