@@ -1,6 +1,6 @@
 {
   "name": "upshiftai-deps",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Analyze dependency trees and surface ancient/legacy/forked branches for upshiftai.dev",
   "type": "module",
   "main": "src/index.js",

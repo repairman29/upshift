@@ -22,8 +22,8 @@
 
   <main class="docs-content">
     <div class="wrap">
-      <h1>How it works — v0.2.0</h1>
-      <p><strong>NEW:</strong> Go proxy integration, pip-audit security scanning, pip automated fixes, and JARVIS conversational AI skill.</p>
+      <h1>How it works — v0.2.1</h1>
+      <p><strong>NEW:</strong> AI monetization, JARVIS gating, Go proxy integration, pip-audit security scanning, pip automated fixes.</p>
       <p>UpshiftAI analyzes dependency trees across npm, pip, and Go. Flags ancient/deprecated/vulnerable packages with security audits (npm audit, pip-audit). Automated fixes with checkpoint, verify, rollback, and human-in-the-loop approval workflows.</p>
 
       <h2>What you can run (CLI)</h2>
@@ -63,15 +63,15 @@
       <pre class="code"><code>upshiftai-deps apply replace &lt;old&gt; &lt;new&gt; [path] [--version VER] [--dry-run] [--yes]</code></pre>
       <p>Checkpoint → remove <code>&lt;old&gt;</code>, add <code>&lt;new&gt;</code> (with optional <code>--version</code>) → install → verify. Works for npm AND pip. Same rollback and event behavior as upgrade.</p>
 
-      <h3>apply fix (NEW in v0.2.0)</h3>
+      <h3>apply fix (NEW in v0.2.1)</h3>
       <pre class="code"><code>upshiftai-deps apply fix [path] [--dry-run] [--yes] [--limit N]</code></pre>
       <p>Batch automated fixes for direct ancient/deprecated deps with suggestions. Works for npm AND pip. One checkpoint for the whole run.</p>
 
-      <h3>fix &lt;pkg&gt; (NEW in v0.2.0)</h3>
+      <h3>fix &lt;pkg&gt; (NEW in v0.2.1)</h3>
       <pre class="code"><code>upshiftai-deps fix &lt;pkg&gt; [path] [--dry-run] [--yes]</code></pre>
       <p>One-shot package upgrade/replace. Auto-detects ecosystem (npm/pip), applies suggestion if available, otherwise upgrades to latest.</p>
 
-      <h3>health (NEW in v0.2.0)</h3>
+      <h3>health (NEW in v0.2.1)</h3>
       <pre class="code"><code>upshiftai-deps health [path] [--exit-code] [--json]</code></pre>
       <p>Quick health check: OK/WARN/FAIL status with counts (ancient, deprecated, high/critical vulns). Use <code>--exit-code</code> for CI integration.</p>
 
@@ -142,7 +142,7 @@
         <li>Apply upgrade/replace + HITL + webhooks (done)</li>
         <li>Suggest replacements npm + pip (done)</li>
         <li>pip apply (upgrade/replace) (done)</li>
-        <li><strong>v0.2.0 NEW:</strong> Go proxy metadata, pip-audit security, pip apply fix/fix &lt;pkg&gt;, JARVIS skill (done)</li>
+        <li><strong>v0.2.1 NEW:</strong> AI monetization, Go proxy metadata, pip-audit security, pip apply fix/fix &lt;pkg&gt;, JARVIS skill (done)</li>
       </ul>
     </div>
   </main>
