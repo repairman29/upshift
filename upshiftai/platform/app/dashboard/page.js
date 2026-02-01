@@ -41,23 +41,33 @@ export default async function Dashboard() {
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'end', marginBottom: '16px' }}>
           <h2>Reports</h2>
-          {pro && (
-            <Link href="/dashboard/ai-usage" className="btn btn-secondary" style={{ fontSize: '12px' }}>
-              🤖 AI Usage & Keys
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <Link href="https://upshiftai.dev/docs" className="btn btn-secondary" style={{ fontSize: '12px' }} target="_blank">
+              📚 Documentation
             </Link>
-          )}
+            {pro && (
+              <Link href="/dashboard/ai-usage" className="btn btn-secondary" style={{ fontSize: '12px' }}>
+                🤖 AI Usage & Keys
+              </Link>
+            )}
+          </div>
         </div>
 
         <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
           {reports.length === 0 ? (
             <div style={{ padding: '48px', textAlign: 'center' }}>
-              <div style={{ fontSize: '32px', marginBottom: '16px' }}>📉</div>
-              <h3 style={{ fontSize: '16px', marginBottom: '8px' }}>No reports yet</h3>
+              <div style={{ fontSize: '32px', marginBottom: '16px' }}>⚡️</div>
+              <h3 style={{ fontSize: '16px', marginBottom: '8px' }}>Ready to analyze</h3>
               <p style={{ color: 'var(--text-muted)', fontSize: '14px', maxWidth: '400px', margin: '0 auto 24px' }}>
-                Run an analysis from your terminal to see it here.
+                Run your first analysis to see reports here.
               </p>
-              <div style={{ background: 'rgba(0,0,0,0.3)', display: 'inline-block', padding: '12px 16px', borderRadius: '6px', fontFamily: 'monospace', fontSize: '13px' }}>
-                <span style={{ color: 'var(--text-dim)' }}>$</span> npx upshiftai-deps report . --upload
+              <div style={{ background: 'rgba(0,0,0,0.3)', display: 'inline-flex', alignItems: 'center', gap: '12px', padding: '12px 16px', borderRadius: '6px', border: '1px solid var(--border-light)', fontFamily: 'monospace', fontSize: '13px' }}>
+                <span><span style={{ color: 'var(--text-dim)' }}>$</span> npx upshiftai-deps report . --upload</span>
+              </div>
+              <div style={{ marginTop: '24px' }}>
+                <Link href="https://upshiftai.dev/dev" target="_blank" style={{ fontSize: '13px', color: 'var(--accent-primary)' }}>
+                  View CLI Reference →
+                </Link>
               </div>
             </div>
           ) : (
