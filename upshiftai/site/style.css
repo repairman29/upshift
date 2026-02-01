@@ -508,8 +508,19 @@ code {
   border-radius: 4px;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+/* Grid for Docs */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+@media (max-width: 600px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
   .wrap-wide {
     padding: 0 1.5rem;
   }
