@@ -1,0 +1,81 @@
+:root {
+  --bg: #0d0d0d;
+  --surface: #1a1a1a;
+  --text: #e6e6e6;
+  --muted: #888;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --border: #2a2a2a;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 0 1.25rem; }
+
+.site-header {
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 0;
+}
+.site-header .wrap { display: flex; align-items: center; justify-content: space-between; }
+.logo { font-weight: 700; font-size: 1.25rem; color: var(--text); text-decoration: none; }
+.logo:hover { color: var(--accent); }
+nav { display: flex; align-items: center; gap: 1.5rem; }
+nav a { color: var(--muted); text-decoration: none; }
+nav a:hover { color: var(--text); }
+.nav-cta { color: var(--accent) !important; }
+
+.hero { padding: 4rem 0; }
+.hero h1 { font-size: clamp(1.5rem, 4vw, 2rem); font-weight: 700; margin: 0 0 1rem; line-height: 1.3; }
+.hero-lead { font-size: 1.125rem; color: var(--muted); margin: 0 0 2rem; }
+.hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+.btn { display: inline-block; padding: 0.6rem 1.25rem; border-radius: 6px; font-weight: 500; text-decoration: none; }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+.btn-secondary:hover { border-color: var(--muted); }
+
+.value { padding: 3rem 0; border-top: 1px solid var(--border); }
+.value h2 { font-size: 1.25rem; margin: 0 0 1.5rem; }
+.value-list { list-style: none; padding: 0; margin: 0; }
+.value-list li { margin-bottom: 1rem; padding-left: 0; }
+.value-list strong { color: var(--text); }
+
+.try { padding: 3rem 0; border-top: 1px solid var(--border); }
+.try h2 { font-size: 1.25rem; margin: 0 0 1rem; }
+.code { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; overflow-x: auto; margin: 0 0 1rem; }
+.code code { font-family: ui-monospace, monospace; font-size: 0.9rem; }
+.try p { color: var(--muted); margin: 0; }
+.try code { background: var(--surface); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9em; }
+
+.cta { padding: 3rem 0; border-top: 1px solid var(--border); }
+.cta p { margin: 0 0 1rem; color: var(--muted); }
+.cta .btn { margin-top: 0.5rem; }
+
+.site-footer { border-top: 1px solid var(--border); padding: 2rem 0; margin-top: 2rem; }
+.site-footer p { margin: 0; font-size: 0.9rem; color: var(--muted); }
+.site-footer a { color: var(--muted); text-decoration: none; }
+.site-footer a:hover { color: var(--accent); }
+
+/* docs */
+.docs-content { padding: 2rem 0 4rem; }
+.docs-content h2 { font-size: 1.35rem; margin: 2rem 0 1rem; }
+.docs-content h2:first-child { margin-top: 0; }
+.docs-content p { color: var(--muted); margin: 0 0 1rem; }
+.docs-content ul { margin: 0 0 1rem; padding-left: 1.5rem; color: var(--muted); }
+.docs-content table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+.docs-content th, .docs-content td { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); }
+.docs-content th { color: var(--muted); font-weight: 500; }
+.docs-content h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; }
+
+/* pricing */
+.pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+.pricing-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; display: flex; flex-direction: column; }
+.pricing-card h3 { margin: 0 0 0.5rem; font-size: 1.1rem; }
+.pricing-card .price { font-size: 1.75rem; font-weight: 700; margin: 0; color: var(--text); }
+.pricing-card .price-unit { font-size: 1rem; font-weight: 500; color: var(--muted); }
+.pricing-card .price-desc { font-size: 0.9rem; color: var(--muted); margin: 0 0 1rem; }
+.pricing-card ul { list-style: none; padding: 0; margin: 0 0 1rem; flex: 1; font-size: 0.9rem; color: var(--muted); }
+.pricing-card ul li { margin-bottom: 0.5rem; padding-left: 0; }
+.pricing-card .btn { margin-top: auto; align-self: flex-start; }
+.pricing-card-featured { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.pricing-note { font-size: 0.9rem; color: var(--muted); margin-top: 1rem; }

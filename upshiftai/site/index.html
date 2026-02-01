@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UpshiftAI — Ancient dependency lineage, actually fixed</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a href="." class="logo">UpshiftAI</a>
+      <nav>
+        <a href=".">Home</a>
+        <a href="docs.html">How it works</a>
+        <a href="dev.html">Developers</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="https://github.com/repairman29/CLAWDBOT/tree/main/upshiftai" class="nav-cta" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap">
+        <h1>🤖 AI-Powered Dependency Intelligence</h1>
+        <p class="hero-lead">UpshiftAI finds ancient dependencies across npm, pip, and Go — with conversational AI analysis, smart security audits, and automated fixes.</p>
+        <div class="hero-actions">
+          <a href="#try" class="btn btn-primary">Try it</a>
+          <a href="docs.html" class="btn btn-secondary">How it works</a>
+          <a href="dev.html" class="btn btn-secondary">Developers</a>
+          <a href="pricing.html" class="btn btn-secondary">Pricing</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="value">
+      <div class="wrap">
+        <h2>Make dependency lineage work for you</h2>
+        <ul class="value-list">
+          <li><strong>Analyze & report</strong> — resolve the full tree (npm/pip/go), detect ancient/deprecated/fork hints, output JSON/markdown/CSV or a full “deep throat” report with transitive “something old” chains.</li>
+          <li><strong>Checkpoint & rollback</strong> — save manifest + lockfile before changes; restore with one command so automations are safe.</li>
+          <li><strong>Apply with HITL</strong> — upgrade or replace packages with checkpoint, verify, and auto-rollback on failure. Risky actions (replace, major) go through approval (prompt or webhook); everything else runs with listeners and webhooks so you can observe or revert.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="try" class="try">
+      <div class="wrap">
+        <h2>Try it (CLI)</h2>
+        <p>Everything is executable from the CLI. From the <code>upshiftai</code> directory or via <code>npx upshiftai-deps</code>:</p>
+        <pre class="code"><code># Analyze (JSON / markdown / CSV)
+upshiftai-deps analyze [path] [--markdown] [--csv] [--no-registry] [--ecosystem=npm|pip|go]
+
+# Full report (direct + transitive, “something old” chains, optional --pdf)
+upshiftai-deps report [path] [--output FILE] [--pdf] [--no-full-tree]
+
+# Checkpoint before changes, rollback to restore
+upshiftai-deps checkpoint [path] [--reason "..."]
+upshiftai-deps rollback [path] [--dry-run]
+
+# Apply automated fixes (npm AND pip; checkpoint, verify, auto-rollback)
+upshiftai-deps apply fix [path] [--dry-run] [--yes] [--limit N]
+upshiftai-deps fix &lt;pkg&gt; [path] [--dry-run] [--yes]
+
+# Health check (OK/WARN/FAIL status for CI)
+upshiftai-deps health [path] [--exit-code] [--json]</code></pre>
+        <p>Use <code>.upshiftai.json</code> (see <code>.upshiftai.example.json</code>) for webhooks and approval policy. Full reference: <a href="docs.html">How it works</a>.</p>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div class="wrap">
+        <p><strong>🤖 AI-POWERED:</strong> JARVIS conversational analysis, smart risk assessment, and predictive vulnerability detection. Basic CLI is free forever — AI features require Pro subscription ($19/mo).</p>
+        <a href="docs.html" class="btn btn-primary">Full CLI reference &amp; config</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><a href=".">UpshiftAI</a> — ancient dependency lineage. Part of the <a href="https://github.com/repairman29/CLAWDBOT" target="_blank" rel="noopener">CLAWDBOT</a> ecosystem. <a href="https://github.com/sponsors/repairman29" target="_blank" rel="noopener">Sponsor</a> · <a href="pricing.html">Pricing</a></p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "name": "upshiftai-deps",
+  "version": "0.2.0",
+  "description": "Analyze dependency trees and surface ancient/legacy/forked branches for upshiftai.dev",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "upshiftai-deps": "bin/upshiftai-deps.js"
+  },
+  "scripts": {
+    "start": "node bin/upshiftai-deps.js",
+    "analyze": "node bin/upshiftai-deps.js analyze",
+    "test": "node --test src/*.test.js 2>/dev/null || true"
+  },
+  "keywords": [
+    "dependencies",
+    "legacy",
+    "lineage",
+    "upshiftai"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  }
+}

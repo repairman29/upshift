@@ -1,0 +1,13 @@
+{
+  "webhooks": [
+    "https://your-server.com/hooks/upshiftai"
+  ],
+  "approval": {
+    "mode": "prompt",
+    "requireFor": ["replace", "major"],
+    "webhookUrl": "https://your-server.com/approve",
+    "timeoutMs": 60000
+  },
+  "platformUrl": "https://app.upshiftai.dev",
+  "apiKey": "usk_..."
+}
