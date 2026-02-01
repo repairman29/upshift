@@ -1,0 +1,44 @@
+{
+  "name": "upshiftai",
+  "version": "1.0.0",
+  "description": "Dependency lineage analysis: ancient/deprecated/vulnerable packages (npm, pip, go). Run report and summarize.",
+  "env": ["UPSHIFTAI_CLI_PATH", "JARVIS_CLAWDBOT_ROOT"],
+  "tools": [
+    {
+      "name": "analyze_dependencies",
+      "description": "Run UpshiftAI dependency analysis on a project and return a short summary or one-pager. Surfaces ancient/deprecated packages, security vulns (npm audit / pip-audit), and suggested fixes.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "projectPath": {
+            "type": "string",
+            "description": "Path to project root (directory containing package-lock.json, requirements.txt, or go.mod). Default: current workspace or ."
+          },
+          "summaryOnly": {
+            "type": "boolean",
+            "description": "If true, return only the one-pager (risk, TL;DR, do this first). If false, return summary plus top problematic packages.",
+            "default": true
+          },
+          "includeFullReport": {
+            "type": "boolean",
+            "description": "If true, also return full JSON report (entries, audit). Use when user wants details.",
+            "default": false
+          }
+        }
+      }
+    },
+    {
+      "name": "dependency_health",
+      "description": "Quick health check: one-line status (OK/WARN/FAIL) and counts for ancient, deprecated, and high/critical vulns. Good for CI or quick answer.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "projectPath": {
+            "type": "string",
+            "description": "Path to project root. Default: current workspace or ."
+          }
+        }
+      }
+    }
+  ]
+}

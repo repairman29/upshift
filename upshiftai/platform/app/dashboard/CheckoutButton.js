@@ -1,0 +1,23 @@
+'use client';
+
+import { useState } from 'react';
+
+export default function CheckoutButton() {
+  const [loading, setLoading] = useState(false);
+  const handleClick = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/stripe/checkout', { method: 'POST' });
+      const data = await res.json();
+      if (data.url) window.location.href = data.url;
+      else setLoading(false);
+    } catch {
+      setLoading(false);
+    }
+  };
+  return (
+    <button type="button" onClick={handleClick} disabled={loading} style={{ padding: '0.5rem 1rem', background: '#3b82f6', color: '#fff', border: 'none', borderRadius: 6 }}>
+      {loading ? '…' : 'Upgrade to Pro'}
+    </button>
+  );
+}
