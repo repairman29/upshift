@@ -6,7 +6,7 @@ Use JARVIS anywhere in Cursor when you need dependency intelligence, blog media,
 
 ## One-time setup (do this once)
 
-### 1. Run the setup script
+### 1. Create vault and API key
 
 From repo root:
 
@@ -14,17 +14,25 @@ From repo root:
 scripts/setup-jarvis-cursor.sh
 ```
 
-This creates `.env` from `.env.example` if it doesn’t exist.
+This creates `vault/jarvis.json` (gitignored). Then create an UpshiftAI API key and store it in the vault:
 
-### 2. Edit `.env` with your values
+```bash
+cd upshiftai/platform && node ../../scripts/create-upshift-api-key.cjs
+```
 
-- **JARVIS_EDGE_URL** — `https://YOUR_REF.supabase.co/functions/v1/jarvis`  
-  Get `YOUR_REF` from Supabase Dashboard (project URL). Deploy the Edge function first: `supabase functions deploy jarvis` (see `upshiftai/docs/JARVIS-EDGE-SUPABASE.md`).
-- **UPSHIFTAI_API_KEY** — Your API key from [upshiftai.dev/pricing](https://upshiftai.dev/pricing) or the platform dashboard (e.g. `uai_pro_xxx`).
+Requires **SUPABASE_URL** and **SUPABASE_SERVICE_ROLE_KEY** in `.env` at repo root or in `upshiftai/platform/.env`. The script creates the key in Supabase and writes **UPSHIFTAI_API_KEY** to `vault/jarvis.json`.
+
+### 2. Put JARVIS Edge URL in vault
+
+- **Option A:** Edit `vault/jarvis.json` and set **JARVIS_EDGE_URL** to `https://YOUR_REF.supabase.co/functions/v1/jarvis` (get `YOUR_REF` from Supabase Dashboard).
+- **Option B:** When creating the key, pass the Edge URL:  
+  `cd upshiftai/platform && node ../../scripts/create-upshift-api-key.cjs --edge-url https://YOUR_REF.supabase.co/functions/v1/jarvis`
+
+Deploy the Edge function first: `supabase functions deploy jarvis` (see `upshiftai/docs/JARVIS-EDGE-SUPABASE.md`).
 
 ### 3. (Optional) Cursor environment
 
-If Cursor doesn’t load `.env` automatically, add `JARVIS_EDGE_URL` and `UPSHIFTAI_API_KEY` in **Cursor Settings → Features → Environment** so the agent can use them when calling JARVIS.
+Scripts read from **vault/jarvis.json** first, then `.env`. If Cursor needs these in env, add **JARVIS_EDGE_URL** and **UPSHIFTAI_API_KEY** in **Cursor Settings → Features → Environment**.
 
 ---
 
@@ -55,7 +63,7 @@ node scripts/call-jarvis.js track_usage '{"feature":"analyze_dependencies"}'
 node scripts/call-jarvis.js add_blog_media '{"post":"when-it-breaks-guardrails-hitl.html","instructions":"Add a GIF"}'
 ```
 
-The script reads `JARVIS_EDGE_URL` and `UPSHIFTAI_API_KEY` from `.env` at repo root.
+The script reads `JARVIS_EDGE_URL` and `UPSHIFTAI_API_KEY` from **vault/jarvis.json** first, then `.env`.
 
 **Option B — POST from code:**
 

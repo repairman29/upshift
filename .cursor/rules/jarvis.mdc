@@ -14,15 +14,15 @@ When the user or the task needs any of the following, **invoke JARVIS** via the 
 
 ## How to invoke JARVIS
 
-1. **Preferred:** Run the script (reads `.env` at repo root):
+1. **Preferred:** Run the script (reads **vault/jarvis.json** first, then `.env`):
    - `node scripts/call-jarvis.js <task> '<json params>'`
    - Example: `node scripts/call-jarvis.js track_usage '{"feature":"analyze_dependencies"}'`
    - Example: `node scripts/call-jarvis.js add_blog_media '{"post":"when-it-breaks-guardrails-hitl.html","instructions":"Add a GIF"}'`
 
 2. **Or:** POST to the Edge URL yourself. Edge URL and API key come from:
-   - Repo root `.env` (JARVIS_EDGE_URL, UPSHIFTAI_API_KEY), or
-   - Environment variables. If not set, tell the user to run `scripts/setup-jarvis-cursor.sh` and edit `.env` (see `docs/JARVIS_IN_CURSOR.md`).
+   - **vault/jarvis.json** (JARVIS_EDGE_URL, UPSHIFTAI_API_KEY), or
+   - Repo root `.env`, or environment variables. If not set, tell the user to run `scripts/setup-jarvis-cursor.sh` and `cd upshiftai/platform && node ../../scripts/create-upshift-api-key.cjs`, then put JARVIS_EDGE_URL in vault (see `docs/JARVIS_IN_CURSOR.md`).
 
 3. **Request body:** `{ "task": "<name>", "apiKey": "<from .env or env>", ...params }`
 
-When in doubt, prefer calling JARVIS for dependency analysis and blog media rather than implementing logic locally. If `.env` is missing or keys are placeholders, tell the user to run `scripts/setup-jarvis-cursor.sh` and fill in `.env`.
+When in doubt, prefer calling JARVIS for dependency analysis and blog media rather than implementing logic locally. If vault or keys are missing, tell the user to run `scripts/setup-jarvis-cursor.sh`, then `cd upshiftai/platform && node ../../scripts/create-upshift-api-key.cjs`, and put JARVIS_EDGE_URL in `vault/jarvis.json`.

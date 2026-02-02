@@ -9,19 +9,38 @@
 const path = require('path');
 const fs = require('fs');
 
-function loadEnv() {
-  const envPath = path.join(__dirname, '..', '.env');
-  if (!fs.existsSync(envPath)) {
-    console.error('Missing .env. Run:  scripts/setup-jarvis-cursor.sh');
-    process.exit(1);
+const ROOT = path.join(__dirname, '..');
+const VAULT_FILE = path.join(ROOT, 'vault', 'jarvis.json');
+const ENV_PATH = path.join(ROOT, '.env');
+
+function loadVault() {
+  if (!fs.existsSync(VAULT_FILE)) return {};
+  try {
+    return JSON.parse(fs.readFileSync(VAULT_FILE, 'utf8'));
+  } catch (e) {
+    return {};
   }
-  const content = fs.readFileSync(envPath, 'utf8');
+}
+
+function loadEnv() {
   const env = {};
-  content.split('\n').forEach((line) => {
-    const m = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$/);
-    if (m) env[m[1]] = m[2].replace(/^["']|["']$/g, '').trim();
-  });
+  if (fs.existsSync(ENV_PATH)) {
+    const content = fs.readFileSync(ENV_PATH, 'utf8');
+    content.split('\n').forEach((line) => {
+      const m = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$/);
+      if (m) env[m[1]] = m[2].replace(/^["']|["']$/g, '').trim();
+    });
+  }
   return env;
+}
+
+function getConfig() {
+  const vault = loadVault();
+  const env = loadEnv();
+  return {
+    JARVIS_EDGE_URL: vault.JARVIS_EDGE_URL || env.JARVIS_EDGE_URL || process.env.JARVIS_EDGE_URL,
+    UPSHIFTAI_API_KEY: vault.UPSHIFTAI_API_KEY || env.UPSHIFTAI_API_KEY || process.env.UPSHIFTAI_API_KEY,
+  };
 }
 
 async function main() {
@@ -34,16 +53,16 @@ async function main() {
     process.exit(1);
   }
 
-  const env = loadEnv();
-  const url = env.JARVIS_EDGE_URL || process.env.JARVIS_EDGE_URL;
-  const apiKey = env.UPSHIFTAI_API_KEY || process.env.UPSHIFTAI_API_KEY;
+  const config = getConfig();
+  const url = config.JARVIS_EDGE_URL;
+  const apiKey = config.UPSHIFTAI_API_KEY;
 
   if (!url || url.includes('YOUR_REF')) {
-    console.error('Set JARVIS_EDGE_URL in .env (see .env.example).');
+    console.error('Set JARVIS_EDGE_URL in vault/jarvis.json or .env (see vault/jarvis.json.example).');
     process.exit(1);
   }
   if (!apiKey || apiKey.includes('xxx')) {
-    console.error('Set UPSHIFTAI_API_KEY in .env.');
+    console.error('Set UPSHIFTAI_API_KEY. Run:  cd upshiftai/platform && node ../../scripts/create-upshift-api-key.cjs');
     process.exit(1);
   }
 

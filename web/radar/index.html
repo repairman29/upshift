@@ -139,16 +139,20 @@
       const raw = textarea.value.trim();
       if (!raw) return [];
       const reports = [];
-      for (const line of raw.split('\n').filter(l => l.trim())) {
+      const lines = raw.split('\n').filter(l => l.trim());
+      for (const line of lines) {
         try {
           const obj = JSON.parse(line);
           if (obj.outdated != null) reports.push(obj);
         } catch {}
       }
-      try {
-        const single = JSON.parse(raw);
-        if (single.outdated != null) reports.push(single);
-      } catch {}
+      // Single JSON object (no NDJSON): parse whole blob only if no lines succeeded
+      if (reports.length === 0) {
+        try {
+          const single = JSON.parse(raw);
+          if (single.outdated != null) reports.push(single);
+        } catch {}
+      }
       return reports;
     }
 
