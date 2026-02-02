@@ -47,6 +47,12 @@
     .radar .empty { color: var(--text-muted); padding: 2rem; text-align: center; }
     .radar .cta-pro { text-align: center; padding: 2rem; background: var(--bg-soft); border-radius: var(--radius); margin-top: 2rem; }
     .radar .cta-pro a { color: var(--accent); font-weight: 600; }
+    .radar-pro-section { max-width: var(--radar-max); margin: 0 auto 2rem; padding: 0 1.5rem; }
+    .radar-pro-section h2 { font-size: 1.25rem; margin-bottom: 1rem; }
+    .radar-pro-list { margin-top: 1rem; }
+    .radar-pro-list table { width: 100%; }
+    .radar-pro-list .pro-open { padding: 0.35rem 0.75rem; font-size: 0.85rem; background: var(--accent); border: none; border-radius: var(--radius-sm); color: #fff; cursor: pointer; }
+    .radar-pro-list .pro-open:hover { background: var(--accent-hover); }
   </style>
 </head>
 <body>
@@ -95,6 +101,17 @@
         </ul>
         <p style="margin-top: 1rem;"><a href="/#pricing" class="btn btn-primary" style="display: inline-block;">See pricing</a></p>
       </div>
+    </section>
+
+    <section class="radar-pro-section radar" id="radar-pro">
+      <h2>Radar Pro</h2>
+      <p class="radar-sub">Load your persisted reports. Set your API URL and upload token (from your Pro dashboard or env).</p>
+      <div class="radar-actions">
+        <input type="text" id="pro-api-url" placeholder="API URL (e.g. https://xxx.supabase.co/functions/v1)" style="max-width: 360px; padding: 0.5rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-soft); color: var(--text);" />
+        <input type="text" id="pro-token" placeholder="Upload token" style="max-width: 280px; padding: 0.5rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-soft); color: var(--text);" />
+        <button type="button" id="pro-load">Load my reports</button>
+      </div>
+      <div id="pro-list" class="radar-pro-list"></div>
     </section>
 
     <section class="radar-dashboard radar">
@@ -162,32 +179,31 @@
       return div.innerHTML;
     }
 
-    function render() {
-      const reports = parseInput();
-      if (reports.length === 0) {
-        summaryEl.style.display = 'none';
-        ctaPro.style.display = 'none';
-        tableWrap.innerHTML = '<p class="empty">Paste one or more scan report JSON objects above (or upload a file), then click Load.</p>';
-        return;
-      }
-
-      const rows = reports.map(r => ({
+    function rowsFromReports(reports) {
+      return reports.map(r => ({
         repo: r.cwd || r.packageManager || 'unknown',
         ecosystem: r.ecosystem || r.packageManager || '—',
         outdated: Array.isArray(r.outdated) ? r.outdated.length : 0,
         vulns: r.vulnerabilities?.items?.length ?? 0,
       }));
+    }
 
+    function renderFromReports(reports) {
+      if (!reports || reports.length === 0) {
+        summaryEl.style.display = 'none';
+        ctaPro.style.display = 'none';
+        tableWrap.innerHTML = '<p class="empty">No reports to display.</p>';
+        return;
+      }
+      const rows = rowsFromReports(reports);
       const totalRepos = rows.length;
       const totalOutdated = rows.reduce((s, r) => s + r.outdated, 0);
       const totalVulns = rows.reduce((s, r) => s + r.vulns, 0);
-
       summaryEl.innerHTML =
         '<div class="radar-card"><span class="value">' + totalRepos + '</span><br><span class="label">Repos</span></div>' +
         '<div class="radar-card"><span class="value">' + totalOutdated + '</span><br><span class="label">Outdated</span></div>' +
         '<div class="radar-card"><span class="value">' + totalVulns + '</span><br><span class="label">Vulnerabilities</span></div>';
       summaryEl.style.display = 'flex';
-
       let html = '<table><thead><tr><th>Repo / path</th><th>Ecosystem</th><th class="count">Outdated</th><th class="count">Vulns</th></tr></thead><tbody>';
       for (const row of rows) {
         html += '<tr><td class="repo">' + escapeHtml(row.repo) + '</td><td>' + escapeHtml(row.ecosystem) + '</td><td class="count">' + row.outdated + '</td><td class="count">' + row.vulns + '</td></tr>';
@@ -196,6 +212,67 @@
       tableWrap.innerHTML = html;
       ctaPro.style.display = 'block';
     }
+
+    function render() {
+      const reports = parseInput();
+      if (reports.length === 0) {
+        summaryEl.style.display = 'none';
+        ctaPro.style.display = 'none';
+        tableWrap.innerHTML = '<p class="empty">Paste one or more scan report JSON objects above (or upload a file), then click Load.</p>';
+        return;
+      }
+      renderFromReports(reports);
+    }
+
+    // Radar Pro: load persisted reports
+    const proApiUrl = document.getElementById('pro-api-url');
+    const proToken = document.getElementById('pro-token');
+    const proLoadBtn = document.getElementById('pro-load');
+    const proList = document.getElementById('pro-list');
+    try {
+      if (localStorage.getItem('radar_pro_api_url')) proApiUrl.value = localStorage.getItem('radar_pro_api_url');
+      if (localStorage.getItem('radar_pro_token')) proToken.value = localStorage.getItem('radar_pro_token');
+    } catch (e) {}
+    proLoadBtn.addEventListener('click', async function() {
+      const base = (proApiUrl.value || '').trim().replace(/\/$/, '');
+      const token = (proToken.value || '').trim();
+      if (!base || !token) {
+        proList.innerHTML = '<p class="empty">Enter API URL and upload token, then click Load my reports.</p>';
+        return;
+      }
+      try {
+        localStorage.setItem('radar_pro_api_url', base);
+        localStorage.setItem('radar_pro_token', token);
+      } catch (e) {}
+      proList.innerHTML = '<p class="hint">Loading…</p>';
+      const res = await fetch(base + '/radar-reports?token=' + encodeURIComponent(token));
+      if (!res.ok) {
+        proList.innerHTML = '<p class="empty">Failed to load reports (' + res.status + '). Check URL and token.</p>';
+        return;
+      }
+      const data = await res.json();
+      const reports = data.reports || [];
+      if (reports.length === 0) {
+        proList.innerHTML = '<p class="empty">No reports yet. Upload with: <code>upshift scan --report out.json --upload</code></p>';
+        return;
+      }
+      let html = '<table class="radar-pro-table"><thead><tr><th>Date</th><th>Name</th><th>Outdated</th><th>Vulns</th><th></th></tr></thead><tbody>';
+      for (const r of reports) {
+        const date = r.created_at ? new Date(r.created_at).toLocaleString() : '—';
+        html += '<tr><td>' + escapeHtml(date) + '</td><td>' + escapeHtml(r.name || '—') + '</td><td class="count">' + (r.outdated_count ?? 0) + '</td><td class="count">' + (r.vuln_count ?? 0) + '</td><td><button type="button" class="pro-open" data-id="' + escapeHtml(r.id) + '">Open</button></td></tr>';
+      }
+      html += '</tbody></table>';
+      proList.innerHTML = html;
+      proList.querySelectorAll('.pro-open').forEach(function(btn) {
+        btn.addEventListener('click', async function() {
+          const id = btn.getAttribute('data-id');
+          const res2 = await fetch(base + '/radar-report?id=' + encodeURIComponent(id) + '&token=' + encodeURIComponent(token));
+          if (!res2.ok) { tableWrap.innerHTML = '<p class="empty">Failed to load report.</p>'; return; }
+          const data2 = await res2.json();
+          if (data2.report) renderFromReports([data2.report]);
+        });
+      });
+    });
 
     loadBtn.addEventListener('click', render);
     clearBtn.addEventListener('click', function() {

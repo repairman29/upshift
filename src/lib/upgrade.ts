@@ -6,6 +6,8 @@ import semver from "semver";
 import { runCommand } from "./exec.js";
 import { loadConfig } from "./config.js";
 import { assessRisk } from "./explain.js";
+import { detectEcosystem } from "./ecosystem.js";
+import { runPythonUpgrade } from "./upgrade-python.js";
 
 export type UpgradeOptions = {
   cwd: string;
@@ -13,14 +15,28 @@ export type UpgradeOptions = {
   toVersion?: string;
   dryRun: boolean;
   yes?: boolean;
+  skipTests?: boolean;
 };
 
 export async function runUpgrade(options: UpgradeOptions): Promise<void> {
+  const ecosystem = detectEcosystem(options.cwd);
+  if (ecosystem === "python") {
+    await runPythonUpgrade({
+      cwd: options.cwd,
+      packageName: options.packageName,
+      toVersion: options.toVersion,
+      dryRun: options.dryRun,
+      yes: options.yes,
+      skipTests: options.skipTests,
+    });
+    return;
+  }
+
   const spinner = ora(`Upgrading ${options.packageName}...`).start();
   try {
     const packageManager = detectPackageManager(options.cwd);
     if (packageManager !== "npm") {
-      throw new Error("Only npm is supported for upgrade in this MVP.");
+      throw new Error("Only npm is supported for upgrade in this MVP (use Python project for pip/poetry).");
     }
 
     const target = options.toVersion ?? "latest";

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>UpshiftAI — Know what’s old, what’s risky, and what to fix first</title>
+  <title>UpshiftAI — Stop guessing what to upgrade</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
@@ -28,14 +28,15 @@
 
   <main>
     <section class="hero">
+      <div class="hero-bg" aria-hidden="true"></div>
       <div class="wrap">
         <div class="hero-grid">
           <div class="hero-content">
             <p class="badge">AI-powered dependency intelligence</p>
-            <h1 class="headline">Know what’s old, what’s risky, and what to fix first</h1>
-            <p class="subheadline">Find old and risky dependencies across npm, pip, and Go—with AI that helps you decide what to upgrade, security audits that prioritize real risk, and automated fixes you can run safely.</p>
+            <h1 class="headline">Stop guessing what to upgrade.</h1>
+            <p class="subheadline">One scan across npm, pip, and Go. You get a clear plan—not a list—plus security that prioritizes real risk and fixes you can run safely.</p>
             <div class="hero-cta-group">
-              <a href="#try" class="btn btn-primary">Try it</a>
+              <a href="#try-it" class="btn btn-primary">Try it free</a>
               <a href="docs.html" class="btn btn-secondary">How it works</a>
               <div class="copy-command">
                 <span class="prompt">$</span>
@@ -71,8 +72,7 @@
       </div>
     </section>
 
-    <!-- NEW: Live Dependency Scanner (The Hook) -->
-    <section class="live-scan">
+    <section class="live-scan" id="try-it">
       <div class="container">
         <div class="section-header">
           <h2>Try it on your own code</h2>
@@ -118,19 +118,19 @@
 
         <div class="feature-grid">
           <div class="feature-card">
-            <div class="feature-icon">🔍</div>
+            <div class="feature-icon feature-icon-scan" aria-hidden="true"></div>
             <h3>One scan, all ecosystems</h3>
-            <p>Run one command across npm, pip, and Go. No config required. You get a single view of what’s hiding in your tree.</p>
+            <p>Run one command across npm, pip, and Go. No config. You get a single view of what’s hiding in your tree.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">🛡️</div>
+            <div class="feature-icon feature-icon-shield" aria-hidden="true"></div>
             <h3>Risk you can act on</h3>
-            <p>Security audits (npm audit + pip-audit) are built in. You see what’s actually risky—prioritized by severity, not just age.</p>
+            <p>Security audits are built in. You see what’s actually risky—prioritized by severity, not just age.</p>
           </div>
           <div class="feature-card">
-            <div class="feature-icon">🤖</div>
+            <div class="feature-icon feature-icon-plan" aria-hidden="true"></div>
             <h3>A strategy, not a list</h3>
-            <p>Ask JARVIS things like “What should I upgrade first?” and get a clear plan. No more guessing from raw logs.</p>
+            <p>Ask JARVIS “What should I upgrade first?” and get a clear plan. No more guessing from raw logs.</p>
           </div>
         </div>
       </div>
@@ -161,9 +161,10 @@ upshiftai-deps health [path] [--exit-code] [--json]</code></pre>
     </section>
 
     <section class="cta">
-      <div class="wrap">
-        <p><strong>🤖 AI-powered:</strong> Get JARVIS conversational analysis, risk assessment, and vulnerability insights. The CLI is free forever—upgrade to Pro ($19/mo) when you want more AI queries and priority support.</p>
-        <a href="docs.html" class="btn btn-primary">Full CLI reference &amp; config</a>
+      <div class="wrap cta-inner">
+        <p class="cta-lead">CLI is free forever. Upgrade to Pro when you want JARVIS analysis, more AI queries, and priority support.</p>
+        <a href="pricing.html" class="btn btn-primary">See pricing</a>
+        <a href="docs.html" class="btn btn-secondary">CLI reference</a>
       </div>
     </section>
   </main>

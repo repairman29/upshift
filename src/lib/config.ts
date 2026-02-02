@@ -49,6 +49,9 @@ export type UpshiftConfig = {
     // Auth token (use env var reference like $NPM_TOKEN)
     token?: string;
   };
+
+  // Test command (Python/non-Node): run after upgrade; rollback if non-zero. e.g. "pytest" or ["poetry", "run", "pytest"]
+  testCommand?: string | string[];
 };
 
 const CONFIG_FILES = [

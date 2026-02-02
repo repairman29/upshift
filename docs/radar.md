@@ -27,14 +27,22 @@ Reports are not stored; they exist only in your browser session.
 
 Radar Pro is included with **Pro** ($9/mo) and **Team** ($29/mo):
 
-- **Persisted dashboard** — Reports are stored and associated with your account
-- **Report history** — See how dependency health changes over time
-- **Alerts** — Notify when outdated or vulnerability counts exceed thresholds
-- **Upload from CLI/CI** — `upshift scan --report --upload` (when available) sends reports to your Radar Pro dashboard
+- **Persisted dashboard** — Reports are stored and associated with your upload token
+- **Report history** — Load your reports on the Radar page (Radar Pro section: API URL + token)
+- **Upload from CLI/CI** — `upshift scan --report out.json --upload` sends reports to your Radar Pro backend (requires `UPSHIFT_RADAR_TOKEN` and `UPSHIFT_RADAR_UPLOAD_URL`)
+- **Alerts** — (Coming) Notify when outdated or vulnerability counts exceed thresholds
 - **Export** — Download or share reports
 - **Org-wide** — Team plan: visibility across all repos in your org
 
 See [Pricing](https://upshiftai.dev/#pricing) on the site.
+
+### Radar Pro setup (MVP)
+
+1. **Backend:** Deploy Supabase Edge Functions `radar-upload`, `radar-reports`, `radar-report` and run the migration `supabase/migrations/20250201120000_radar_reports.sql` so the `radar_reports` table exists.
+2. **Upload token:** Generate a UUID (e.g. in the Radar Pro dashboard or locally) and use it as your upload token. Store it in env: `UPSHIFT_RADAR_TOKEN=<uuid>`.
+3. **API URL:** Set `UPSHIFT_RADAR_UPLOAD_URL` to your Supabase functions base, e.g. `https://YOUR_REF.supabase.co/functions/v1/radar-upload`.
+4. **CLI:** Run `upshift scan --report report.json --upload` in each repo; reports are stored under your token.
+5. **Dashboard:** On [Radar](https://upshiftai.dev/radar/), open the **Radar Pro** section, enter the same API URL (base, e.g. `https://YOUR_REF.supabase.co/functions/v1`) and your upload token, then click **Load my reports**. Click **Open** on a report to view it.
 
 ## Report format
 

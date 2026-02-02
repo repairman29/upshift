@@ -1,0 +1,2 @@
+# Minimal Python fixture for e2e (upshift scan + upgrade --dry-run)
+six>=1.0.0

@@ -29,6 +29,7 @@
     "start": "node dist/cli.js",
     "server": "node dist/server.js",
     "test": "echo \"No tests yet\"",
+    "e2e": "npm run build && node tests/e2e/cli.e2e.mjs",
     "dogfood": "npm run build && node dist/cli.js scan",
     "dogfood:upgrade": "node dist/cli.js upgrade"
   },

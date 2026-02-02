@@ -104,7 +104,8 @@ Full reference: [Configuration](configuration.md).
 
 - **Scan** — In a Python/Ruby/Go project, `upshift scan` detects the ecosystem and runs the right scanner (pip/poetry, bundler, go list).
 - **Explain (Python)** — In a Python project, `upshift explain <pkg>` shows version delta and “pip install -U <pkg>”. No AI yet.
-- **Explain (Ruby/Go)** — Not yet; use `upshift scan` for version overview.
+- **Upgrade (Python)** — In a Python project (pip or Poetry), `upshift upgrade <pkg>` runs `pip install -U <pkg>` or `poetry update <pkg>`, backs up `pyproject.toml`/`poetry.lock`/`requirements.txt`, runs tests (pytest or `.upshiftrc` `testCommand`), and rolls back on failure.
+- **Explain / Upgrade (Ruby/Go)** — Not yet; use `upshift scan` for version overview.
 
 ## VS Code
 

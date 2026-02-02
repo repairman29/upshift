@@ -31,6 +31,7 @@ Upshift reads configuration from `.upshiftrc.json`, `.upshiftrc`, or `upshift.co
 | **defaultMode** | `"all"` \| `"minor"` \| `"patch"` | `"minor"` | Default mode for batch upgrade (`upshift upgrade --all`). |
 | **autoTest** | `boolean` | `true` | Run tests after upgrade; roll back if tests fail. |
 | **autoConfirm** | `boolean` | `false` | Skip confirmation prompts (e.g. major upgrade, batch confirm). Use with care. |
+| **testCommand** | `string` \| `string[]` | *(auto)* | For Python/non-Node: command to run after upgrade (e.g. `"pytest"` or `["poetry", "run", "pytest"]`). If tests fail, upgrade is rolled back. |
 
 ## ai
 

@@ -1,0 +1,8 @@
+{
+  "name": "e2e-minimal",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "chalk": "^5.0.0"
+  }
+}

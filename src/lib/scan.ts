@@ -15,6 +15,9 @@ export type ScanOptions = {
   json: boolean;
   licenses?: boolean;
   report?: string;
+  /** When set with report, POST report to Radar Pro (env UPSHIFT_RADAR_UPLOAD_URL + UPSHIFT_RADAR_TOKEN) */
+  uploadUrl?: string;
+  uploadToken?: string;
 };
 
 export type OutdatedEntry = {
@@ -24,6 +27,25 @@ export type OutdatedEntry = {
   latest: string;
   type?: string;
 };
+
+async function uploadReport(
+  uploadUrl: string,
+  token: string,
+  report: Record<string, unknown>
+): Promise<void> {
+  const res = await fetch(uploadUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Upload-Token": token,
+    },
+    body: JSON.stringify({ report }),
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`Radar Pro upload failed (${res.status}): ${err}`);
+  }
+}
 
 /** Returns raw scan data for use by suggest/plan/Radar. Node only. */
 export async function runScanForSuggest(cwd: string): Promise<{
@@ -73,6 +95,9 @@ export async function runScan(options: ScanOptions): Promise<void> {
         const { writeFileSync } = await import("fs");
         writeFileSync(options.report, JSON.stringify(reportPayload, null, 2), "utf8");
       }
+      if (options.uploadUrl && options.uploadToken && reportPayload) {
+        await uploadReport(options.uploadUrl, options.uploadToken, reportPayload);
+      }
       if (options.json) {
         process.stdout.write(
           JSON.stringify({ status: "ok", ecosystem: label, outdated }, null, 2) + "\n"
@@ -109,6 +134,9 @@ export async function runScan(options: ScanOptions): Promise<void> {
     if (reportPayload && options.report) {
       const { writeFileSync } = await import("fs");
       writeFileSync(options.report, JSON.stringify(reportPayload, null, 2), "utf8");
+    }
+    if (options.uploadUrl && options.uploadToken && reportPayload) {
+      await uploadReport(options.uploadUrl, options.uploadToken, reportPayload);
     }
 
     spinner.succeed("Scan complete");

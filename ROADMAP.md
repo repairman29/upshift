@@ -65,17 +65,17 @@ This document outlines planned features and improvements for Upshift.
 
 ### Code Migrations
 - [x] **Apply migration template from CLI** — `upshift migrate <package>` with `--list`, `--template`, `--dry-run`; templates in `migrations/` (React 18→19, Next.js 13→14, Vue 2→3)
-- [ ] Additional migration templates (Angular, etc.)
+- [x] **Additional migration templates** — Angular 16→17 (`@angular/core`), TypeScript 4→5 (`typescript`); more (Jest, etc.) welcome via CONTRIBUTING
 
 ### Integrations
 - [x] **GitHub App scaffold** — [docs/github-app.md](docs/github-app.md): how to build an App (permissions, webhook flow, example workflow with App token)
 - [ ] **GitHub App (beta)** — Published installable App that runs scan on PR and comments
-- [ ] **Radar Pro** — Persisted dashboard, report history, alerts, upload from CLI/CI (`--upload`), org-wide (Pro/Team plans)
+- [x] **Radar Pro (MVP)** — Persisted dashboard (Supabase `radar_reports`), report history (list + load), upload from CLI (`upshift scan --report out.json --upload` with `UPSHIFT_RADAR_TOKEN` + `UPSHIFT_RADAR_UPLOAD_URL`); dashboard UI on Radar page (Radar Pro section). Alerts and org-wide coming next.
 
 ### Language Support
 - [x] **Python explain (minimal)** — In Python projects, `upshift explain <pkg>` shows version delta (pip show / PyPI), upgrade hint (`pip install -U <pkg>`); no AI yet
-- [ ] Python/Ruby/Go: full explain (changelog, risk) and upgrade (we have scan + Python explain)
-- [ ] Python (pip/poetry) full parity: upgrade, test, rollback
+- [x] **Python (pip/poetry) full parity** — `upshift upgrade <pkg>` in Python projects: pip/poetry upgrade, backup (pyproject.toml, poetry.lock, requirements.txt), run tests (pytest or config `testCommand`), rollback on failure
+- [ ] Python/Ruby/Go: full explain (changelog, risk) and upgrade for Ruby/Go
 
 ### Team Features
 - [x] **Upgrade policies** — `.upshiftrc.json`: `upgradePolicy: { blockRisk: ["high"] }` blocks high (or medium) risk upgrades; single and batch upgrade respect policy; use `-y` to override

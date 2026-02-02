@@ -7,6 +7,8 @@ Templates for major framework/library upgrades. Used by `upshift upgrade` and `u
 - **react-18-19** — React 18 → 19 (createRoot, hydrateRoot, react-dom)
 - **next-13-14** — Next.js 13 → 14 (metadata, next + react-dom versions)
 - **vue-2-3** — Vue 2 → 3 (createApp, vue-router 4)
+- **angular-16-17** — Angular 16 → 17 (@angular/core, @angular/cli; run `ng update` for control flow / standalone)
+- **typescript-4-5** — TypeScript 4 → 5 (typescript, tslib package bumps)
 
 ## Contributing a template
 
@@ -22,7 +24,7 @@ Templates for major framework/library upgrades. Used by `upshift upgrade` and `u
 
 ## Usage
 
-- **List templates:** `upshift migrate <package> --list` (e.g. `upshift migrate react --list`)
-- **Apply template:** `upshift migrate react` or `upshift migrate next --template next-13-to-14`
+- **List templates:** `upshift migrate <package> --list` (e.g. `upshift migrate react --list`, `upshift migrate @angular/core --list`, `upshift migrate typescript --list`)
+- **Apply template:** `upshift migrate react` or `upshift migrate next --template next-13-to-14` or `upshift migrate @angular/core --template angular-16-to-17`
 - **Dry run:** `upshift migrate react --dry-run` to see what would be changed without modifying files
 - `upshift explain react --ai` may reference a matching template when upgrading across majors.

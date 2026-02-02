@@ -41,6 +41,7 @@ export function upgradeCommand(): Command {
         toVersion: options.to,
         dryRun: options.dryRun,
         yes: options.yes,
+        skipTests: options.skipTests,
       });
     });
 
