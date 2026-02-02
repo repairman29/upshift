@@ -118,10 +118,23 @@ nav a:hover {
 .hero-lead {
   color: var(--text-muted);
   font-size: 1.25rem;
+  margin: 0 0 0.75rem;
+}
+
+.hero-oneliner {
+  color: var(--text-muted);
+  font-size: 1rem;
   margin: 0 0 2.5rem;
-  max-width: 600px;
+  font-style: italic;
+  max-width: 36em;
   margin-left: auto;
   margin-right: auto;
+}
+
+.hero-oneliner em {
+  font-style: normal;
+  color: var(--text);
+  font-weight: 500;
 }
 
 .hero-ctas {
@@ -245,6 +258,106 @@ nav a:hover {
 .trust-list li {
   color: var(--text-muted);
   font-size: 0.95rem;
+}
+
+/* Compare section (vs Dependabot) */
+.compare {
+  padding: 3rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.compare-sub {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  margin: 0 0 2rem;
+  text-align: center;
+  max-width: 42em;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+@media (max-width: 700px) {
+  .compare-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.compare-card {
+  border-radius: var(--radius);
+  padding: 1.5rem 1.25rem;
+  list-style: none;
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.compare-card ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.compare-card li {
+  padding: 0.35rem 0;
+  padding-left: 1.25rem;
+  position: relative;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.compare-card li::before {
+  content: "·";
+  position: absolute;
+  left: 0;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.compare-other {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+}
+
+.compare-other h3 {
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin-top: 0;
+}
+
+.compare-us {
+  background: rgba(46, 160, 67, 0.08);
+  border: 1px solid rgba(46, 160, 67, 0.35);
+}
+
+.compare-us h3 {
+  color: var(--accent);
+  font-size: 1rem;
+  margin-top: 0;
+}
+
+.compare-us li::before {
+  content: "✓";
+  color: var(--accent);
+}
+
+.compare-us li strong {
+  color: var(--text);
+}
+
+.compare-disclaimer {
+  margin: 1.5rem auto 0;
+  max-width: 42em;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  opacity: 0.9;
+  text-align: center;
 }
 
 /* Sections */
@@ -500,6 +613,12 @@ h3:first-child { margin-top: 0; }
 
 .footer a:hover {
   color: var(--accent);
+}
+
+.footer-trademark {
+  margin-top: 1rem;
+  font-size: 0.75rem;
+  opacity: 0.85;
 }
 
 /* Hero Install Box */

@@ -25,6 +25,7 @@
       <a href="/" class="logo">upshift</a>
       <nav>
         <a href="#demo">Demo</a>
+        <a href="#compare">vs Dependabot</a>
         <a href="#pricing">Pricing</a>
         <a href="/blog/introducing-upshift">Blog</a>
         <a href="https://github.com/repairman29/upshift" class="nav-gh" target="_blank" rel="noopener">GitHub</a>
@@ -38,6 +39,7 @@
         <p class="hero-tag">AI-powered • CLI • npm/yarn/pnpm</p>
         <h1>Stop reading changelogs.<br />Let AI tell you what breaks.</h1>
         <p class="hero-lead">Scan for outdated dependencies. Get AI-powered migration guides. Upgrade with automatic rollback.</p>
+        <p class="hero-oneliner">Dependabot tells you <em>what</em> to upgrade. Upshift tells you <em>why</em>, <em>what breaks</em>, and <em>fixes the code</em>.</p>
         <div class="install-hero">
           <code>npm install -g upshift-cli</code>
           <button class="copy-btn" onclick="navigator.clipboard.writeText('npm install -g upshift-cli')">Copy</button>
@@ -109,6 +111,34 @@
       </div>
     </section>
 
+    <section class="compare" id="compare">
+      <div class="wrap-wide">
+        <h2>Not just another dependency bot</h2>
+        <p class="compare-sub">Dependabot and Renovate open PRs. You still read changelogs and fix code by hand. Upshift does the explaining and the fixing.</p>
+        <div class="compare-grid">
+          <div class="compare-card compare-other">
+            <h3>Dependabot / Renovate</h3>
+            <ul>
+              <li>Opens PRs with version bumps</li>
+              <li>You read changelogs and migration docs</li>
+              <li>You find and fix breaking changes yourself</li>
+              <li>You run tests and roll back manually if it breaks</li>
+            </ul>
+          </div>
+          <div class="compare-card compare-us">
+            <h3>Upshift</h3>
+            <ul>
+              <li><strong>AI explains</strong> breaking changes in plain English</li>
+              <li><strong>AI suggests code fixes</strong> — not just version numbers</li>
+              <li>One command: upgrade → run your tests → <strong>auto-rollback</strong> if anything fails</li>
+              <li>CLI-first: scan, explain, fix, upgrade from your terminal</li>
+            </ul>
+          </div>
+        </div>
+        <p class="compare-disclaimer">Dependabot and Renovate are trademarks of their respective owners. We use these names for comparative, informational purposes only under fair use. No endorsement or affiliation implied.</p>
+      </div>
+    </section>
+
     <section class="problem">
       <div class="wrap">
         <h2>Dependency upgrades are the worst kind of work</h2>
@@ -141,17 +171,18 @@
         <ul>
           <li>Dependency scan (npm, yarn, pnpm)</li>
           <li>Risk assessment (low / medium / high)</li>
-          <li>Breaking-change warnings + changelog</li>
+          <li>AI explanations of breaking changes</li>
+          <li>AI-generated code fixes for migrations</li>
           <li>One-command upgrades with tests</li>
           <li>Automatic rollback on failure</li>
+          <li>VS Code extension</li>
           <li>GitHub Action for CI scanning</li>
         </ul>
         <h3>Coming next</h3>
         <ul>
-          <li>AI migration fixes (code changes)</li>
-          <li>VS Code extension</li>
           <li>Multi-repo dashboard</li>
           <li>Scheduled upgrades + PRs</li>
+          <li>Python support (pip / poetry)</li>
         </ul>
       </div>
     </section>
@@ -181,6 +212,8 @@
       <div class="wrap">
         <h2>FAQ</h2>
         <dl>
+          <dt>How is Upshift different from Dependabot?</dt>
+          <dd>Dependabot opens PRs with version bumps; you still read changelogs and fix breaking changes by hand. Upshift explains <em>why</em> things break in plain English, suggests code fixes (not just version bumps), and runs your tests with automatic rollback if anything fails. Think: Dependabot tells you what to upgrade; Upshift does the explaining and the fixing.</dd>
           <dt>Do credits expire?</dt>
           <dd>No. Credits roll over forever.</dd>
           <dt>What happens if tests fail?</dt>
@@ -205,6 +238,7 @@
   <footer class="footer">
     <div class="wrap">
       <p><a href="/">upshift</a> · AI-powered dependency upgrades</p>
+      <p class="footer-trademark">Product names and logos used in comparisons are trademarks of their respective owners. Used for informational comparison only; no endorsement or affiliation.</p>
     </div>
   </footer>
 
@@ -291,17 +325,16 @@
       }
     }
 
-    document.getElementById('hero-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      handleSubmit(this);
-    });
+    const ctaForm = document.getElementById('cta-form');
+    if (ctaForm) {
+      ctaForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        handleSubmit(this);
+      });
+    }
 
-    document.getElementById('cta-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      handleSubmit(this);
-    });
-
-    updateWaitlistCount();
+    const waitlistEl = document.getElementById('waitlist-count');
+    if (waitlistEl) updateWaitlistCount();
 
     // Demo gallery switching
     const demoCards = document.querySelectorAll('.demo-card');
