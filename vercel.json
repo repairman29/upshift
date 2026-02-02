@@ -1,0 +1,32 @@
+{
+  "rewrites": [
+    { "source": "/start", "destination": "/start.html" },
+    { "source": "/favicon.ico", "destination": "/favicon.svg" },
+    { "source": "/blog", "destination": "/blog/index.html" },
+    { "source": "/blog/", "destination": "/blog/index.html" },
+    { "source": "/blog/introducing-upshift", "destination": "/blog/introducing-upshift.html" },
+    { "source": "/blog/when-it-breaks-guardrails-hitl", "destination": "/blog/when-it-breaks-guardrails-hitl.html" },
+    { "source": "/blog/how-we-do-hitl", "destination": "/blog/how-we-do-hitl.html" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" }
+      ]
+    },
+    {
+      "source": "/styles.css",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=3600" }
+      ]
+    },
+    {
+      "source": "/favicon.svg",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=86400" }
+      ]
+    }
+  ]
+}
