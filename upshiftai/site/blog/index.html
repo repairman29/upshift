@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blog — UpshiftAI</title>
+  <link rel="icon" href="../favicon.ico" type="image/x-icon">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .blog-index { max-width: 680px; margin: 0 auto; padding: 3rem 24px; }
+    .blog-index h1 { font-size: 2rem; margin-bottom: 2rem; }
+    .blog-list { list-style: none; padding: 0; margin: 0; }
+    .blog-list li { border-bottom: 1px solid var(--border); padding: 1.5rem 0; }
+    .blog-list li:first-child { padding-top: 0; }
+    .blog-list a { color: var(--text-main); font-weight: 500; }
+    .blog-list a:hover { color: var(--accent-primary); }
+    .blog-list .meta { color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem; }
+    .blog-list .excerpt { color: var(--text-muted); font-size: 0.95rem; margin-top: 0.5rem; line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <a href=".." class="logo">UpshiftAI</a>
+      <nav class="desktop-nav">
+        <a href="..">Home</a>
+        <a href="../docs.html">How it works</a>
+        <a href="../dev.html">Developers</a>
+        <a href="../pricing.html">Pricing</a>
+        <a href="index.html">Blog</a>
+        <a href="https://github.com/repairman29/upshift/tree/main/upshiftai" class="nav-cta" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="blog-index">
+    <h1>Blog</h1>
+    <ul class="blog-list">
+      <li>
+        <a href="when-it-breaks-guardrails-hitl.html">When it breaks, who fixes it, and why human-in-the-loop still matters</a>
+        <p class="meta">February 1, 2026 · 5 min read</p>
+        <p class="excerpt">Three questions experienced engineers ask about AI-powered dependency upgrades—when it breaks, CI/CD guardrails, and why HITL still matters.</p>
+      </li>
+      <li>
+        <a href="how-we-do-hitl.html">How we do human-in-the-loop (HITL)</a>
+        <p class="meta">Approval gates, webhooks, event stream</p>
+        <p class="excerpt">How UpshiftAI does approval and oversight: prompt, webhook, or none. Config and quick setup for devs who want oversight.</p>
+      </li>
+    </ul>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p><a href="..">UpshiftAI</a> — ancient dependency lineage. <a href="../pricing.html">Pricing</a> · <a href="https://github.com/repairman29/upshift" target="_blank" rel="noopener">GitHub</a></p>
+    </div>
+  </footer>
+</body>
+</html>
