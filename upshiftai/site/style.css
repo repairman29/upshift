@@ -51,14 +51,16 @@ a { text-decoration: none; color: inherit; transition: 0.2s; }
 ul { list-style: none; }
 
 /* Layout Utilities */
-.container {
+.container,
+.wrap {
   max-width: var(--container-width);
   margin: 0 auto;
   padding: 0 24px;
 }
 
 /* 1. Header (Minimalist) */
-.header {
+.header,
+.site-header {
   height: var(--header-height);
   border-bottom: 1px solid var(--border-light);
   background: rgba(15, 17, 21, 0.8);
@@ -70,11 +72,28 @@ ul { list-style: none; }
   align-items: center;
 }
 
-.header .container {
+.header .container,
+.header .wrap,
+.site-header .container,
+.site-header .wrap {
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.site-header nav {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+.site-header nav a {
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 500;
+}
+.site-header nav a:hover {
+  color: var(--text-main);
 }
 
 .logo {
@@ -541,8 +560,10 @@ ul { list-style: none; }
   
   .terminal-window { display: none; /* Hide complex visual on mobile */ }
   
-  .header .container { padding: 0 16px; }
-  .desktop-nav { display: none; }
+  .header .container,
+  .site-header .wrap { padding: 0 16px; }
+  .desktop-nav,
+  .site-header nav { display: none; }
 }
 /* Utility Grid */
 .grid-2 {
