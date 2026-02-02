@@ -62,7 +62,9 @@
       <nav>
         <a href="/#demo">Demo</a>
         <a href="/radar/">Radar</a>
+        <a href="/#compare">vs Dependabot</a>
         <a href="/#pricing">Pricing</a>
+        <a href="https://github.com/repairman29/upshift/tree/main/docs" target="_blank" rel="noopener">Docs</a>
         <a href="/blog/index.html">Blog</a>
         <a href="https://github.com/repairman29/upshift" class="nav-gh" target="_blank" rel="noopener">GitHub</a>
       </nav>
@@ -110,6 +112,16 @@
         <input type="text" id="pro-api-url" placeholder="API URL (e.g. https://xxx.supabase.co/functions/v1)" style="max-width: 360px; padding: 0.5rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-soft); color: var(--text);" />
         <input type="text" id="pro-token" placeholder="Upload token" style="max-width: 280px; padding: 0.5rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-soft); color: var(--text);" />
         <button type="button" id="pro-load">Load my reports</button>
+      </div>
+      <div class="radar-pro-alerts" style="margin-top: 1rem;">
+        <h3 style="font-size: 1rem; margin-bottom: 0.5rem;">Alert webhook (optional)</h3>
+        <p class="hint" style="margin-bottom: 0.5rem;">When a report exceeds thresholds, we POST to this URL. Set max outdated/vulns below (leave blank to only notify when &gt; 0).</p>
+        <div class="radar-actions">
+          <input type="text" id="pro-alert-webhook" placeholder="https://your-server.com/radar-webhook" style="max-width: 360px; padding: 0.5rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-soft); color: var(--text);" />
+          <input type="number" id="pro-max-outdated" placeholder="Max outdated" min="0" style="width: 100px; padding: 0.5rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-soft); color: var(--text);" />
+          <input type="number" id="pro-max-vulns" placeholder="Max vulns" min="0" style="width: 100px; padding: 0.5rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-soft); color: var(--text);" />
+          <button type="button" id="pro-alert-save">Save alert settings</button>
+        </div>
       </div>
       <div id="pro-list" class="radar-pro-list"></div>
     </section>
@@ -272,6 +284,35 @@
           if (data2.report) renderFromReports([data2.report]);
         });
       });
+      // Load alert settings
+      try {
+        const alertRes = await fetch(base + '/radar-alert-settings', { headers: { 'X-Upload-Token': token } });
+        if (alertRes.ok) {
+          const alertData = await alertRes.json();
+          document.getElementById('pro-alert-webhook').value = alertData.webhook_url || '';
+          document.getElementById('pro-max-outdated').value = alertData.max_outdated != null ? alertData.max_outdated : '';
+          document.getElementById('pro-max-vulns').value = alertData.max_vulns != null ? alertData.max_vulns : '';
+        }
+      } catch (e) {}
+    });
+
+    document.getElementById('pro-alert-save').addEventListener('click', async function() {
+      const base = (proApiUrl.value || '').trim().replace(/\/$/, '');
+      const token = (proToken.value || '').trim();
+      if (!base || !token) { alert('Set API URL and upload token first.'); return; }
+      const webhook = document.getElementById('pro-alert-webhook').value.trim();
+      const maxOut = document.getElementById('pro-max-outdated').value;
+      const maxVuln = document.getElementById('pro-max-vulns').value;
+      const res = await fetch(base + '/radar-alert-settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'X-Upload-Token': token },
+        body: JSON.stringify({
+          webhook_url: webhook || null,
+          max_outdated: maxOut === '' ? null : parseInt(maxOut, 10),
+          max_vulns: maxVuln === '' ? null : parseInt(maxVuln, 10)
+        })
+      });
+      if (res.ok) alert('Alert settings saved.'); else alert('Failed to save: ' + (await res.text()));
     });
 
     loadBtn.addEventListener('click', render);

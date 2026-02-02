@@ -57,6 +57,10 @@ Deno.serve(async (req) => {
   }
 
   const supabase = createClient(url, key);
+  const payload = report as { outdated?: unknown[]; vulnerabilities?: { items?: unknown[] } };
+  const outdatedCount = Array.isArray(payload?.outdated) ? payload.outdated.length : 0;
+  const vulnCount = payload?.vulnerabilities?.items != null ? (payload.vulnerabilities.items as unknown[]).length : 0;
+
   const { data, error } = await supabase
     .from("radar_reports")
     .insert({ upload_token: token, payload: report, name })
@@ -68,6 +72,38 @@ Deno.serve(async (req) => {
       JSON.stringify({ error: error.message }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
+  }
+
+  // Alerts: if settings exist and thresholds exceeded, POST to webhook
+  const { data: settings } = await supabase
+    .from("radar_alert_settings")
+    .select("webhook_url, max_outdated, max_vulns")
+    .eq("upload_token", token)
+    .single();
+
+  if (settings?.webhook_url) {
+    const maxOut = settings.max_outdated ?? 999999;
+    const maxVuln = settings.max_vulns ?? 999999;
+    if (outdatedCount > maxOut || vulnCount > maxVuln) {
+      try {
+        await fetch(settings.webhook_url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            event: "radar_alert",
+            report_id: data.id,
+            upload_token: token,
+            outdated_count: outdatedCount,
+            vuln_count: vulnCount,
+            max_outdated: maxOut,
+            max_vulns: maxVuln,
+            created_at: data.created_at,
+          }),
+        });
+      } catch {
+        // best-effort; don't fail the upload
+      }
+    }
   }
 
   return new Response(

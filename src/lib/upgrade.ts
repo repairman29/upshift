@@ -8,6 +8,8 @@ import { loadConfig } from "./config.js";
 import { assessRisk } from "./explain.js";
 import { detectEcosystem } from "./ecosystem.js";
 import { runPythonUpgrade } from "./upgrade-python.js";
+import { runRubyUpgrade } from "./upgrade-ruby.js";
+import { runGoUpgrade } from "./upgrade-go.js";
 
 export type UpgradeOptions = {
   cwd: string;
@@ -22,6 +24,28 @@ export async function runUpgrade(options: UpgradeOptions): Promise<void> {
   const ecosystem = detectEcosystem(options.cwd);
   if (ecosystem === "python") {
     await runPythonUpgrade({
+      cwd: options.cwd,
+      packageName: options.packageName,
+      toVersion: options.toVersion,
+      dryRun: options.dryRun,
+      yes: options.yes,
+      skipTests: options.skipTests,
+    });
+    return;
+  }
+  if (ecosystem === "ruby") {
+    await runRubyUpgrade({
+      cwd: options.cwd,
+      packageName: options.packageName,
+      toVersion: options.toVersion,
+      dryRun: options.dryRun,
+      yes: options.yes,
+      skipTests: options.skipTests,
+    });
+    return;
+  }
+  if (ecosystem === "go") {
+    await runGoUpgrade({
       cwd: options.cwd,
       packageName: options.packageName,
       toVersion: options.toVersion,

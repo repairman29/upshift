@@ -9,3 +9,4 @@ dist/
 vault/
 !vault/jarvis.json.example
 supabase/.temp/
+.vercel

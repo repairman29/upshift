@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import * as path from "path";
 import { exec } from "child_process";
 import { promisify } from "util";
 
@@ -222,6 +223,14 @@ async function explainCurrentFileCommand() {
   }
 }
 
+interface CodeFix {
+  file: string;
+  line: number;
+  original: string;
+  replacement: string;
+  description: string;
+}
+
 async function fixCurrentFileCommand() {
   const editor = vscode.window.activeTextEditor;
   if (!editor) {
@@ -249,19 +258,79 @@ async function fixCurrentFileCommand() {
   channel.appendLine("");
 
   try {
-    const { stdout, stderr } = await execAsync(`upshift fix ${pkg} --dry-run`, {
+    const { stdout } = await execAsync(`upshift fix ${pkg} --dry-run --json`, {
       cwd: workspaceFolder.uri.fsPath,
     });
-    if (stdout) channel.appendLine(stdout);
-    if (stderr) channel.appendLine(stderr);
-    channel.appendLine("");
-    channel.appendLine("To apply fixes, run in terminal: upshift fix " + pkg);
+    const result = JSON.parse(stdout) as { fixes: CodeFix[]; fromVersion: string | null; toVersion: string };
+    const fixes = result.fixes || [];
 
-    const apply = await vscode.window.showQuickPick(
-      ["Run in terminal", "Cancel"],
-      { placeHolder: "Apply fix for " + pkg + "?" }
+    if (fixes.length === 0) {
+      channel.appendLine("No code changes needed for this upgrade.");
+      channel.appendLine("Run 'Upshift: Upgrade Package' to apply the version bump.");
+      return;
+    }
+
+    channel.appendLine(`${fixes.length} fix(es) for ${pkg} ${result.fromVersion ?? "?"} → ${result.toVersion}:`);
+    const byFile = new Map<string, CodeFix[]>();
+    for (const f of fixes) {
+      const rel = f.file.startsWith(workspaceFolder.uri.fsPath)
+        ? f.file.slice(workspaceFolder.uri.fsPath.length).replace(/^[/\\]/, "")
+        : f.file;
+      if (!byFile.has(rel)) byFile.set(rel, []);
+      byFile.get(rel)!.push(f);
+    }
+    for (const [rel, fileFixes] of byFile) {
+      channel.appendLine(`  ${rel}:`);
+      for (const f of fileFixes) {
+        channel.appendLine(`    L${f.line}: ${f.description}`);
+        channel.appendLine(`      - ${f.original.trim().slice(0, 60)}${f.original.length > 60 ? "..." : ""}`);
+        channel.appendLine(`      + ${f.replacement.trim().slice(0, 60)}${f.replacement.length > 60 ? "..." : ""}`);
+      }
+    }
+    channel.appendLine("");
+    channel.appendLine("Choose how to apply:");
+
+    const choice = await vscode.window.showQuickPick(
+      ["Apply in editor", "Run in terminal", "Cancel"],
+      { placeHolder: `Apply ${fixes.length} fix(es) for ${pkg}?` }
     );
-    if (apply === "Run in terminal") {
+
+    if (choice === "Apply in editor") {
+      const edit = new vscode.WorkspaceEdit();
+      const fileFixes = new Map<string, CodeFix[]>();
+      for (const f of fixes) {
+        const normalized = f.file.startsWith(workspaceFolder.uri.fsPath) ? f.file : path.join(workspaceFolder.uri.fsPath, f.file);
+        if (!fileFixes.has(normalized)) fileFixes.set(normalized, []);
+        fileFixes.get(normalized)!.push(f);
+      }
+      for (const [filePath, fileFixList] of fileFixes) {
+        const uri = vscode.Uri.file(filePath);
+        let doc: vscode.TextDocument;
+        try {
+          doc = await vscode.workspace.openTextDocument(uri);
+        } catch {
+          channel.appendLine(`Could not open ${filePath}`);
+          continue;
+        }
+        const content = doc.getText();
+        for (const f of fileFixList.sort((a, b) => b.line - a.line)) {
+          const idx = content.indexOf(f.original);
+          if (idx === -1) {
+            channel.appendLine(`  Could not find original text in ${filePath} at L${f.line}`);
+            continue;
+          }
+          const start = doc.positionAt(idx);
+          const end = doc.positionAt(idx + f.original.length);
+          edit.replace(uri, new vscode.Range(start, end), f.replacement);
+        }
+      }
+      const applied = await vscode.workspace.applyEdit(edit);
+      if (applied) {
+        vscode.window.showInformationMessage(`Upshift: Applied ${fixes.length} fix(es) for ${pkg}. Run upgrade to bump the version.`);
+      } else {
+        vscode.window.showWarningMessage("Upshift: Some edits could not be applied. Try running in terminal.");
+      }
+    } else if (choice === "Run in terminal") {
       const terminal = vscode.window.createTerminal("Upshift");
       terminal.sendText(`upshift fix ${pkg}`);
       terminal.show();

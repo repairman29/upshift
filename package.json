@@ -30,6 +30,8 @@
     "server": "node dist/server.js",
     "test": "echo \"No tests yet\"",
     "e2e": "npm run build && node tests/e2e/cli.e2e.mjs",
+    "verify-site": "node scripts/verify-site.mjs",
+    "verify-site:live": "node scripts/verify-site.mjs --live",
     "dogfood": "npm run build && node dist/cli.js scan",
     "dogfood:upgrade": "node dist/cli.js upgrade"
   },

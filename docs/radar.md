@@ -30,7 +30,7 @@ Radar Pro is included with **Pro** ($9/mo) and **Team** ($29/mo):
 - **Persisted dashboard** — Reports are stored and associated with your upload token
 - **Report history** — Load your reports on the Radar page (Radar Pro section: API URL + token)
 - **Upload from CLI/CI** — `upshift scan --report out.json --upload` sends reports to your Radar Pro backend (requires `UPSHIFT_RADAR_TOKEN` and `UPSHIFT_RADAR_UPLOAD_URL`)
-- **Alerts** — (Coming) Notify when outdated or vulnerability counts exceed thresholds
+- **Alerts** — Set a webhook URL and optional thresholds (max outdated, max vulns) in the Radar Pro section. When an uploaded report exceeds those thresholds, we POST to your webhook (`event: "radar_alert"`, report_id, counts, etc.). Use GET/PUT `radar-alert-settings` (with X-Upload-Token) to manage settings.
 - **Export** — Download or share reports
 - **Org-wide** — Team plan: visibility across all repos in your org
 

@@ -4,10 +4,14 @@
   "redirects": [
     { "source": "/favicon.ico", "destination": "/favicon.svg", "permanent": false },
     { "source": "/blog", "destination": "/blog/index.html", "permanent": false },
-    { "source": "/blog/", "destination": "/blog/index.html", "permanent": false }
+    { "source": "/blog/", "destination": "/blog/index.html", "permanent": false },
+    { "source": "/radar", "destination": "/radar/index.html", "permanent": false },
+    { "source": "/radar/", "destination": "/radar/index.html", "permanent": false }
   ],
   "rewrites": [
     { "source": "/start", "destination": "/start.html" },
+    { "source": "/radar", "destination": "/radar/index.html" },
+    { "source": "/radar/", "destination": "/radar/index.html" },
     { "source": "/blog/introducing-upshift", "destination": "/blog/introducing-upshift.html" },
     { "source": "/blog/when-it-breaks-guardrails-hitl", "destination": "/blog/when-it-breaks-guardrails-hitl.html" },
     { "source": "/blog/how-we-do-hitl", "destination": "/blog/how-we-do-hitl.html" }

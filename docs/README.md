@@ -22,6 +22,12 @@ Index of product and developer documentation.
 | [GitHub App (scaffold)](github-app.md) | How to build an App for scan-on-PR |
 | [CONTRIBUTING.md](../CONTRIBUTING.md) | How to contribute, PR guidelines, migration templates |
 
+## Team & platform (design)
+
+| Doc | Description |
+|-----|--------------|
+| [Team features](team-features.md) | Design for org-level credit pools and audit logs (Pro/Team) |
+
 ## Roadmap and releases
 
 | Doc | Description |

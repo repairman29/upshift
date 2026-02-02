@@ -4,6 +4,17 @@
 
 ---
 
+## Current state (for handoff — update when session ends)
+
+- **Canonical site (new):** `web/` — Indistractable design (soft dark, blue accent, Inter), hero “Stop reading changelogs”, Radar + Radar Pro section, pricing, blog. Deploy: Vercel with `vercel.json` → `outputDirectory: "web"`, `buildCommand` no-op.
+- **Domain:** upshiftai.dev is still pointing at the **old** site (from `upshiftai/site/` — “UpshiftAI — Ancient dependency lineage”, live scanner). To show the new site, point upshiftai.dev in Vercel Dashboard to the project that deploys this repo with output `web/`.
+- **Verify:** `npm run verify-site` (local web/ only); `npm run verify-site:live` (local + curl upshiftai.dev). When domain is fixed, verify-site:live should pass.
+- **Radar Pro MVP:** Supabase `radar_reports` table, Edge Functions `radar-upload`, `radar-reports`, `radar-report`; CLI `upshift scan --report out.json --upload` (env: UPSHIFT_RADAR_TOKEN, UPSHIFT_RADAR_UPLOAD_URL); Radar page has “Radar Pro” section (API URL + token, Load my reports).
+- **Python full parity:** `upshift upgrade <pkg>` in Python projects (pip/poetry): backup, upgrade, test (pytest or config `testCommand`), rollback on failure. See `src/lib/upgrade-python.ts`, ROADMAP.
+- **E2E:** `npm run e2e` — CLI e2e (scan, suggest, plan, migrate, radar) + Python fixture (scan, upgrade --dry-run). Fixtures: `tests/fixtures/minimal` (Node), `tests/fixtures/minimal-python` (pip).
+
+---
+
 ## 30-second model
 
 - **This repo** = Upshift: main CLI (scan, upgrade, fix, plan, radar) + UpshiftAI (dependency intelligence, JARVIS skill, site, platform).
@@ -53,7 +64,11 @@ Code: **supabase/functions/jarvis/** = Edge Function. Set **JARVIS_PLATFORM_API_
 
 | Doc | Use |
 |-----|-----|
-| **upshiftai/site/BRAND-VOICE.md** | Customer-centric voice for all site pages; follow when writing or editing copy. |
+| **web/** | **Canonical marketing site (new):** index, Radar, blog; Indistractable design. Deploy via Vercel (outputDirectory: web). |
+| **docs/VERCEL_SETUP.md**, **vercel.json** | Vercel: outputDirectory `web`, buildCommand no-op. |
+| **scripts/verify-site.mjs** | Verify local web/ and optionally live URL: `npm run verify-site`, `npm run verify-site:live`. |
+| **upshiftai/site/** | **Old site** (still at upshiftai.dev until domain is repointed): “UpshiftAI — Ancient dependency lineage”, live scanner. |
+| **upshiftai/site/BRAND-VOICE.md** | Customer-centric voice for site copy. |
 | **upshiftai/site/blog/BLOG-MEDIA.md** | How to add GIFs, videos, code examples to blog posts. JARVIS adds media using these classes. |
 
 ---
@@ -80,4 +95,4 @@ Or: *"Read docs/CURSOR_SESSION_ONBOARDING.md and use REPO_INDEX as the source of
 
 ## One-line cheat sheet
 
-**Map** → REPO_INDEX | **UpshiftAI** → upshiftai/README.md | **JARVIS skill** → skills/upshiftai/SKILL.md | **JARVIS in Cursor** → docs/JARVIS_IN_CURSOR.md + .cursor/rules/jarvis.mdc | **Edge/Supabase** → upshiftai/docs/JARVIS-EDGE-SUPABASE.md | **Site voice** → upshiftai/site/BRAND-VOICE.md | **Blog media** → upshiftai/site/blog/BLOG-MEDIA.md.
+**Map** → REPO_INDEX | **UpshiftAI** → upshiftai/README.md | **JARVIS skill** → skills/upshiftai/SKILL.md | **JARVIS in Cursor** → docs/JARVIS_IN_CURSOR.md + .cursor/rules/jarvis.mdc | **Edge/Supabase** → upshiftai/docs/JARVIS-EDGE-SUPABASE.md | **Site (new)** → web/ + verify-site | **Site voice** → upshiftai/site/BRAND-VOICE.md | **Blog media** → upshiftai/site/blog/BLOG-MEDIA.md.

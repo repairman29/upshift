@@ -9,6 +9,7 @@ Templates for major framework/library upgrades. Used by `upshift upgrade` and `u
 - **vue-2-3** — Vue 2 → 3 (createApp, vue-router 4)
 - **angular-16-17** — Angular 16 → 17 (@angular/core, @angular/cli; run `ng update` for control flow / standalone)
 - **typescript-4-5** — TypeScript 4 → 5 (typescript, tslib package bumps)
+- **jest-28-29** — Jest 28 → 29 (jest, jest-environment-jsdom; see upgrade guide for snapshot/API changes)
 
 ## Contributing a template
 

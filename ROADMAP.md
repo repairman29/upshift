@@ -70,22 +70,23 @@ This document outlines planned features and improvements for Upshift.
 ### Integrations
 - [x] **GitHub App scaffold** — [docs/github-app.md](docs/github-app.md): how to build an App (permissions, webhook flow, example workflow with App token)
 - [ ] **GitHub App (beta)** — Published installable App that runs scan on PR and comments
-- [x] **Radar Pro (MVP)** — Persisted dashboard (Supabase `radar_reports`), report history (list + load), upload from CLI (`upshift scan --report out.json --upload` with `UPSHIFT_RADAR_TOKEN` + `UPSHIFT_RADAR_UPLOAD_URL`); dashboard UI on Radar page (Radar Pro section). Alerts and org-wide coming next.
+- [x] **Radar Pro (MVP)** — Persisted dashboard (Supabase `radar_reports`), report history (list + load), upload from CLI; dashboard UI (Radar Pro section). **Alerts:** `radar_alert_settings` table + webhook when report exceeds thresholds; Edge Function `radar-alert-settings` (GET/PUT); dashboard UI for webhook URL and max outdated/vulns.
 
 ### Language Support
 - [x] **Python explain (minimal)** — In Python projects, `upshift explain <pkg>` shows version delta (pip show / PyPI), upgrade hint (`pip install -U <pkg>`); no AI yet
-- [x] **Python (pip/poetry) full parity** — `upshift upgrade <pkg>` in Python projects: pip/poetry upgrade, backup (pyproject.toml, poetry.lock, requirements.txt), run tests (pytest or config `testCommand`), rollback on failure
-- [ ] Python/Ruby/Go: full explain (changelog, risk) and upgrade for Ruby/Go
+- [x] **Python (pip/poetry) full parity** — `upshift upgrade <pkg>` in Python projects: pip/poetry upgrade, backup, test, rollback
+- [x] **Ruby/Go upgrade parity** — `upshift upgrade <pkg>` in Ruby (Gemfile) and Go (go.mod) projects: backup (Gemfile/Gemfile.lock or go.mod/go.sum), bundle update / go get, run tests, rollback on failure
+- [ ] Python/Ruby/Go: full explain (changelog, risk) for Ruby/Go
 
 ### Team Features
 - [x] **Upgrade policies** — `.upshiftrc.json`: `upgradePolicy: { blockRisk: ["high"] }` blocks high (or medium) risk upgrades; single and batch upgrade respect policy; use `-y` to override
-- [ ] Org-level credit pools
-- [ ] Audit logs
+- [ ] **Org-level credit pools** — Shared credit pool per org (Team plan); design: [docs/team-features.md](docs/team-features.md)
+- [ ] **Audit logs** — Who ran which upgrade/fix, when, from where; design: [docs/team-features.md](docs/team-features.md)
 
 ### IDE & UX
 - [x] **VS Code: Explain for current file** — Right-click in .ts/.tsx/.js/.jsx → “Upshift: Explain dependency for current file”; detects package from imports, runs explain, shows result in Upshift output channel
-- [x] **VS Code: Fix for current file** — Right-click → “Upshift: Fix dependency for current file”; runs `upshift fix <pkg> --dry-run`, shows in channel; option to run in terminal to apply
-- [ ] VS Code: show diff in editor, apply fix from editor
+- [x] **VS Code: Fix for current file** — Right-click → “Upshift: Fix dependency for current file”; runs `upshift fix <pkg> --dry-run --json`, shows fix list in channel; **Apply in editor** (WorkspaceEdit) or Run in terminal
+- [x] **VS Code: show diff in editor, apply fix from editor** — Fix command shows fixes and offers “Apply in editor” to apply edits in place
 
 ### Enterprise
 - [ ] SSO (SAML/OIDC)
