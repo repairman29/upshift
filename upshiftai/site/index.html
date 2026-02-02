@@ -34,14 +34,68 @@
       </div>
     </section>
 
-    <section class="value">
-      <div class="wrap">
-        <h2>Make dependency lineage work for you</h2>
-        <ul class="value-list">
-          <li><strong>Analyze & report</strong> — resolve the full tree (npm/pip/go), detect ancient/deprecated/fork hints, output JSON/markdown/CSV or a full “deep throat” report with transitive “something old” chains.</li>
-          <li><strong>Checkpoint & rollback</strong> — save manifest + lockfile before changes; restore with one command so automations are safe.</li>
-          <li><strong>Apply with HITL</strong> — upgrade or replace packages with checkpoint, verify, and auto-rollback on failure. Risky actions (replace, major) go through approval (prompt or webhook); everything else runs with listeners and webhooks so you can observe or revert.</li>
-        </ul>
+    <!-- NEW: Live Dependency Scanner (The Hook) -->
+    <section class="live-scan">
+      <div class="container">
+        <div class="section-header">
+          <h2>Try it on your own code</h2>
+          <p>Paste your <code>package.json</code> or <code>requirements.txt</code> below. No upload, runs locally.</p>
+        </div>
+        
+        <div class="scan-grid">
+          <div class="scan-input">
+            <div class="scan-header">
+              <span>package.json</span>
+              <button class="btn-text" id="paste-demo">Paste Example</button>
+            </div>
+            <textarea id="scan-textarea" placeholder='{
+  "dependencies": {
+    "react": "16.8.0",
+    "request": "2.88.2"
+  }
+}'></textarea>
+            <button id="scan-btn" class="btn btn-primary full-width" style="margin-top: 16px;">Analyze Dependencies</button>
+          </div>
+          
+          <div class="scan-output" id="scan-output">
+            <div class="scan-placeholder">
+              <div style="font-size: 48px; margin-bottom: 16px;">🔍</div>
+              <h3>Ready to analyze</h3>
+              <p>Paste your dependencies to see what UpshiftAI finds.</p>
+            </div>
+            <div class="scan-results" style="display: none;">
+              <!-- Results injected here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Progressive Disclosure (The "Why") -->
+    <section class="value-prop" id="how-it-works">
+      <div class="container">
+        <div class="section-header">
+          <h2>Order from Chaos</h2>
+          <p>Most tools just list problems. UpshiftAI understands context.</p>
+        </div>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-icon">🔍</div>
+            <h3>Universal Scan</h3>
+            <p>One command scans npm, pip, and Go. No configuration files needed. It just finds what's hiding in your tree.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🛡️</div>
+            <h3>Security First</h3>
+            <p>Integrated audits (npm audit + pip-audit) prioritize risks not just by age, but by vulnerability severity.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🤖</div>
+            <h3>Conversational Fix</h3>
+            <p>Don't just read logs. Ask JARVIS: "What should I upgrade first?" and get a strategy, not a list.</p>
+          </div>
+        </div>
       </div>
     </section>
 
