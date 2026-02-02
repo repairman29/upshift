@@ -38,3 +38,5 @@ What we do today:
 - **No silent auto-apply of code fixes** — Fixes are either shown for review (dry-run) or applied only after an explicit confirm (or `-y` in automation, where you’ve chosen to trust the pipeline).
 
 Recommendation: treat **dependency upgrades** as guardrailed by tests and optional approval; treat **LLM-generated code fixes** as Human-in-the-Loop: review (e.g. dry-run, PR, or approval workflow) before merging. For full approval gates and event hooks, see [upshiftai/docs/HITL.md](../upshiftai/docs/HITL.md).
+
+**v0.4.0+:** `.upshiftrc.json` supports `approval.mode: "webhook"` and `approval.webhookUrl` so an external system can approve or reject proposed upgrades. For a central view of dependency health across repos, see [Radar](radar.md) (free: paste/upload reports; Pro/Team: persisted dashboard, history, alerts).

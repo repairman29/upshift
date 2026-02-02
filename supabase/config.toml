@@ -1,0 +1,15 @@
+# Supabase project config
+# Link: supabase link --project-ref YOUR_REF
+# Edge: supabase functions serve jarvis  |  supabase functions deploy jarvis
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public"]
+
+[db]
+port = 54322
+
+[studio]
+enabled = true
+port = 54323

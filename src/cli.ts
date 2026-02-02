@@ -15,6 +15,10 @@ import { creditsCommand } from "./commands/credits.js";
 import { buyCreditsCommand } from "./commands/buy-credits.js";
 import { subscribeCommand } from "./commands/subscribe.js";
 import { statusCommand } from "./commands/status.js";
+import { suggestCommand } from "./commands/suggest.js";
+import { planCommand } from "./commands/plan.js";
+import { radarCommand } from "./commands/radar.js";
+import { migrateCommand } from "./commands/migrate.js";
 
 const require = createRequire(import.meta.url);
 const pkg = require("../package.json");
@@ -33,6 +37,10 @@ program.addCommand(fixCommand());
 program.addCommand(upgradeCommand());
 program.addCommand(rollbackCommand());
 program.addCommand(auditCommand());
+program.addCommand(suggestCommand());
+program.addCommand(planCommand());
+program.addCommand(radarCommand());
+program.addCommand(migrateCommand());
 
 // Interactive & Monorepo
 program.addCommand(interactiveCommand());

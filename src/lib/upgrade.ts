@@ -1,10 +1,11 @@
 import chalk from "chalk";
 import ora from "ora";
-import { existsSync, mkdirSync, readFileSync, copyFileSync, readdirSync } from "fs";
+import { existsSync, mkdirSync, readFileSync, copyFileSync, readdirSync, writeFileSync } from "fs";
 import path from "path";
 import semver from "semver";
 import { runCommand } from "./exec.js";
 import { loadConfig } from "./config.js";
+import { assessRisk } from "./explain.js";
 
 export type UpgradeOptions = {
   cwd: string;
@@ -28,14 +29,39 @@ export async function runUpgrade(options: UpgradeOptions): Promise<void> {
     const requireApprovalForMajor = (approval.requireFor ?? ["major"]).includes("major");
     const approvalMode = approval.mode ?? "prompt";
 
-    if (!options.dryRun && !options.yes && !config.autoConfirm && approvalMode === "prompt" && requireApprovalForMajor) {
-      const currentVersion = getCurrentVersion(options.cwd, options.packageName);
-      const targetVersion = target === "latest" ? await getLatestVersion(options.packageName, options.cwd) : target;
-      const isMajor = currentVersion && targetVersion && isMajorBump(currentVersion, targetVersion);
-      if (isMajor) {
+    const currentVersion = getCurrentVersion(options.cwd, options.packageName);
+    const targetVersion = target === "latest" ? await getLatestVersion(options.packageName, options.cwd) : target;
+    const isMajor = currentVersion && targetVersion && isMajorBump(currentVersion, targetVersion);
+
+    // Upgrade policy: block upgrades above configured risk level
+    const blockRisk = config.upgradePolicy?.blockRisk;
+    if (!options.dryRun && blockRisk && blockRisk.length > 0 && targetVersion) {
+      const risk = await assessRisk(options.cwd, options.packageName, currentVersion ?? undefined, targetVersion);
+      if (blockRisk.includes(risk.level)) {
+        spinner.fail(`Upgrade blocked by policy (risk: ${risk.level}). Set upgradePolicy.blockRisk in .upshiftrc.json or use -y to override.`);
+        risk.reasons.forEach((r) => process.stdout.write(chalk.gray(`  - ${r}\n`)));
+        process.exit(1);
+      }
+    }
+
+    if (!options.dryRun && !options.yes && !config.autoConfirm && requireApprovalForMajor && isMajor) {
+      if (approvalMode === "webhook" && approval.webhookUrl) {
+        spinner.text = "Waiting for webhook approval...";
+        const approved = await callApprovalWebhook(approval.webhookUrl, {
+          packageName: options.packageName,
+          currentVersion: currentVersion ?? undefined,
+          targetVersion: targetVersion ?? undefined,
+          cwd: options.cwd,
+        });
+        if (!approved) {
+          spinner.fail("Upgrade rejected by webhook.");
+          process.exit(1);
+        }
+        spinner.start(`Upgrading ${options.packageName}...`);
+      } else if (approvalMode === "prompt") {
         if (process.stdin.isTTY) {
           spinner.stop();
-          const approved = await promptApproval(options.packageName, currentVersion, targetVersion);
+          const approved = await promptApproval(options.packageName, currentVersion ?? "?", targetVersion ?? "?");
           if (!approved) {
             process.stdout.write(chalk.gray("Upgrade skipped.\n"));
             return;
@@ -76,14 +102,29 @@ export async function runUpgrade(options: UpgradeOptions): Promise<void> {
     );
 
     const testScript = getTestScript(options.cwd);
+    let testsPassed = false;
     if (testScript) {
       process.stdout.write(chalk.gray("Running tests...\n"));
-      await runCommand("npm", ["test"], options.cwd);
-      process.stdout.write(chalk.green("Tests passed.\n"));
+      try {
+        await runCommand("npm", ["test"], options.cwd);
+        testsPassed = true;
+        process.stdout.write(chalk.green("Tests passed.\n"));
+      } catch {
+        process.stdout.write(chalk.red("Tests failed.\n"));
+      }
     } else {
       process.stdout.write(
         chalk.gray("No test script configured. Skipping tests.\n")
       );
+    }
+
+    if (process.env.UPSHIFT_RECORD_OUTCOMES === "1") {
+      recordOutcome(options.cwd, {
+        packageName: options.packageName,
+        fromVersion: currentVersion ?? undefined,
+        toVersion: targetVersion ?? undefined,
+        testsPassed,
+      });
     }
 
     spinner.succeed("Upgrade complete");
@@ -213,4 +254,50 @@ async function promptApproval(packageName: string, current: string, target: stri
       }
     );
   });
+}
+
+async function callApprovalWebhook(
+  url: string,
+  payload: { packageName: string; currentVersion?: string; targetVersion?: string; cwd: string }
+): Promise<boolean> {
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        event: "upgrade_proposed",
+        ...payload,
+        timestamp: new Date().toISOString(),
+      }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+function recordOutcome(
+  cwd: string,
+  outcome: {
+    packageName: string;
+    fromVersion?: string;
+    toVersion?: string;
+    testsPassed: boolean;
+  }
+): void {
+  try {
+    const dir = path.join(cwd, ".upshift");
+    mkdirSync(dir, { recursive: true });
+    const file = path.join(dir, "outcomes.json");
+    const existing: unknown[] = existsSync(file)
+      ? JSON.parse(readFileSync(file, "utf8"))
+      : [];
+    existing.push({
+      ...outcome,
+      recordedAt: new Date().toISOString(),
+    });
+    writeFileSync(file, JSON.stringify(existing, null, 2), "utf8");
+  } catch {
+    // best-effort
+  }
 }

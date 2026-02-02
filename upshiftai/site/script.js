@@ -46,18 +46,23 @@ function runOutput() {
   setTimeout(typeCommand, totalDelay + 4000);
 }
 
-// Start animation on load
+// Start animation on load (only when terminal elements exist)
 document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(typeCommand, 1000);
+  if (typeTarget && outputContainer) {
+    setTimeout(typeCommand, 1000);
+  }
 });
 
-// Clipboard Logic
-document.querySelector('.copy-btn').addEventListener('click', function() {
-  navigator.clipboard.writeText('npx upshiftai-deps analyze .');
-  const original = this.innerHTML;
-  this.innerHTML = '<span style="font-size:12px">✓</span>';
-  setTimeout(() => this.innerHTML = original, 2000);
-});
+// Clipboard Logic (only when copy button exists)
+const copyBtn = document.querySelector('.copy-btn');
+if (copyBtn) {
+  copyBtn.addEventListener('click', function() {
+    navigator.clipboard.writeText('npx upshiftai-deps analyze .');
+    const original = this.innerHTML;
+    this.innerHTML = '<span style="font-size:12px">✓</span>';
+    setTimeout(() => this.innerHTML = original, 2000);
+  });
+}
 // --- Live Scanner Logic ---
 
 const REPLACEMENTS = {
@@ -89,11 +94,17 @@ const EXAMPLE_JSON = `{
   }
 }`;
 
-document.getElementById('paste-demo').addEventListener('click', () => {
-  document.getElementById('scan-textarea').value = EXAMPLE_JSON;
-});
+const pasteDemo = document.getElementById('paste-demo');
+if (pasteDemo) {
+  pasteDemo.addEventListener('click', () => {
+    const ta = document.getElementById('scan-textarea');
+    if (ta) ta.value = EXAMPLE_JSON;
+  });
+}
 
-document.getElementById('scan-btn').addEventListener('click', () => {
+const scanBtn = document.getElementById('scan-btn');
+if (scanBtn) {
+  scanBtn.addEventListener('click', () => {
   const input = document.getElementById('scan-textarea').value;
   const output = document.querySelector('.scan-results');
   const placeholder = document.querySelector('.scan-placeholder');
@@ -161,4 +172,5 @@ document.getElementById('scan-btn').addEventListener('click', () => {
   } catch (e) {
     alert('Could not parse input. Please paste valid package.json or requirements.txt');
   }
-});
+  });
+}

@@ -37,6 +37,8 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand("upshift.scan", scanCommand),
     vscode.commands.registerCommand("upshift.explain", explainCommand),
+    vscode.commands.registerCommand("upshift.explainCurrentFile", explainCurrentFileCommand),
+    vscode.commands.registerCommand("upshift.fixCurrentFile", fixCurrentFileCommand),
     vscode.commands.registerCommand("upshift.upgrade", upgradeCommand),
     vscode.commands.registerCommand("upshift.upgradeAll", upgradeAllCommand),
     vscode.commands.registerCommand("upshift.audit", auditCommand)
@@ -135,6 +137,140 @@ async function explainCommand() {
   const terminal = vscode.window.createTerminal("Upshift");
   terminal.sendText(`upshift explain ${packageName}${aiFlag}`);
   terminal.show();
+}
+
+let outputChannel: vscode.OutputChannel;
+
+function getOutputChannel(): vscode.OutputChannel {
+  if (!outputChannel) {
+    outputChannel = vscode.window.createOutputChannel("Upshift");
+  }
+  return outputChannel;
+}
+
+/** Extract first import/require package name from text (e.g. "react", "@babel/core"). */
+function parsePackageFromSpec(spec: string): string | null {
+  if (spec.startsWith(".")) return null;
+  const parts = spec.split("/");
+  if (parts[0].startsWith("@") && parts.length >= 2) return parts[0] + "/" + parts[1];
+  return parts[0] || null;
+}
+
+function extractPackageFromSource(text: string): string | null {
+  const requireMatch = text.match(/\brequire\s*\(\s*["']([^"']+)["']/);
+  if (requireMatch) return parsePackageFromSpec(requireMatch[1]);
+  const importMatch = text.match(/\bfrom\s+["']([^"']+)["']/);
+  if (importMatch) return parsePackageFromSpec(importMatch[1]);
+  const importStrMatch = text.match(/\bimport\s+\([^)]*\)\s*from\s+["']([^"']+)["']/);
+  if (importStrMatch) return parsePackageFromSpec(importStrMatch[1]);
+  return null;
+}
+
+async function explainCurrentFileCommand() {
+  const editor = vscode.window.activeTextEditor;
+  if (!editor) {
+    vscode.window.showWarningMessage("No active editor");
+    return;
+  }
+
+  const text = editor.document.getText();
+  const pkg = extractPackageFromSource(text);
+  if (!pkg) {
+    vscode.window.showWarningMessage("No import/require found in current file. Use Upshift: Explain Package and enter a name.");
+    return;
+  }
+
+  const workspaceFolder = vscode.workspace.getWorkspaceFolder(editor.document.uri);
+  if (!workspaceFolder) {
+    vscode.window.showWarningMessage("No workspace folder");
+    return;
+  }
+
+  const channel = getOutputChannel();
+  channel.clear();
+  channel.show();
+  channel.appendLine(`Explaining ${pkg} (from current file)...`);
+  channel.appendLine("");
+
+  try {
+    const { stdout } = await execAsync(`upshift explain ${pkg} --json`, {
+      cwd: workspaceFolder.uri.fsPath,
+    });
+    const data = JSON.parse(stdout);
+    channel.appendLine(`${pkg}  ${data.currentVersion ?? "?"} → ${data.targetVersion ?? "?"}`);
+    if (data.usageInCodebase) {
+      channel.appendLine(`Used in your code: ${data.usageInCodebase.used ? `yes (${data.usageInCodebase.fileCount} file(s))` : "not found"}`);
+    }
+    if (data.risk) {
+      channel.appendLine(`Risk: ${data.risk.level}`);
+      data.risk.reasons?.forEach((r: string) => channel.appendLine(`  - ${r}`));
+    }
+    if (data.breakingChanges) {
+      channel.appendLine("Breaking changes: yes (major version bump)");
+    }
+    if (data.changelog) {
+      channel.appendLine("");
+      channel.appendLine("Changelog (excerpt):");
+      channel.appendLine(data.changelog.slice(0, 500) + (data.changelog.length > 500 ? "..." : ""));
+    }
+    channel.appendLine("");
+    channel.appendLine("Run 'Upshift: Explain Package' with AI for deep analysis, or 'Upshift: Upgrade Package' to upgrade.");
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    channel.appendLine(`Error: ${msg}`);
+    vscode.window.showErrorMessage(`Upshift explain failed: ${msg}`);
+  }
+}
+
+async function fixCurrentFileCommand() {
+  const editor = vscode.window.activeTextEditor;
+  if (!editor) {
+    vscode.window.showWarningMessage("No active editor");
+    return;
+  }
+
+  const text = editor.document.getText();
+  const pkg = extractPackageFromSource(text);
+  if (!pkg) {
+    vscode.window.showWarningMessage("No import/require found in current file. Use Upshift: Fix Package from command palette and enter a name.");
+    return;
+  }
+
+  const workspaceFolder = vscode.workspace.getWorkspaceFolder(editor.document.uri);
+  if (!workspaceFolder) {
+    vscode.window.showWarningMessage("No workspace folder");
+    return;
+  }
+
+  const channel = getOutputChannel();
+  channel.clear();
+  channel.show();
+  channel.appendLine(`Fix ${pkg} (from current file) — dry run...`);
+  channel.appendLine("");
+
+  try {
+    const { stdout, stderr } = await execAsync(`upshift fix ${pkg} --dry-run`, {
+      cwd: workspaceFolder.uri.fsPath,
+    });
+    if (stdout) channel.appendLine(stdout);
+    if (stderr) channel.appendLine(stderr);
+    channel.appendLine("");
+    channel.appendLine("To apply fixes, run in terminal: upshift fix " + pkg);
+
+    const apply = await vscode.window.showQuickPick(
+      ["Run in terminal", "Cancel"],
+      { placeHolder: "Apply fix for " + pkg + "?" }
+    );
+    if (apply === "Run in terminal") {
+      const terminal = vscode.window.createTerminal("Upshift");
+      terminal.sendText(`upshift fix ${pkg}`);
+      terminal.show();
+    }
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    channel.appendLine(`Error: ${msg}`);
+    vscode.window.showErrorMessage(`Upshift fix failed: ${msg}`);
+  }
 }
 
 async function upgradeCommand() {

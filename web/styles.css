@@ -1,13 +1,20 @@
+/* Indistractable design (from upshiftai/site) — soft dark, blue accent, Inter */
 :root {
-  --bg: #0d1117;
+  --bg: #0f1115;
   --bg-soft: #161b22;
-  --text: #e6edf3;
+  --bg-body: #0f1115;
+  --bg-surface: #161b22;
+  --text: #ededed;
+  --text-main: #ededed;
   --text-muted: #8b949e;
-  --accent: #2ea043;
-  --accent-hover: #3fb950;
+  --accent: #3b82f6;
+  --accent-hover: #60a5fa;
+  --accent-primary: #3b82f6;
+  --accent-glow: rgba(59, 130, 246, 0.15);
   --border: #30363d;
   --radius: 8px;
-  --font-sans: "DM Sans", system-ui, sans-serif;
+  --radius-sm: 6px;
+  --font-sans: "Inter", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
@@ -26,6 +33,7 @@ body {
   line-height: 1.6;
   color: var(--text);
   background: var(--bg);
+  -webkit-font-smoothing: antialiased;
 }
 
 .wrap {
@@ -45,7 +53,8 @@ body {
   position: sticky;
   top: 0;
   z-index: 10;
-  background: rgba(13, 17, 23, 0.9);
+  background: rgba(15, 17, 21, 0.85);
+  backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
 }
 
@@ -221,6 +230,7 @@ nav a:hover {
 .btn-primary {
   background: var(--accent);
   color: #fff;
+  box-shadow: 0 0 15px var(--accent-glow);
 }
 
 .btn-primary:hover {

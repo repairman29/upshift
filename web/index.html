@@ -18,7 +18,7 @@
   <script defer data-domain="upshiftai.dev" src="https://plausible.io/js/script.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 </head>
 <body>
   <header class="header">
@@ -26,8 +26,10 @@
       <a href="/" class="logo">upshift</a>
       <nav>
         <a href="#demo">Demo</a>
+        <a href="/radar/">Radar</a>
         <a href="#compare">vs Dependabot</a>
         <a href="#pricing">Pricing</a>
+        <a href="https://github.com/repairman29/upshift/tree/main/docs" target="_blank" rel="noopener">Docs</a>
         <a href="/blog/index.html">Blog</a>
         <a href="https://github.com/repairman29/upshift" class="nav-gh" target="_blank" rel="noopener">GitHub</a>
       </nav>
@@ -59,6 +61,7 @@
       <div class="wrap-wide">
         <ul class="trust-list">
           <li>🤖 AI explains breaking changes</li>
+          <li>📡 Radar: central view of dependency health</li>
           <li>🔍 Scans npm, yarn, pnpm</li>
           <li>↩️ Auto-rollback on failure</li>
           <li>🆓 Free tier included</li>
@@ -179,9 +182,10 @@
           <li>VS Code extension</li>
           <li>GitHub Action for CI scanning</li>
         </ul>
+        <h3>Radar</h3>
+        <p>Central view of dependency health across all your repos. <a href="/radar/">Try Radar free</a> (paste reports) or get <strong>Radar Pro</strong> with persisted dashboard, history, and alerts (Pro / Team).</p>
         <h3>Coming next</h3>
         <ul>
-          <li>Multi-repo dashboard</li>
           <li>Scheduled upgrades + PRs</li>
           <li>Python support (pip / poetry)</li>
         </ul>
@@ -198,11 +202,11 @@
           </div>
           <div class="plan plan-featured">
             <h3>Pro — $9/mo</h3>
-            <p>100 AI credits/mo included, +20% bonus on credit packs, priority support.</p>
+            <p>100 AI credits/mo, <strong>Radar Pro</strong> (persisted dashboard, history, alerts), +20% bonus on credit packs, priority support.</p>
           </div>
           <div class="plan">
             <h3>Team — $29/mo</h3>
-            <p>500 AI credits/mo included, org policies, audit logs, SSO.</p>
+            <p>500 AI credits/mo, <strong>Radar Pro</strong> org-wide, org policies, audit logs, SSO.</p>
           </div>
         </div>
         <p class="pricing-note">Credit packs: 100/$5 · 300/$15 · 1000/$40. AI analysis costs 1 credit per package.</p>
@@ -240,7 +244,7 @@
 
   <footer class="footer">
     <div class="wrap">
-      <p><a href="/">upshift</a> · AI-powered dependency upgrades</p>
+      <p><a href="/">upshift</a> · <a href="/radar/">Radar</a> · <a href="https://github.com/repairman29/upshift/tree/main/docs" target="_blank" rel="noopener">Docs</a> · AI-powered dependency upgrades</p>
       <p class="footer-trademark">Product names and logos used in comparisons are trademarks of their respective owners. Used for informational comparison only; no endorsement or affiliation.</p>
     </div>
   </footer>

@@ -1,10 +1,11 @@
 import chalk from "chalk";
 import ora from "ora";
-import { existsSync, readFileSync } from "fs";
+import { existsSync, readFileSync, readdirSync } from "fs";
 import path from "path";
 import semver from "semver";
 import { runCommand } from "./exec.js";
 import { consumeCredit } from "./credits.js";
+import { detectEcosystem } from "./ecosystem.js";
 
 export type ExplainOptions = {
   cwd: string;
@@ -28,6 +29,16 @@ export type RiskAssessment = {
 };
 
 export async function runExplain(options: ExplainOptions): Promise<void> {
+  const ecosystem = detectEcosystem(options.cwd);
+  if (ecosystem === "python") {
+    await runExplainPython(options);
+    return;
+  }
+  if (ecosystem === "ruby" || ecosystem === "go") {
+    process.stdout.write(chalk.yellow(`Explain for ${ecosystem} is not yet implemented. Use \`upshift scan\` for version overview.\n`));
+    return;
+  }
+
   // Only consume credits for AI-powered explanations
   if (options.ai) {
     await consumeCredit("explain");
@@ -63,6 +74,8 @@ export async function runExplain(options: ExplainOptions): Promise<void> {
 
     spinner.succeed(options.ai ? "AI analysis ready" : "Explanation ready");
 
+    const usageInCodebase = getUsageInCodebase(options.cwd, options.packageName);
+
     if (options.json) {
       const out = {
         package: options.packageName,
@@ -71,6 +84,7 @@ export async function runExplain(options: ExplainOptions): Promise<void> {
         majorDelta,
         breakingChanges: majorDelta > 0,
         risk: risk ?? null,
+        usageInCodebase,
         homepage: packageInfo.homepage ?? null,
         repository: packageInfo.repository ?? null,
         bugs: packageInfo.bugs ?? null,
@@ -95,6 +109,15 @@ export async function runExplain(options: ExplainOptions): Promise<void> {
     process.stdout.write(chalk.bold(`${options.packageName}\n`));
     process.stdout.write(`Current: ${currentVersion ?? "unknown"}\n`);
     process.stdout.write(`Target:  ${targetVersion}\n`);
+    if (usageInCodebase.used) {
+      process.stdout.write(
+        chalk.green(`Used in your code: yes (${usageInCodebase.fileCount} file(s))\n`)
+      );
+    } else {
+      process.stdout.write(
+        chalk.gray("Used in your code: not found (or only transitive)\n")
+      );
+    }
 
     if (majorDelta > 0) {
       process.stdout.write(
@@ -142,6 +165,135 @@ export async function runExplain(options: ExplainOptions): Promise<void> {
   } catch (error) {
     spinner.fail("Explain failed");
     throw error;
+  }
+}
+
+function getUsageInCodebase(
+  cwd: string,
+  packageName: string
+): { used: boolean; fileCount: number } {
+  const ext = [".js", ".ts", ".jsx", ".tsx", ".mjs", ".cjs"];
+  const patterns = [
+    new RegExp(`require\\s*\\(\\s*["']${escapeRe(packageName)}(?:/|["'])`, "m"),
+    new RegExp(`from\\s+["']${escapeRe(packageName)}(?:/|["'])`, "m"),
+    new RegExp(`import\\s+["']${escapeRe(packageName)}(?:/|["'])`, "m"),
+  ];
+  const subpath = packageName.replace(/^@[^/]+\//, "").split("/")[0];
+  if (subpath !== packageName) {
+    patterns.push(
+      new RegExp(`require\\s*\\(\\s*["']${escapeRe(packageName)}`, "m"),
+      new RegExp(`from\\s+["']${escapeRe(packageName)}`, "m")
+    );
+  }
+  let fileCount = 0;
+  function scan(dir: string): void {
+    if (!existsSync(dir)) return;
+    let entries: string[];
+    try {
+      entries = readdirSync(dir, { withFileTypes: true });
+    } catch {
+      return;
+    }
+    for (const e of entries) {
+      const full = path.join(dir, e.name);
+      if (e.isDirectory()) {
+        if (e.name === "node_modules" || e.name === ".git" || e.name === "dist") continue;
+        scan(full);
+      } else if (ext.some((x) => e.name.endsWith(x))) {
+        try {
+          const content = readFileSync(full, "utf8");
+          if (patterns.some((p) => p.test(content))) {
+            fileCount++;
+          }
+        } catch {
+          // skip
+        }
+      }
+    }
+  }
+  scan(cwd);
+  return { used: fileCount > 0, fileCount };
+}
+
+function escapeRe(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/** Python: version delta and upgrade hint (no AI). */
+async function runExplainPython(options: ExplainOptions): Promise<void> {
+  const spinner = ora(`Explaining ${options.packageName} (Python)...`).start();
+  try {
+    let currentVersion = options.fromVersion ?? null;
+    if (!currentVersion) {
+      try {
+        const result = await runCommand("pip", ["show", options.packageName], options.cwd, [0, 1]);
+        const match = result.stdout.match(/^Version:\s*(.+)$/m);
+        currentVersion = match ? match[1].trim() : null;
+      } catch {
+        // try requirements.txt / pyproject.toml
+        const reqPath = path.join(options.cwd, "requirements.txt");
+        const pyPath = path.join(options.cwd, "pyproject.toml");
+        if (existsSync(reqPath)) {
+          const raw = readFileSync(reqPath, "utf8");
+          const re = new RegExp(`^${options.packageName}==([^\\s]+)`, "m");
+          const m = raw.match(re);
+          currentVersion = m ? m[1] : null;
+        }
+        if (!currentVersion && existsSync(pyPath)) {
+          const raw = readFileSync(pyPath, "utf8");
+          const re = new RegExp(`"${options.packageName}"\\s*[:=]\\s*"([^"]+)"`, "m");
+          const m = raw.match(re);
+          currentVersion = m ? m[1] : null;
+        }
+      }
+    }
+
+    let targetVersion = options.toVersion ?? null;
+    if (!targetVersion) {
+      try {
+        const res = await fetch(`https://pypi.org/pypi/${encodeURIComponent(options.packageName)}/json`, {
+          headers: { Accept: "application/json" },
+        });
+        if (res.ok) {
+          const data = (await res.json()) as { info?: { version?: string } };
+          targetVersion = data.info?.version ?? null;
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    spinner.succeed("Explanation ready");
+
+    const majorDelta = targetVersion && currentVersion
+      ? getMajorDelta(currentVersion, targetVersion)
+      : 0;
+
+    if (options.json) {
+      process.stdout.write(
+        JSON.stringify({
+          package: options.packageName,
+          ecosystem: "python",
+          currentVersion,
+          targetVersion,
+          majorDelta,
+          breakingChanges: majorDelta > 0,
+          upgradeHint: "pip install -U " + options.packageName,
+        }) + "\n"
+      );
+      return;
+    }
+
+    process.stdout.write(chalk.bold(`${options.packageName} (Python)\n`));
+    process.stdout.write(`Current: ${currentVersion ?? "unknown"}\n`);
+    process.stdout.write(`Target:  ${targetVersion ?? "unknown"}\n`);
+    if (majorDelta > 0) {
+      process.stdout.write(chalk.yellow(`Potential breaking changes: major version increase (${majorDelta}).\n`));
+    }
+    process.stdout.write(chalk.gray("\nUpgrade: pip install -U " + options.packageName + "\n"));
+  } catch (err) {
+    spinner.fail("Explain failed");
+    throw err;
   }
 }
 

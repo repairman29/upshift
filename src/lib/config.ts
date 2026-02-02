@@ -32,8 +32,14 @@ export type UpshiftConfig = {
 
   // Approval / HITL: require confirmation for risky upgrades (e.g. major)
   approval?: {
-    mode?: "prompt" | "none";
+    mode?: "prompt" | "none" | "webhook";
     requireFor?: ("major" | "all")[];
+    webhookUrl?: string; // POST proposed upgrade; 200 = approve, non-200 = reject
+  };
+
+  // Upgrade policy: block upgrades above a risk level (e.g. block high-risk unless approved)
+  upgradePolicy?: {
+    blockRisk?: ("high" | "medium")[]; // e.g. ["high"] = block high-risk upgrades
   };
 
   // Registry settings
@@ -67,7 +73,9 @@ const DEFAULT_CONFIG: UpshiftConfig = {
   approval: {
     mode: "prompt",
     requireFor: ["major"],
+    webhookUrl: undefined,
   },
+  upgradePolicy: undefined,
 };
 
 let cachedConfig: UpshiftConfig | null = null;
@@ -106,7 +114,11 @@ function mergeConfig(
     ...user,
     ai: { ...defaults.ai, ...user.ai },
     scan: { ...defaults.scan, ...user.scan },
-    approval: user.approval ? { ...defaults.approval, ...user.approval } : defaults.approval,
+    approval:
+      user.approval
+        ? { ...defaults.approval, ...user.approval, webhookUrl: user.approval.webhookUrl ?? defaults.approval?.webhookUrl }
+        : defaults.approval,
+    upgradePolicy: user.upgradePolicy ? { ...defaults.upgradePolicy, ...user.upgradePolicy } : defaults.upgradePolicy,
     registry: user.registry ? { ...defaults.registry, ...user.registry } : defaults.registry,
   };
 }
@@ -143,7 +155,9 @@ export function createConfigTemplate(): string {
       approval: {
         mode: "prompt",
         requireFor: ["major"],
+        webhookUrl: undefined, // optional: POST upgrade_proposed for HITL; 200 = approve
       },
+      upgradePolicy: undefined, // optional: { blockRisk: ["high"] } to block high-risk upgrades
     },
     null,
     2

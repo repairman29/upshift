@@ -1,0 +1,28 @@
+# Migration templates
+
+Templates for major framework/library upgrades. Used by `upshift upgrade` and `upshift fix` to suggest or apply codemods.
+
+## Included
+
+- **react-18-19** — React 18 → 19 (createRoot, hydrateRoot, react-dom)
+- **next-13-14** — Next.js 13 → 14 (metadata, next + react-dom versions)
+- **vue-2-3** — Vue 2 → 3 (createApp, vue-router 4)
+
+## Contributing a template
+
+1. Add a JSON file: `migrations/<ecosystem>-<from>-<to>.json` (e.g. `next-13-14.json`).
+2. Schema:
+   - `name`: short id
+   - `description`: human-readable
+   - `from` / `to`: version range (e.g. `"18.x"`, `"19.x"`)
+   - `package`: main package name
+   - `steps`: array of `{ id, description, find?, replace?, package?, version?, note? }`
+   - `links`: URLs to official upgrade guides
+3. Open a PR; see [CONTRIBUTING.md](../CONTRIBUTING.md#migration-templates).
+
+## Usage
+
+- **List templates:** `upshift migrate <package> --list` (e.g. `upshift migrate react --list`)
+- **Apply template:** `upshift migrate react` or `upshift migrate next --template next-13-to-14`
+- **Dry run:** `upshift migrate react --dry-run` to see what would be changed without modifying files
+- `upshift explain react --ai` may reference a matching template when upgrading across majors.

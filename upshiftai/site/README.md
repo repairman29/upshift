@@ -2,7 +2,9 @@
 
 Static site for [upshiftai.dev](https://upshiftai.dev). No build step.
 
-**Pages:** index.html (landing), docs.html (CLI reference), dev.html (for developers), pricing.html (pricing & packaging).
+**Pages:** index.html (landing), docs.html (CLI reference), dev.html (for developers), pricing.html (pricing & packaging), blog/ (blog index and posts).
+
+**Brand voice:** All copy should follow [BRAND-VOICE.md](BRAND-VOICE.md)—customer-centric, "you/your" focus, clear outcomes. Use it when adding or editing any page.
 
 **Deploy:** Upload this directory to any static host.
 

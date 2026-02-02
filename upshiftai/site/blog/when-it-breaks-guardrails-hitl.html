@@ -8,29 +8,15 @@
   <link rel="icon" href="../favicon.ico" type="image/x-icon">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../style.css">
-  <style>
-    .blog-content { max-width: 680px; margin: 0 auto; padding: 3rem 24px; }
-    .blog-meta { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem; }
-    .blog-content h1 { font-size: 2.25rem; line-height: 1.2; margin-bottom: 1rem; }
-    .blog-content h2 { font-size: 1.5rem; margin-top: 2.5rem; margin-bottom: 1rem; }
-    .blog-content p { margin-bottom: 1.5rem; color: var(--text-muted); }
-    .blog-content p:first-of-type { font-size: 1.15rem; color: var(--text-main); }
-    .blog-content .subtitle { font-size: 1.1rem; color: var(--text-muted); font-style: italic; margin-bottom: 2rem; }
-    .blog-content code { background: var(--bg-surface); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9em; }
-    .blog-content ul, .blog-content ol { margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--text-muted); }
-    .blog-content li { margin-bottom: 0.5rem; }
-    .blog-content strong { color: var(--text-main); }
-    .blog-content hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
-    .blog-cta { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 2rem; text-align: center; margin: 3rem 0; }
-    .blog-cta h3 { margin: 0 0 0.5rem; }
-    .blog-cta p { margin: 0 0 1rem; font-size: 1rem; }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header class="header">
-    <div class="container">
-      <a href=".." class="logo">UpshiftAI</a>
-      <nav class="desktop-nav">
+  <header class="site-header">
+    <div class="wrap">
+      <a href=".." class="logo"><span class="logo-mark"></span>UpshiftAI</a>
+      <nav>
         <a href="..">Home</a>
         <a href="../docs.html">How it works</a>
         <a href="../dev.html">Developers</a>
@@ -59,6 +45,12 @@
     </ul>
     <p><strong>TL;DR:</strong> "Breaks when?" → When an upgrade is applied and tests run. Tests are the gate.</p>
 
+    <!-- Example: GIF or image — use <figure class="blog-figure"> and <img src="path/to/your.gif" alt="..."> with optional <figcaption class="blog-figcaption"> -->
+    <figure class="blog-figure">
+      <img src="https://placehold.co/720x400/161b22/8b949e?text=Add+your+GIF+or+screenshot+here" alt="Example: upgrade flow or CI run" width="720" height="400">
+      <figcaption class="blog-figcaption">Example: Add a GIF or screenshot (e.g. terminal output, CI run, or before/after) by replacing this with your own <code>src</code>. Use <code>blog-figure</code> for images and GIFs.</figcaption>
+    </figure>
+
     <h2>CI/CD and smoke tests: we're not replacing them</h2>
     <p>Today, CI/CD with smoke or integration tests <em>surfaces</em> problems. It doesn't self-heal. We're aligned with that:</p>
     <ul>
@@ -66,6 +58,15 @@
       <li>We don't replace CI; we <strong>use the same guardrail</strong>: "tests pass = safe to keep the change."</li>
     </ul>
     <p>Existing CI and test suites stay the source of truth. UpshiftAI adds upgrade + optional code fixes on top of that contract.</p>
+
+    <!-- Example: Video — native <video> or YouTube/Vimeo embed. For embed use: <div class="blog-video-wrap embed"><iframe src="..."></iframe></div> -->
+    <div class="blog-video-wrap">
+      <video controls width="720" poster="https://placehold.co/720x405/161b22/8b949e?text=Video+placeholder" muted>
+        <source src="#" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <p class="blog-video-caption">Example: Replace with your own <code>&lt;video src="your-demo.mp4"&gt;</code> or use <code>blog-video-wrap embed</code> + <code>&lt;iframe&gt;</code> for YouTube/Vimeo.</p>
+    </div>
 
     <h2>Self-healing LLM code: why human-in-the-loop still matters</h2>
     <p><strong>LLM-generated code changes should be reviewed.</strong> "Self-healing" by applying AI-generated patches with no oversight is risky. We're not pretending otherwise.</p>
@@ -75,6 +76,18 @@
       <li><strong>Approval for upgrades</strong> — Major (and optionally other) upgrades can require a prompt or webhook approval before we touch the manifest or lockfile. See <a href="how-we-do-hitl.html">How we do human-in-the-loop (HITL)</a> and the <a href="https://github.com/repairman29/upshift/blob/main/upshiftai/docs/HITL.md">HITL doc</a>.</li>
       <li><strong>No silent auto-apply of code fixes</strong> — Fixes are either shown for review (dry-run) or applied only after an explicit confirm (or <code>-y</code> in automation, where <em>you've</em> chosen to trust the pipeline).</li>
     </ul>
+
+    <!-- Example: Code block — use <pre class="code"><code>...</code></pre> -->
+    <div class="blog-callout">
+      <h4>Example: CLI dry-run</h4>
+      <p>Run a dry-run to see what would change before applying. Use <code>blog-callout</code> for tips, examples, or asides.</p>
+    </div>
+    <pre class="code"><code># See what would be upgraded (no files changed)
+upshiftai-deps apply fix . --dry-run
+
+# After review, apply with approval prompt
+upshiftai-deps apply fix .</code></pre>
+
     <p>Recommendation: treat <strong>dependency upgrades</strong> as guardrailed by tests and optional approval. Treat <strong>LLM-generated code fixes</strong> as human-in-the-loop: review (dry-run, PR, or approval workflow) before merging. For how we implement approval (prompt vs webhook vs none) and quick setup, see <a href="how-we-do-hitl.html">How we do human-in-the-loop (HITL)</a>; for webhook payloads and event hooks, see <a href="https://github.com/repairman29/upshift/blob/main/upshiftai/docs/HITL.md">HITL in the docs</a>.</p>
 
     <hr>
@@ -90,9 +103,9 @@
     </div>
   </article>
 
-  <footer class="footer">
-    <div class="container">
-      <p><a href="..">UpshiftAI</a> — ancient dependency lineage. <a href="../pricing.html">Pricing</a> · <a href="https://github.com/repairman29/upshift" target="_blank" rel="noopener">GitHub</a></p>
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><a href="..">UpshiftAI</a> — your dependencies, your control. <a href="../pricing.html">Pricing</a> · <a href="https://github.com/repairman29/upshift" target="_blank" rel="noopener">GitHub</a></p>
     </div>
   </footer>
 </body>

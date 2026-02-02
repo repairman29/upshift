@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Radar – Central view of dependency health across all your repos | Upshift</title>
+  <meta name="description" content="See every repo’s dependency health in one place. Outdated counts, vulnerabilities, ecosystems. Free: paste reports. Pro: persisted dashboard, history, alerts." />
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    .radar-page { --radar-max: 960px; }
+    .radar-hero { padding: 4rem 0 3rem; text-align: center; }
+    .radar-hero h1 { font-size: clamp(1.75rem, 4vw, 2.25rem); margin-bottom: 0.5rem; }
+    .radar-hero .tag { font-family: var(--font-mono); font-size: 0.9rem; color: var(--accent); margin-bottom: 0.5rem; }
+    .radar-hero .lead { color: var(--text-muted); max-width: 540px; margin: 0 auto 1.5rem; }
+    .radar-tiers { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; max-width: var(--radar-max); margin: 0 auto 2rem; padding: 0 1.5rem; }
+    @media (max-width: 640px) { .radar-tiers { grid-template-columns: 1fr; } }
+    .radar-tier { background: var(--bg-soft); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; }
+    .radar-tier.pro { border-color: var(--accent); }
+    .radar-tier h3 { margin: 0 0 0.5rem; font-size: 1.1rem; }
+    .radar-tier .badge { font-size: 0.75rem; color: var(--accent); font-weight: 600; }
+    .radar-tier ul { margin: 0.5rem 0 0; padding-left: 1.25rem; color: var(--text-muted); font-size: 0.9rem; }
+    .radar-tier li { margin-bottom: 0.25rem; }
+    .radar-dashboard { max-width: var(--radar-max); margin: 0 auto 2rem; padding: 0 1.5rem; }
+    .radar-dashboard h2 { font-size: 1.25rem; margin-bottom: 1rem; }
+    .radar-dashboard .card-row { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .radar-card { background: var(--bg-soft); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; min-width: 120px; }
+    .radar-card .value { font-size: 1.5rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .radar-card .label { font-size: 0.85rem; color: var(--text-muted); }
+    .radar-actions { display: flex; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .radar-actions button { padding: 0.5rem 1rem; background: var(--bg-soft); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-family: inherit; cursor: pointer; font-size: 0.9rem; }
+    .radar-actions button:hover { border-color: var(--accent); color: var(--accent); }
+    .radar-actions button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .radar-actions button.primary:hover { background: var(--accent-hover); }
+    .radar-actions input[type="file"] { display: none; }
+    .radar textarea { width: 100%; min-height: 100px; font-family: var(--font-mono); font-size: 12px; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-soft); color: var(--text); resize: vertical; }
+    .radar .hint { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem; }
+    .radar table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    .radar th, .radar td { text-align: left; padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--border); }
+    .radar th { font-weight: 600; font-size: 0.9rem; color: var(--text-muted); }
+    .radar td.repo { font-weight: 500; }
+    .radar td.count { font-variant-numeric: tabular-nums; }
+    .radar .empty { color: var(--text-muted); padding: 2rem; text-align: center; }
+    .radar .cta-pro { text-align: center; padding: 2rem; background: var(--bg-soft); border-radius: var(--radius); margin-top: 2rem; }
+    .radar .cta-pro a { color: var(--accent); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="wrap">
+      <a href="/" class="logo">upshift</a>
+      <nav>
+        <a href="/#demo">Demo</a>
+        <a href="/radar/">Radar</a>
+        <a href="/#pricing">Pricing</a>
+        <a href="/blog/index.html">Blog</a>
+        <a href="https://github.com/repairman29/upshift" class="nav-gh" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="radar-page">
+    <section class="radar-hero">
+      <div class="wrap-wide">
+        <p class="tag">Central dependency view</p>
+        <h1>Radar</h1>
+        <p class="lead">See every repo’s dependency health in one place. Outdated counts, vulnerabilities, ecosystems. One dashboard for your whole stack.</p>
+        <p class="hint">Generate reports with <code>upshift scan --report report.json</code> in each repo, then paste or upload below. Or use <code>upshift radar</code> to open this page.</p>
+      </div>
+    </section>
+
+    <section class="radar-tiers">
+      <div class="radar-tier">
+        <h3>Radar Free</h3>
+        <span class="badge">Try it now</span>
+        <ul>
+          <li>Paste or upload scan reports in-browser</li>
+          <li>Summary table: repos, outdated, vulns</li>
+          <li>No account required</li>
+          <li>Data stays in your session</li>
+        </ul>
+      </div>
+      <div class="radar-tier pro">
+        <h3>Radar Pro</h3>
+        <span class="badge">Revenue · Pro / Team</span>
+        <ul>
+          <li>Persisted dashboard and report history</li>
+          <li>Upload from CLI or CI (<code>--upload</code>)</li>
+          <li>Alerts when thresholds are exceeded</li>
+          <li>Export and org-wide visibility</li>
+        </ul>
+        <p style="margin-top: 1rem;"><a href="/#pricing" class="btn btn-primary" style="display: inline-block;">See pricing</a></p>
+      </div>
+    </section>
+
+    <section class="radar-dashboard radar">
+      <h2>Try Radar free</h2>
+      <p class="radar-sub">Paste JSON below, or load a report file. One object or one report per line (NDJSON).</p>
+      <div class="radar-actions">
+        <button type="button" id="load" class="primary">Load report(s)</button>
+        <button type="button" id="upload-btn">Upload file</button>
+        <input type="file" id="file-input" accept=".json,application/json" />
+        <button type="button" id="clear">Clear</button>
+      </div>
+      <textarea id="json" placeholder='{"status":"ok","packageManager":"npm","outdated":[...],"cwd":"/path/to/repo",...}'></textarea>
+      <p class="hint">From CLI: <code>upshift scan --report report.json</code> in each repo, then paste the file contents or concatenate multiple reports (one per line).</p>
+
+      <div id="summary" class="card-row" style="display: none;"></div>
+      <div id="table-wrap"></div>
+
+      <div class="cta-pro" id="cta-pro" style="display: none;">
+        <p>Need persisted dashboards, history, and alerts?</p>
+        <p><a href="/#pricing">Radar Pro</a> is included with Pro and Team. <a href="/#pricing">View pricing →</a></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p><a href="/">upshift</a> · <a href="/radar/">Radar</a> · AI-powered dependency upgrades</p>
+    </div>
+  </footer>
+
+  <script>
+    const textarea = document.getElementById('json');
+    const tableWrap = document.getElementById('table-wrap');
+    const summaryEl = document.getElementById('summary');
+    const ctaPro = document.getElementById('cta-pro');
+    const loadBtn = document.getElementById('load');
+    const clearBtn = document.getElementById('clear');
+    const uploadBtn = document.getElementById('upload-btn');
+    const fileInput = document.getElementById('file-input');
+
+    function parseInput() {
+      const raw = textarea.value.trim();
+      if (!raw) return [];
+      const reports = [];
+      for (const line of raw.split('\n').filter(l => l.trim())) {
+        try {
+          const obj = JSON.parse(line);
+          if (obj.outdated != null) reports.push(obj);
+        } catch {}
+      }
+      try {
+        const single = JSON.parse(raw);
+        if (single.outdated != null) reports.push(single);
+      } catch {}
+      return reports;
+    }
+
+    function escapeHtml(s) {
+      const div = document.createElement('div');
+      div.textContent = s;
+      return div.innerHTML;
+    }
+
+    function render() {
+      const reports = parseInput();
+      if (reports.length === 0) {
+        summaryEl.style.display = 'none';
+        ctaPro.style.display = 'none';
+        tableWrap.innerHTML = '<p class="empty">Paste one or more scan report JSON objects above (or upload a file), then click Load.</p>';
+        return;
+      }
+
+      const rows = reports.map(r => ({
+        repo: r.cwd || r.packageManager || 'unknown',
+        ecosystem: r.ecosystem || r.packageManager || '—',
+        outdated: Array.isArray(r.outdated) ? r.outdated.length : 0,
+        vulns: r.vulnerabilities?.items?.length ?? 0,
+      }));
+
+      const totalRepos = rows.length;
+      const totalOutdated = rows.reduce((s, r) => s + r.outdated, 0);
+      const totalVulns = rows.reduce((s, r) => s + r.vulns, 0);
+
+      summaryEl.innerHTML =
+        '<div class="radar-card"><span class="value">' + totalRepos + '</span><br><span class="label">Repos</span></div>' +
+        '<div class="radar-card"><span class="value">' + totalOutdated + '</span><br><span class="label">Outdated</span></div>' +
+        '<div class="radar-card"><span class="value">' + totalVulns + '</span><br><span class="label">Vulnerabilities</span></div>';
+      summaryEl.style.display = 'flex';
+
+      let html = '<table><thead><tr><th>Repo / path</th><th>Ecosystem</th><th class="count">Outdated</th><th class="count">Vulns</th></tr></thead><tbody>';
+      for (const row of rows) {
+        html += '<tr><td class="repo">' + escapeHtml(row.repo) + '</td><td>' + escapeHtml(row.ecosystem) + '</td><td class="count">' + row.outdated + '</td><td class="count">' + row.vulns + '</td></tr>';
+      }
+      html += '</tbody></table>';
+      tableWrap.innerHTML = html;
+      ctaPro.style.display = 'block';
+    }
+
+    loadBtn.addEventListener('click', render);
+    clearBtn.addEventListener('click', function() {
+      textarea.value = '';
+      summaryEl.style.display = 'none';
+      ctaPro.style.display = 'none';
+      tableWrap.innerHTML = '';
+    });
+    uploadBtn.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', function() {
+      const f = this.files && this.files[0];
+      if (!f) return;
+      const r = new FileReader();
+      r.onload = function() {
+        const content = r.result;
+        if (textarea.value.trim()) textarea.value += '\n' + content;
+        else textarea.value = content;
+        fileInput.value = '';
+      };
+      r.readAsText(f);
+    });
+  </script>
+</body>
+</html>

@@ -4,36 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>How we do human-in-the-loop (HITL) — UpshiftAI Blog</title>
-  <meta name="description" content="How UpshiftAI does approval and oversight: prompt, webhook, or none. Config and quick setup for devs who want oversight.">
+  <meta name="description" content="How you control approval and oversight: prompt, webhook, or none. Config and quick setup when you want to approve risky changes.">
   <link rel="icon" href="../favicon.ico" type="image/x-icon">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../style.css">
-  <style>
-    .blog-content { max-width: 680px; margin: 0 auto; padding: 3rem 24px; }
-    .blog-meta { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem; }
-    .blog-content h1 { font-size: 2.25rem; line-height: 1.2; margin-bottom: 1rem; }
-    .blog-content h2 { font-size: 1.5rem; margin-top: 2.5rem; margin-bottom: 1rem; }
-    .blog-content p { margin-bottom: 1.5rem; color: var(--text-muted); }
-    .blog-content p:first-of-type { font-size: 1.15rem; color: var(--text-main); }
-    .blog-content .subtitle { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 2rem; }
-    .blog-content code { background: var(--bg-surface); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9em; }
-    .blog-content ul, .blog-content ol { margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--text-muted); }
-    .blog-content li { margin-bottom: 0.5rem; }
-    .blog-content strong { color: var(--text-main); }
-    .blog-content hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
-    .blog-content table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem; color: var(--text-muted); }
-    .blog-content th, .blog-content td { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); }
-    .blog-content th { color: var(--text-main); font-weight: 600; }
-    .blog-cta { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 2rem; text-align: center; margin: 3rem 0; }
-    .blog-cta h3 { margin: 0 0 0.5rem; }
-    .blog-cta p { margin: 0 0 1rem; font-size: 1rem; }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header class="header">
-    <div class="container">
-      <a href=".." class="logo">UpshiftAI</a>
-      <nav class="desktop-nav">
+  <header class="site-header">
+    <div class="wrap">
+      <a href=".." class="logo"><span class="logo-mark"></span>UpshiftAI</a>
+      <nav>
         <a href="..">Home</a>
         <a href="../docs.html">How it works</a>
         <a href="../dev.html">Developers</a>
@@ -113,9 +96,9 @@
     </div>
   </article>
 
-  <footer class="footer">
-    <div class="container">
-      <p><a href="..">UpshiftAI</a> — ancient dependency lineage. <a href="../pricing.html">Pricing</a> · <a href="https://github.com/repairman29/upshift" target="_blank" rel="noopener">GitHub</a></p>
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><a href="..">UpshiftAI</a> — your dependencies, your control. <a href="../pricing.html">Pricing</a> · <a href="https://github.com/repairman29/upshift" target="_blank" rel="noopener">GitHub</a></p>
     </div>
   </footer>
 </body>

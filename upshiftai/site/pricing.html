@@ -7,11 +7,14 @@
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
   <header class="site-header">
     <div class="wrap">
-      <a href="." class="logo">UpshiftAI</a>
+      <a href="." class="logo"><span class="logo-mark"></span>UpshiftAI</a>
       <nav>
         <a href=".">Home</a>
         <a href="docs.html">How it works</a>
@@ -26,22 +29,22 @@
   <main class="docs-content">
     <div class="wrap">
       <h1>Pricing &amp; packaging</h1>
-      <p><strong>🤖 AI-Powered Dependency Intelligence</strong> — JARVIS conversational analysis, smart suggestions, and predictive vulnerability detection. Basic CLI analysis is free forever.</p>
+      <p><strong>🤖 AI-powered dependency intelligence</strong> — Get JARVIS conversational analysis, smart suggestions, and vulnerability insights. The CLI is free forever; upgrade when you need more.</p>
 
-      <h2>Packaging (how you get it)</h2>
+      <h2>How you get it</h2>
       <ul>
-        <li><strong>CLI</strong> — <code>npx upshiftai-deps</code> or global install. Full feature set: analyze, report, checkpoint, rollback, apply. Runs locally; no account required.</li>
-        <li><strong>npm package</strong> — <code>upshiftai-deps</code>. Use as a library: <code>import { analyze, applyNpmUpgrade, ... } from 'upshiftai-deps'</code>. Same capabilities as CLI.</li>
+        <li><strong>CLI</strong> — <code>npx upshiftai-deps</code> or global install. Full feature set: analyze, report, checkpoint, rollback, apply. Runs on your machine; no account required.</li>
+        <li><strong>npm package</strong> — <code>upshiftai-deps</code>. Use as a library: <code>import { analyze, applyNpmUpgrade, ... } from 'upshiftai-deps'</code>. Same capabilities as the CLI.</li>
         <li><strong>Open source</strong> — <a href="https://github.com/repairman29/CLAWDBOT/tree/main/upshiftai" target="_blank" rel="noopener">GitHub (CLAWDBOT/upshiftai)</a>. Clone, fork, self-host. MIT.</li>
-        <li><strong>Hosted platform</strong> — <a href="https://github.com/repairman29/CLAWDBOT/tree/main/upshiftai/platform" target="_blank" rel="noopener">platform/</a> in the repo: Next.js app with auth, dashboard, reports API, Stripe Pro checkout. Deploy and charge.</li>
+        <li><strong>Hosted platform</strong> — <a href="https://github.com/repairman29/CLAWDBOT/tree/main/upshiftai/platform" target="_blank" rel="noopener">platform/</a> in the repo: Next.js app with auth, dashboard, reports API, Stripe checkout. Deploy and charge your own users.</li>
       </ul>
 
-      <h2>Pay now (get to revenue sooner)</h2>
-      <p>You don’t have to wait for the hosted dashboard. Support the project or buy help today:</p>
+      <h2>Support the project or get help today</h2>
+      <p>You don’t have to wait for the hosted dashboard:</p>
       <ul>
-        <li><strong>Sponsor</strong> — <a href="https://github.com/sponsors/repairman29" target="_blank" rel="noopener">GitHub Sponsors</a> or your Open Collective. Recurring support; we’ll thank you and keep the CLI free.</li>
-        <li><strong>Paid support / audit</strong> — Need a dependency audit, upgrade runbook, or HITL setup? <a href="mailto:support@upshiftai.dev?subject=UpshiftAI%20support%20or%20audit">Contact us</a> for Pro support (hourly or per-repo audit). We run the report, annotate “something old” chains, and deliver a prioritized fix list + optional call.</li>
-        <li><strong>Pro founding</strong> — Lock in a low Pro price now; get hosted dashboard + approval queue when we launch. See Pro tier below.</li>
+        <li><strong>Sponsor</strong> — <a href="https://github.com/sponsors/repairman29" target="_blank" rel="noopener">GitHub Sponsors</a> or Open Collective. Recurring support; we’ll thank you and keep the CLI free.</li>
+        <li><strong>Paid support / audit</strong> — Need a dependency audit, upgrade runbook, or approval workflow setup? <a href="mailto:support@upshiftai.dev?subject=UpshiftAI%20support%20or%20audit">Contact us</a> for Pro support (hourly or per-repo). We run the report, annotate “something old” chains, and deliver a prioritized fix list—plus an optional call if you want it.</li>
+        <li><strong>Pro founding</strong> — Lock in the Pro price now; you get hosted dashboard and approval queue access when we launch. See Pro tier below.</li>
       </ul>
 
       <h2>Pricing tiers</h2>
@@ -56,22 +59,22 @@
             <li>Basic automated fixes (npm/pip/go)</li>
             <li>Static suggestions from built-in map</li>
             <li><strong>🤖 10 AI queries/month</strong> (JARVIS skill)</li>
-            <li>Unlimited projects, local use</li>
+            <li>Unlimited projects, all local</li>
             <li>Community support (GitHub)</li>
           </ul>
-          <a href="index.html#try" class="btn btn-secondary">Get started</a>
+          <a href="index.html#try" class="btn btn-secondary">Get started free</a>
         </div>
         <div class="pricing-card pricing-card-featured">
           <h3>Pro</h3>
           <p class="price">$19<span class="price-unit">/mo</span></p>
-          <p class="price-desc">🤖 AI-Powered Intelligence</p>
+          <p class="price-desc">🤖 AI-powered intelligence</p>
           <ul>
             <li>Everything in Free</li>
             <li><strong>🤖 1,000 AI queries/month</strong></li>
             <li><strong>JARVIS conversational analysis</strong></li>
-            <li><strong>Smart risk assessment &amp; suggestions</strong></li>
-            <li><strong>Predictive vulnerability scoring</strong></li>
-            <li>Hosted dashboard (coming Q2): centralized reports</li>
+            <li><strong>Risk assessment &amp; upgrade suggestions</strong></li>
+            <li><strong>Vulnerability scoring</strong></li>
+            <li>Hosted dashboard (coming Q2): your reports in one place</li>
             <li>Priority support</li>
           </ul>
           <a href="mailto:pro@upshiftai.dev?subject=Pro%20AI%20features" class="btn btn-primary">Upgrade to Pro</a>
@@ -79,7 +82,7 @@
         <div class="pricing-card">
           <h3>Team / Enterprise</h3>
           <p class="price">From $99<span class="price-unit">/mo</span></p>
-          <p class="price-desc">🧠 Custom AI Training</p>
+          <p class="price-desc">🧠 Custom AI for your org</p>
           <ul>
             <li>Everything in Pro</li>
             <li><strong>🤖 10,000 AI queries/month</strong></li>
@@ -96,22 +99,22 @@
       <p class="pricing-note">Pro: pay now to lock in $19/mo; you get dashboard access when we launch. Free tier stays free. Replace pro@ / enterprise@ / support@ with your real addresses or a payment link (Stripe, Lemon Squeezy). Full playbook: <code>docs/MONETIZATION-SOONER.md</code> in the repo.</p>
 
       <h2>What counts as usage</h2>
-      <p>Right now: nothing is metered. The CLI and npm package run on your machine; we don’t send dependency trees to our servers. When we add hosted features (Pro/Team), we’ll define usage (e.g. reports per month, seats) and publish it here.</p>
+      <p>Right now: nothing is metered. The CLI and npm package run on your machine—we don’t see your dependency trees. When we add hosted features (Pro/Team), we’ll define usage (e.g. reports per month, seats) and publish it here.</p>
 
       <h2>Summary</h2>
       <ul>
-        <li><strong>Free</strong> — Complete CLI + 10 AI queries/month. Perfect for individual developers.</li>
-        <li><strong>Pro ($19/mo)</strong> — 1,000 AI queries + JARVIS conversational analysis. Essential for teams using AI-powered development.</li>
-        <li><strong>Team ($99+/mo)</strong> — 10,000 AI queries + custom ML models. Enterprise AI intelligence.</li>
-        <li><strong>API Key Required</strong> — Set <code>UPSHIFTAI_API_KEY</code> environment variable to use AI features.</li>
+        <li><strong>Free</strong> — Full CLI + 10 AI queries/month. Perfect for individual developers.</li>
+        <li><strong>Pro ($19/mo)</strong> — 1,000 AI queries + JARVIS. For teams who want AI-powered dependency decisions.</li>
+        <li><strong>Team ($99+/mo)</strong> — 10,000 AI queries + custom ML. For orgs that want AI trained on their repos.</li>
+        <li><strong>API key</strong> — Set <code>UPSHIFTAI_API_KEY</code> to use AI features.</li>
       </ul>
-      <p><strong>🚀 Start free, upgrade when you need more AI intelligence.</strong></p>
+      <p><strong>🚀 Start free; upgrade when you need more AI.</strong></p>
     </div>
   </main>
 
   <footer class="site-footer">
     <div class="wrap">
-      <p><a href=".">UpshiftAI</a> — ancient dependency lineage. <strong>CLI v0.2.1</strong>. Part of the <a href="https://github.com/repairman29/CLAWDBOT" target="_blank" rel="noopener">CLAWDBOT</a> ecosystem. <a href="https://github.com/sponsors/repairman29" target="_blank" rel="noopener">Sponsor</a> · <a href="pricing.html">Pricing</a></p>
+      <p><a href=".">UpshiftAI</a> — your dependencies, your control. <strong>CLI v0.2.1</strong>. Part of the <a href="https://github.com/repairman29/CLAWDBOT" target="_blank" rel="noopener">CLAWDBOT</a> ecosystem. <a href="https://github.com/sponsors/repairman29" target="_blank" rel="noopener">Sponsor</a> · <a href="pricing.html">Pricing</a></p>
     </div>
   </footer>
 </body>

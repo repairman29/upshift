@@ -3,49 +3,21 @@ import ora from "ora";
 import { existsSync } from "fs";
 import path from "path";
 import { runCommand } from "./exec.js";
+import {
+  detectEcosystem,
+  getPythonOutdated,
+  getRubyOutdated,
+  getGoOutdated,
+} from "./ecosystem.js";
 
 export type ScanOptions = {
   cwd: string;
   json: boolean;
+  licenses?: boolean;
+  report?: string;
 };
 
-export async function runScan(options: ScanOptions): Promise<void> {
-  const spinner = ora("Scanning dependencies...").start();
-  try {
-    const packageManager = detectPackageManager(options.cwd);
-    const outdated = await getOutdatedDependencies(packageManager, options.cwd);
-    const vulnerabilities = await getVulnerabilities(
-      packageManager,
-      options.cwd
-    );
-
-    spinner.succeed("Scan complete");
-
-    if (options.json) {
-      process.stdout.write(
-        JSON.stringify(
-          {
-            status: "ok",
-            packageManager,
-            outdated,
-            vulnerabilities,
-          },
-          null,
-          2
-        )
-      );
-      process.stdout.write("\n");
-      return;
-    }
-
-    renderHumanOutput(packageManager, outdated, vulnerabilities);
-  } catch (error) {
-    spinner.fail("Scan failed");
-    throw error;
-  }
-}
-
-type OutdatedEntry = {
+export type OutdatedEntry = {
   name: string;
   current: string;
   wanted: string;
@@ -53,7 +25,114 @@ type OutdatedEntry = {
   type?: string;
 };
 
-type VulnerabilitySummary = {
+/** Returns raw scan data for use by suggest/plan/Radar. Node only. */
+export async function runScanForSuggest(cwd: string): Promise<{
+  packageManager: string;
+  outdated: OutdatedEntry[];
+  vulnerabilities: VulnerabilitySummary | null;
+} | null> {
+  try {
+    const packageManager = detectPackageManager(cwd);
+    const outdated = await getOutdatedDependencies(packageManager, cwd);
+    const vulnerabilities = await getVulnerabilities(packageManager, cwd);
+    return { packageManager, outdated, vulnerabilities };
+  } catch {
+    return null;
+  }
+}
+
+export async function runScan(options: ScanOptions): Promise<void> {
+  const spinner = ora("Scanning dependencies...").start();
+  try {
+    const ecosystem = detectEcosystem(options.cwd);
+
+    if (ecosystem !== "node") {
+      let outdated: OutdatedEntry[];
+      let label: string;
+      if (ecosystem === "python") {
+        outdated = await getPythonOutdated(options.cwd);
+        label = "python (pip/poetry)";
+      } else if (ecosystem === "ruby") {
+        outdated = await getRubyOutdated(options.cwd);
+        label = "ruby (bundler)";
+      } else {
+        outdated = await getGoOutdated(options.cwd);
+        label = "go";
+      }
+      spinner.succeed("Scan complete");
+      const reportPayload = options.report
+        ? {
+            status: "ok",
+            ecosystem: label,
+            outdated,
+            cwd: options.cwd,
+            timestamp: new Date().toISOString(),
+          }
+        : undefined;
+      if (reportPayload && options.report) {
+        const { writeFileSync } = await import("fs");
+        writeFileSync(options.report, JSON.stringify(reportPayload, null, 2), "utf8");
+      }
+      if (options.json) {
+        process.stdout.write(
+          JSON.stringify({ status: "ok", ecosystem: label, outdated }, null, 2) + "\n"
+        );
+        return;
+      }
+      renderHumanOutput(label, outdated, null, undefined);
+      return;
+    }
+
+    const packageManager = detectPackageManager(options.cwd);
+    const outdated = await getOutdatedDependencies(packageManager, options.cwd);
+    const vulnerabilities = await getVulnerabilities(
+      packageManager,
+      options.cwd
+    );
+
+    let licenses: Record<string, string> | undefined;
+    if (options.licenses && packageManager === "npm") {
+      licenses = await getLicenses(options.cwd);
+    }
+
+    const reportPayload = options.report
+      ? {
+          status: "ok",
+          packageManager,
+          outdated,
+          vulnerabilities,
+          licenses: licenses ?? undefined,
+          cwd: options.cwd,
+          timestamp: new Date().toISOString(),
+        }
+      : undefined;
+    if (reportPayload && options.report) {
+      const { writeFileSync } = await import("fs");
+      writeFileSync(options.report, JSON.stringify(reportPayload, null, 2), "utf8");
+    }
+
+    spinner.succeed("Scan complete");
+
+    if (options.json) {
+      const out: Record<string, unknown> = {
+        status: "ok",
+        packageManager,
+        outdated,
+        vulnerabilities,
+      };
+      if (licenses) out.licenses = licenses;
+      process.stdout.write(JSON.stringify(out, null, 2) + "\n");
+      return;
+    }
+
+    renderHumanOutput(packageManager, outdated, vulnerabilities, licenses);
+  } catch (error) {
+    spinner.fail("Scan failed");
+    throw error;
+  }
+}
+
+export type VulnerabilitySummary = {
   counts: Record<string, number>;
   items: Array<{
     name: string;
@@ -63,6 +142,34 @@ type VulnerabilitySummary = {
     via?: Array<string | { name: string; title?: string }>;
   }>;
 };
+
+async function getLicenses(cwd: string): Promise<Record<string, string>> {
+  const { readFileSync, existsSync } = await import("fs");
+  const path = await import("path");
+  const pkgPath = path.join(cwd, "package.json");
+  if (!existsSync(pkgPath)) return {};
+  const raw = readFileSync(pkgPath, "utf8");
+  const pkg = JSON.parse(raw) as { dependencies?: Record<string, string>; devDependencies?: Record<string, string> };
+  const deps = { ...pkg.dependencies, ...pkg.devDependencies };
+  const licenses: Record<string, string> = {};
+  for (const name of Object.keys(deps)) {
+    try {
+      const result = await runCommand("npm", ["view", name, "license", "--json"], cwd, [0, 1]);
+      const trimmed = result.stdout.trim();
+      if (trimmed) {
+        try {
+          const parsed = JSON.parse(trimmed);
+          licenses[name] = typeof parsed === "string" ? parsed : parsed?.license ?? "unknown";
+        } catch {
+          licenses[name] = trimmed;
+        }
+      }
+    } catch {
+      licenses[name] = "unknown";
+    }
+  }
+  return licenses;
+}
 
 function detectPackageManager(cwd: string): "npm" | "yarn" | "pnpm" {
   const pnpmLock = path.join(cwd, "pnpm-lock.yaml");
@@ -281,7 +388,8 @@ async function getVulnerabilities(
 function renderHumanOutput(
   packageManager: string,
   outdated: OutdatedEntry[],
-  vulnerabilities: VulnerabilitySummary | null
+  vulnerabilities: VulnerabilitySummary | null,
+  licenses?: Record<string, string>
 ): void {
   process.stdout.write(chalk.bold(`Package manager: ${packageManager}\n`));
   process.stdout.write("\n");
@@ -293,6 +401,13 @@ function renderHumanOutput(
       process.stdout.write(
         `- ${entry.name}: ${entry.current} -> ${entry.wanted} (latest ${entry.latest})\n`
       );
+    }
+  }
+
+  if (licenses && Object.keys(licenses).length > 0) {
+    process.stdout.write(chalk.bold("\nLicenses (direct deps):\n"));
+    for (const [name, license] of Object.entries(licenses)) {
+      process.stdout.write(`- ${name}: ${license}\n`);
     }
   }
 

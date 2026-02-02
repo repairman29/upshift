@@ -7,23 +7,15 @@
   <link rel="icon" href="../favicon.ico" type="image/x-icon">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../style.css">
-  <style>
-    .blog-index { max-width: 680px; margin: 0 auto; padding: 3rem 24px; }
-    .blog-index h1 { font-size: 2rem; margin-bottom: 2rem; }
-    .blog-list { list-style: none; padding: 0; margin: 0; }
-    .blog-list li { border-bottom: 1px solid var(--border); padding: 1.5rem 0; }
-    .blog-list li:first-child { padding-top: 0; }
-    .blog-list a { color: var(--text-main); font-weight: 500; }
-    .blog-list a:hover { color: var(--accent-primary); }
-    .blog-list .meta { color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem; }
-    .blog-list .excerpt { color: var(--text-muted); font-size: 0.95rem; margin-top: 0.5rem; line-height: 1.5; }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header class="header">
-    <div class="container">
-      <a href=".." class="logo">UpshiftAI</a>
-      <nav class="desktop-nav">
+  <header class="site-header">
+    <div class="wrap">
+      <a href=".." class="logo"><span class="logo-mark"></span>UpshiftAI</a>
+      <nav>
         <a href="..">Home</a>
         <a href="../docs.html">How it works</a>
         <a href="../dev.html">Developers</a>
@@ -45,14 +37,14 @@
       <li>
         <a href="how-we-do-hitl.html">How we do human-in-the-loop (HITL)</a>
         <p class="meta">Approval gates, webhooks, event stream</p>
-        <p class="excerpt">How UpshiftAI does approval and oversight: prompt, webhook, or none. Config and quick setup for devs who want oversight.</p>
+        <p class="excerpt">How you control approval and oversight: prompt, webhook, or none. Config and quick setup when you want to approve risky changes.</p>
       </li>
     </ul>
   </main>
 
-  <footer class="footer">
-    <div class="container">
-      <p><a href="..">UpshiftAI</a> — ancient dependency lineage. <a href="../pricing.html">Pricing</a> · <a href="https://github.com/repairman29/upshift" target="_blank" rel="noopener">GitHub</a></p>
+  <footer class="site-footer">
+    <div class="wrap">
+      <p><a href="..">UpshiftAI</a> — your dependencies, your control. <a href="../pricing.html">Pricing</a> · <a href="https://github.com/repairman29/upshift" target="_blank" rel="noopener">GitHub</a></p>
     </div>
   </footer>
 </body>

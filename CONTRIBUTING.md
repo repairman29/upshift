@@ -25,19 +25,16 @@ Thanks for your interest in contributing to Upshift! This document provides guid
 
 ## Development
 
-### Project Structure
+For a full project structure, adding commands, migration templates, and config schema, see **[docs/development.md](docs/development.md)**.
+
+### Project structure (overview)
 
 ```
 src/
 ├── cli.ts           # Main CLI entry point
 ├── server.ts        # Billing API server
 ├── commands/        # CLI command definitions
-└── lib/             # Core logic
-    ├── scan.ts      # Dependency scanning
-    ├── explain.ts   # Breaking change explanations
-    ├── upgrade.ts   # Safe upgrades with rollback
-    ├── fix.ts       # AI-powered code fixes
-    └── ...
+└── lib/             # Core logic (scan, explain, upgrade, fix, migrate, ecosystem, etc.)
 ```
 
 ### Running Tests
@@ -63,9 +60,17 @@ npm run build
 ## Areas We'd Love Help With
 
 - **Package manager support**: Improving yarn and pnpm compatibility
-- **Migration templates**: Curated rules for major framework upgrades
+- **Migration templates**: Curated rules for major framework upgrades (see below)
 - **GitHub Action**: Improvements to CI/CD integration
 - **Documentation**: Tutorials, examples, translations
+
+### Migration templates
+
+We ship migration templates (e.g. React 18→19) in `migrations/`. To contribute one:
+
+1. Add a JSON file: `migrations/<ecosystem>-<from>-<to>.json` (e.g. `next-13-14.json`, `vue-2-3.json`).
+2. Follow the schema in [migrations/README.md](migrations/README.md): `name`, `description`, `from`/`to`, `package`, `steps` (find/replace or package/version), `links` to official upgrade guides.
+3. Open a PR with a short description and link to the official migration guide.
 
 ## Code Style
 

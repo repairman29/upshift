@@ -70,6 +70,10 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 
 For production, create a webhook in Stripe Dashboard → Developers → Webhooks → Add endpoint: `https://your-app.com/api/stripe/webhook`, events: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`. Use that endpoint’s signing secret in production `.env`.
 
+## JARVIS on the edge (Supabase)
+
+You can call JARVIS from **Supabase Edge Functions** (e.g. for blog media, scripts). See [../docs/JARVIS-EDGE-SUPABASE.md](../docs/JARVIS-EDGE-SUPABASE.md) for URL, deploy, and how to invoke it.
+
 ## Supabase setup (production persistence)
 
 1. Create a project at [supabase.com](https://supabase.com).

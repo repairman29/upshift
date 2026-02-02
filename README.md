@@ -6,7 +6,7 @@
 
 **AI-powered dependency upgrades.** Stop reading changelogs—let AI tell you what breaks.
 
-Upshift scans for outdated and vulnerable packages, explains breaking changes with AI, generates code fixes, and upgrades safely with automatic rollback.
+Upshift scans for outdated and vulnerable packages, explains breaking changes with AI, generates code fixes, and upgrades safely with automatic rollback. **Radar** is the central view of dependency health across all your repos—one dashboard for your whole stack (free: paste reports; Pro/Team: persisted dashboard, history, alerts).
 
 > **Dependabot tells you *what* to upgrade. Upshift tells you *why*, *what breaks*, and *fixes the code*.**
 
@@ -43,6 +43,9 @@ node dist/cli.js --help
 ```bash
 upshift scan                          # See all outdated packages
 upshift scan --json                   # Machine-readable output
+upshift scan --licenses               # Include license per direct dep (npm)
+upshift scan --report report.json     # Write JSON for Radar (central dashboard)
+upshift radar                         # Open Radar in browser
 
 upshift explain react --ai            # AI explains breaking changes
 upshift explain react --from 18 --to 19
@@ -63,6 +66,18 @@ upshift fix react --dry-run           # Preview changes without applying
 
 upshift rollback                      # Restore previous state
 upshift rollback --list               # See available backups
+```
+
+### Suggest & Plan
+```bash
+upshift suggest                      # Recommended upgrades (low risk, high value)
+upshift suggest --limit 10           # Top 10 suggestions
+upshift plan                         # Multi-step upgrade order (dependency + risk)
+upshift plan --mode minor            # Only minor/patch upgrades
+upshift migrate react --list         # List migration templates for react
+upshift migrate react --dry-run     # Preview template application
+upshift migrate next                # Apply Next.js 13→14 template
+upshift migrate vue --list          # List Vue templates
 ```
 
 ### Interactive & Monorepo
@@ -92,7 +107,7 @@ Self-healing via **LLM-generated code fixes** should be reviewed, not applied bl
 If you want to **approve** risky upgrades (and optionally code fixes) instead of running fully automatic:
 
 - **Single upgrade:** By default, major version upgrades prompt `Upgrade X from A to B (major)? [y/N]` when run interactively. Use `-y` to skip (e.g. CI).
-- **Config:** Create `.upshiftrc.json` with `upshift init`. Set `approval.mode` to `"prompt"` (default) or `"none"`, and `approval.requireFor` to `["major"]` (default) or `["all"]`. Set `autoConfirm: true` to skip all prompts.
+- **Config:** Create `.upshiftrc.json` with `upshift init`. Set `approval.mode` to `"prompt"` (default), `"none"`, or `"webhook"` (POST proposed upgrade to `approval.webhookUrl`; 200 = approve). Set `approval.requireFor` to `["major"]` (default) or `["all"]`. Set `upgradePolicy: { blockRisk: ["high"] }` to block high-risk upgrades (use `-y` to override). Set `autoConfirm: true` to skip all prompts.
 - **Batch:** `upshift upgrade --all` (or `--all-minor`) already asks for confirmation before applying; use `-y` to skip.
 
 For full HITL (webhooks, event stream, approval server), see [upshiftai](https://github.com/repairman29/upshift/tree/main/upshiftai) and `.upshiftai.json` with `approval.mode: "webhook"` and [docs/HITL.md](upshiftai/docs/HITL.md). See also [When it breaks & guardrails](docs/when-it-breaks-and-guardrails.md).
@@ -159,7 +174,16 @@ See `.github/workflows/example-scan.yml` for a full example.
 - Multi-repo dashboard (Radar)
 - Python support (pip/poetry)
 
-See [ROADMAP.md](ROADMAP.md) for the full plan.
+See [ROADMAP.md](ROADMAP.md) for the full plan and [Roadmap for Innovation](ROADMAP.md#-roadmap-for-innovation) for longer-term R&D and vision.
+
+## Radar
+
+**Radar** is the central view of dependency health across all your repos. Free: paste or upload scan reports at [upshiftai.dev/radar](https://upshiftai.dev/radar/). Pro/Team: persisted dashboard, history, alerts. See [docs/radar.md](docs/radar.md).
+
+```bash
+upshift scan --report report.json   # in each repo
+upshift radar                      # open Radar in browser
+```
 
 ## Website
 
@@ -169,13 +193,23 @@ The landing page lives in `web/`. Deploy at **upshiftai.dev**:
 
 After importing, set **Root Directory** to `web`, then add domains `upshiftai.dev` and `www.upshiftai.dev` in Project → Settings → Domains. See `web/README.md`.
 
+## JARVIS in Cursor
+
+Use **JARVIS** from Cursor when you need dependency analysis, blog media, or UpshiftAI skill work. One-time setup:
+
+```bash
+scripts/setup-jarvis-cursor.sh
+```
+
+Then edit `.env` and set `JARVIS_EDGE_URL` (Supabase Edge URL) and `UPSHIFTAI_API_KEY`. Deploy Edge first: `supabase functions deploy jarvis`. See [docs/JARVIS_IN_CURSOR.md](docs/JARVIS_IN_CURSOR.md). The Cursor rule in `.cursor/rules/jarvis.mdc` tells the agent to use JARVIS when needed; invoke via `node scripts/call-jarvis.js <task> '<json>'`.
+
 ## Documentation
 
-- [When it breaks & guardrails](docs/when-it-breaks-and-guardrails.md) — when things break, CI/CD guardrails, HITL for LLM fixes
-- [Human-in-the-Loop (HITL)](upshiftai/docs/HITL.md) — approval gates, webhooks, event stream
-- [Roadmap](ROADMAP.md) — planned features
-- [Contributing](CONTRIBUTING.md) — how to contribute
-- [API Endpoints](docs/endpoint.md) — billing API reference
-- [Blog: When it breaks, guardrails, and HITL](docs/blog-when-it-breaks-guardrails-hitl.md) — article for eng audiences
-- [Blog Post](docs/blog-post.md) — introduction article
+**Product / users:** [User guide](docs/user-guide.md) · [CLI reference](docs/cli-reference.md) · [Configuration](docs/configuration.md) · [Radar](docs/radar.md) · [When it breaks & guardrails](docs/when-it-breaks-and-guardrails.md) · [Opt-in insights](docs/opt-in-insights.md)
+
+**Developers:** [Development guide](docs/development.md) · [GitHub App (scaffold)](docs/github-app.md) · [Contributing](CONTRIBUTING.md)
+
+**Reference:** [API Endpoints](docs/endpoint.md) · [Roadmap](ROADMAP.md) · [Release v0.4.0](RELEASE-v0.4.0.md) · [Docs index](docs/README.md)
+
+**Blog:** [When it breaks, guardrails, and HITL](docs/blog-when-it-breaks-guardrails-hitl.md) · [Introduction](docs/blog-post.md)
 

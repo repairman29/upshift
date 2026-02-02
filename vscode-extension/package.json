@@ -47,6 +47,14 @@
       {
         "command": "upshift.audit",
         "title": "Upshift: Security Audit"
+      },
+      {
+        "command": "upshift.explainCurrentFile",
+        "title": "Upshift: Explain dependency for current file"
+      },
+      {
+        "command": "upshift.fixCurrentFile",
+        "title": "Upshift: Fix dependency for current file"
       }
     ],
     "configuration": {
@@ -88,6 +96,16 @@
         {
           "when": "resourceFilename == package.json",
           "command": "upshift.scan",
+          "group": "upshift"
+        },
+        {
+          "when": "resourceExtname == .ts || resourceExtname == .tsx || resourceExtname == .js || resourceExtname == .jsx",
+          "command": "upshift.explainCurrentFile",
+          "group": "upshift"
+        },
+        {
+          "when": "resourceExtname == .ts || resourceExtname == .tsx || resourceExtname == .js || resourceExtname == .jsx",
+          "command": "upshift.fixCurrentFile",
           "group": "upshift"
         }
       ]

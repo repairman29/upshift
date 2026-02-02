@@ -11,6 +11,8 @@ import {
   getLockfileName,
   type PackageManager,
 } from "./package-manager.js";
+import { loadConfig } from "./config.js";
+import { assessRisk } from "./explain.js";
 
 export type BatchUpgradeOptions = {
   cwd: string;
@@ -50,7 +52,23 @@ export async function runBatchUpgrade(options: BatchUpgradeOptions): Promise<voi
     }
 
     // Filter based on mode
-    const candidates = filterCandidates(outdated, options.mode);
+    let candidates = filterCandidates(outdated, options.mode);
+
+    // Upgrade policy: remove candidates blocked by risk level
+    const config = loadConfig(options.cwd);
+    const blockRisk = config.upgradePolicy?.blockRisk;
+    if (blockRisk && blockRisk.length > 0) {
+      const before = candidates.length;
+      const allowed: UpgradeCandidate[] = [];
+      for (const pkg of candidates) {
+        const risk = await assessRisk(options.cwd, pkg.name, pkg.current, pkg.target);
+        if (!blockRisk.includes(risk.level)) allowed.push(pkg);
+      }
+      candidates = allowed;
+      if (before > candidates.length) {
+        process.stdout.write(chalk.gray(`Skipped ${before - candidates.length} upgrade(s) due to upgrade policy (blockRisk: ${blockRisk.join(", ")}).\n`));
+      }
+    }
 
     if (candidates.length === 0) {
       spinner.succeed(`No ${options.mode} updates available`);

@@ -7,11 +7,14 @@
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
   <header class="site-header">
     <div class="wrap">
-      <a href="." class="logo">UpshiftAI</a>
+      <a href="." class="logo"><span class="logo-mark"></span>UpshiftAI</a>
       <nav>
         <a href=".">Home</a>
         <a href="docs.html">How it works</a>
@@ -26,17 +29,17 @@
   <main class="docs-content">
     <div class="wrap">
       <h1>How it works — v0.2.1</h1>
-      <p><strong>NEW:</strong> Go proxy integration, pip-audit security scanning, pip automated fixes, and JARVIS conversational AI skill.</p>
-      <p>UpshiftAI analyzes dependency trees across npm, pip, and Go. Flags ancient/deprecated/vulnerable packages with security audits (npm audit, pip-audit). Automated fixes with checkpoint, verify, rollback, and human-in-the-loop approval workflows.</p>
+      <p><strong>New in this release:</strong> Go proxy support, pip-audit security scanning, pip automated fixes, and JARVIS conversational AI.</p>
+      <p>You get a single view of your dependency trees across npm, pip, and Go—with security audits (npm audit, pip-audit) that flag old, deprecated, or vulnerable packages. Run automated fixes with checkpoints, verification, rollback, and optional approval steps so you stay in control.</p>
 
       <h2>What you can run (CLI)</h2>
-      <p>Everything is executable from the CLI. Install once, then run from your project or any path:</p>
+      <p>Run everything from the CLI. Install once, then run from your project or any path:</p>
       <ul>
-        <li><strong>analyze</strong> — resolve tree, fetch registry metadata, output JSON/markdown/CSV.</li>
-        <li><strong>report</strong> — full “deep throat” report (direct + transitive, “something old” chains, optional PDF).</li>
-        <li><strong>checkpoint</strong> — save manifest + lockfile so you can roll back later.</li>
-        <li><strong>rollback</strong> — restore from the last checkpoint.</li>
-        <li><strong>apply upgrade</strong> / <strong>apply replace</strong> — upgrade one package or replace one with another (with checkpoint, verify, auto-rollback on failure, and optional HITL/webhooks).</li>
+        <li><strong>analyze</strong> — Resolve your tree, fetch registry metadata, output JSON/markdown/CSV.</li>
+        <li><strong>report</strong> — Full report: direct + transitive deps, “something old” chains, optional PDF.</li>
+        <li><strong>checkpoint</strong> — Save your manifest + lockfile so you can roll back later.</li>
+        <li><strong>rollback</strong> — Restore from the last checkpoint.</li>
+        <li><strong>apply upgrade</strong> / <strong>apply replace</strong> — Upgrade or replace one package (with checkpoint, verify, auto-rollback on failure, and optional approval via prompt or webhook).</li>
       </ul>
 
       <h2>CLI reference (all commands)</h2>
@@ -78,8 +81,8 @@
       <pre class="code"><code>upshiftai-deps health [path] [--exit-code] [--json]</code></pre>
       <p>Quick health check: OK/WARN/FAIL status with counts (ancient, deprecated, high/critical vulns). Use <code>--exit-code</code> for CI integration.</p>
 
-      <h2>Config: webhooks &amp; HITL</h2>
-      <p>Put <code>.upshiftai.json</code> in the project root (or set <code>UPSHIFTAI_CONFIG</code> or use <code>--config path</code>). Copy from <code>.upshiftai.example.json</code>.</p>
+      <h2>Config: webhooks &amp; approval (HITL)</h2>
+      <p>Put <code>.upshiftai.json</code> in your project root (or set <code>UPSHIFTAI_CONFIG</code> or use <code>--config path</code>). Copy from <code>.upshiftai.example.json</code>.</p>
       <pre class="code"><code>{
   "webhooks": ["https://your-server.com/hooks/upshiftai"],
   "approval": {
@@ -90,9 +93,9 @@
   }
 }</code></pre>
       <ul>
-        <li><strong>webhooks</strong> — we POST every event (checkpoint.created, apply.started, apply.completed, apply.failed, rollback.triggered, rollback.completed) to these URLs. Your endpoint can run <code>upshiftai-deps rollback</code> or your own revert on <code>rollback.triggered</code> / <code>apply.failed</code>.</li>
-        <li><strong>approval.mode</strong> — <code>prompt</code> (CLI “y/n”), <code>webhook</code> (POST to <code>webhookUrl</code>; we wait for <code>{ "approved": true }</code>), or <code>none</code>.</li>
-        <li><strong>approval.requireFor</strong> — e.g. <code>["replace", "major"]</code>: replace and major upgrades require approval; patch/minor can run without.</li>
+        <li><strong>webhooks</strong> — We POST every event (checkpoint.created, apply.started, apply.completed, apply.failed, rollback.triggered, rollback.completed) to your URLs. Your endpoint can run <code>upshiftai-deps rollback</code> or your own revert on <code>rollback.triggered</code> / <code>apply.failed</code>.</li>
+        <li><strong>approval.mode</strong> — <code>prompt</code> (CLI “y/n”), <code>webhook</code> (we POST to your <code>webhookUrl</code> and wait for <code>{ "approved": true }</code>), or <code>none</code>.</li>
+        <li><strong>approval.requireFor</strong> — e.g. <code>["replace", "major"]</code>: you decide when approval is required; replace and major upgrades can require it while patch/minor run without.</li>
       </ul>
 
       <h2>Signals in the report</h2>
@@ -120,9 +123,9 @@
 
       <h2>Integration</h2>
       <ul>
-        <li><strong>upshiftai.dev</strong> — Call the CLI or <code>import { analyze, applyNpmUpgrade, ... } from 'upshiftai-deps'</code> and use JSON/events for upgrade suggestions, replace flows, or PR automation.</li>
-        <li><strong>JARVIS / CLAWDBOT</strong> — 🤖 **Pro subscription required**. Install the skill, set API key, and ask JARVIS to analyze dependencies conversationally.</li>
-        <li><strong>CI</strong> — Run <code>analyze</code> and gate on ancient/deprecated count; run <code>apply</code> with <code>--yes</code> and webhooks for observability and rollback.</li>
+        <li><strong>Your scripts</strong> — Call the CLI or <code>import { analyze, applyNpmUpgrade, ... } from 'upshiftai-deps'</code> and use JSON/events for upgrade suggestions, replace flows, or PR automation.</li>
+        <li><strong>JARVIS / CLAWDBOT</strong> — 🤖 Pro subscription required. Install the skill, set your API key, and ask JARVIS to analyze your dependencies conversationally.</li>
+        <li><strong>CI</strong> — Run <code>analyze</code> and gate on ancient/deprecated count; run <code>apply</code> with <code>--yes</code> and webhooks so you get observability and rollback.</li>
       </ul>
 
       <h2>Documentation index</h2>
@@ -152,7 +155,7 @@
 
   <footer class="site-footer">
     <div class="wrap">
-      <p><a href=".">UpshiftAI</a> — ancient dependency lineage. <strong>CLI v0.2.1</strong>. Part of the <a href="https://github.com/repairman29/CLAWDBOT" target="_blank" rel="noopener">CLAWDBOT</a> ecosystem. <a href="https://github.com/sponsors/repairman29" target="_blank" rel="noopener">Sponsor</a> · <a href="pricing.html">Pricing</a></p>
+      <p><a href=".">UpshiftAI</a> — your dependencies, your control. <strong>CLI v0.2.1</strong>. Part of the <a href="https://github.com/repairman29/CLAWDBOT" target="_blank" rel="noopener">CLAWDBOT</a> ecosystem. <a href="https://github.com/sponsors/repairman29" target="_blank" rel="noopener">Sponsor</a> · <a href="pricing.html">Pricing</a></p>
     </div>
   </footer>
 </body>
