@@ -214,6 +214,8 @@
         <dl>
           <dt>How is Upshift different from Dependabot?</dt>
           <dd>Dependabot opens PRs with version bumps; you still read changelogs and fix breaking changes by hand. Upshift explains <em>why</em> things break in plain English, suggests code fixes (not just version bumps), and runs your tests with automatic rollback if anything fails. Think: Dependabot tells you what to upgrade; Upshift does the explaining and the fixing.</dd>
+          <dt>How can I approve risky upgrades (human-in-the-loop)?</dt>
+          <dd>By default, major upgrades prompt for approval in the CLI. Use <code>.upshiftrc.json</code> (via <code>upshift init</code>) to set <code>approval.mode</code> (prompt / none) and <code>approval.requireFor</code> (e.g. major). Use <code>-y</code> to skip approval for a run. For webhooks and full HITL, see <a href="/blog/how-we-do-hitl">How we do human-in-the-loop (HITL)</a>.</dd>
           <dt>Do credits expire?</dt>
           <dd>No. Credits roll over forever.</dd>
           <dt>What happens if tests fail?</dt>

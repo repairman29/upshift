@@ -14,6 +14,8 @@ Upshift scans for outdated and vulnerable packages, explains breaking changes wi
 
 Supports npm, yarn, and pnpm. See [ROADMAP.md](ROADMAP.md) for what's next.
 
+**When does it break?** At upgrade time: when you or CI run `upshift upgrade`, we run your tests and roll back if they fail. CI/CD and your existing smoke/integration tests are the guardrail—we don't replace them. See [When it breaks & guardrails](docs/when-it-breaks-and-guardrails.md).
+
 ## Install
 
 ```bash
@@ -52,6 +54,7 @@ upshift explain react --changelog     # Fetch changelog from GitHub
 ```bash
 upshift upgrade react                 # Upgrade with tests + auto-rollback
 upshift upgrade react --to 19.0.0
+upshift upgrade react -y              # Skip approval prompt (e.g. CI)
 upshift upgrade --all                 # Batch upgrade all packages
 upshift upgrade --all-minor           # Only minor/patch updates
 
@@ -81,6 +84,18 @@ upshift buy-credits --pack small      # Purchase credits
 upshift subscribe --tier pro          # Subscribe to Pro
 upshift status                        # Check subscription status
 ```
+
+## Human-in-the-loop (oversight)
+
+Self-healing via **LLM-generated code fixes** should be reviewed, not applied blindly. Use `upshift fix --dry-run` to preview changes, then review before applying. For automated pipelines, use approval gates (see below).
+
+If you want to **approve** risky upgrades (and optionally code fixes) instead of running fully automatic:
+
+- **Single upgrade:** By default, major version upgrades prompt `Upgrade X from A to B (major)? [y/N]` when run interactively. Use `-y` to skip (e.g. CI).
+- **Config:** Create `.upshiftrc.json` with `upshift init`. Set `approval.mode` to `"prompt"` (default) or `"none"`, and `approval.requireFor` to `["major"]` (default) or `["all"]`. Set `autoConfirm: true` to skip all prompts.
+- **Batch:** `upshift upgrade --all` (or `--all-minor`) already asks for confirmation before applying; use `-y` to skip.
+
+For full HITL (webhooks, event stream, approval server), see [upshiftai](https://github.com/repairman29/upshift/tree/main/upshiftai) and `.upshiftai.json` with `approval.mode: "webhook"` and [docs/HITL.md](upshiftai/docs/HITL.md). See also [When it breaks & guardrails](docs/when-it-breaks-and-guardrails.md).
 
 ## What it does today
 
@@ -156,8 +171,11 @@ After importing, set **Root Directory** to `web`, then add domains `upshiftai.de
 
 ## Documentation
 
+- [When it breaks & guardrails](docs/when-it-breaks-and-guardrails.md) — when things break, CI/CD guardrails, HITL for LLM fixes
+- [Human-in-the-Loop (HITL)](upshiftai/docs/HITL.md) — approval gates, webhooks, event stream
 - [Roadmap](ROADMAP.md) — planned features
 - [Contributing](CONTRIBUTING.md) — how to contribute
 - [API Endpoints](docs/endpoint.md) — billing API reference
+- [Blog: When it breaks, guardrails, and HITL](docs/blog-when-it-breaks-guardrails-hitl.md) — article for eng audiences
 - [Blog Post](docs/blog-post.md) — introduction article
 

@@ -1,7 +1,8 @@
 {
   "rewrites": [
     { "source": "/start", "destination": "/start.html" },
-    { "source": "/blog/introducing-upshift", "destination": "/blog/introducing-upshift.html" }
+    { "source": "/blog/introducing-upshift", "destination": "/blog/introducing-upshift.html" },
+    { "source": "/blog/when-it-breaks-guardrails-hitl", "destination": "/blog/when-it-breaks-guardrails-hitl.html" }
   ],
   "headers": [
     {
