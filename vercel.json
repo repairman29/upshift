@@ -1,4 +1,6 @@
 {
+  "buildCommand": "echo 'Static site in web/'",
+  "outputDirectory": "web",
   "redirects": [
     { "source": "/favicon.ico", "destination": "/favicon.svg", "permanent": false },
     { "source": "/blog", "destination": "/blog/index.html", "permanent": false },
