@@ -11,7 +11,8 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Upshift – AI-powered dependency upgrades" />
   <meta name="twitter:description" content="Upgrade dependencies safely, run tests automatically, and roll back when anything breaks." />
-  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
   <!-- Analytics -->
   <script defer data-domain="upshiftai.dev" src="https://plausible.io/js/script.js"></script>
@@ -27,7 +28,7 @@
         <a href="#demo">Demo</a>
         <a href="#compare">vs Dependabot</a>
         <a href="#pricing">Pricing</a>
-        <a href="/blog">Blog</a>
+        <a href="/blog/index.html">Blog</a>
         <a href="https://github.com/repairman29/upshift" class="nav-gh" target="_blank" rel="noopener">GitHub</a>
       </nav>
     </div>
@@ -215,7 +216,7 @@
           <dt>How is Upshift different from Dependabot?</dt>
           <dd>Dependabot opens PRs with version bumps; you still read changelogs and fix breaking changes by hand. Upshift explains <em>why</em> things break in plain English, suggests code fixes (not just version bumps), and runs your tests with automatic rollback if anything fails. Think: Dependabot tells you what to upgrade; Upshift does the explaining and the fixing.</dd>
           <dt>How can I approve risky upgrades (human-in-the-loop)?</dt>
-          <dd>By default, major upgrades prompt for approval in the CLI. Use <code>.upshiftrc.json</code> (via <code>upshift init</code>) to set <code>approval.mode</code> (prompt / none) and <code>approval.requireFor</code> (e.g. major). Use <code>-y</code> to skip approval for a run. For webhooks and full HITL, see <a href="/blog/how-we-do-hitl">How we do human-in-the-loop (HITL)</a>.</dd>
+          <dd>By default, major upgrades prompt for approval in the CLI. Use <code>.upshiftrc.json</code> (via <code>upshift init</code>) to set <code>approval.mode</code> (prompt / none) and <code>approval.requireFor</code> (e.g. major). Use <code>-y</code> to skip approval for a run. For webhooks and full HITL, see <a href="/blog/how-we-do-hitl.html">How we do human-in-the-loop (HITL)</a>.</dd>
           <dt>Do credits expire?</dt>
           <dd>No. Credits roll over forever.</dd>
           <dt>What happens if tests fail?</dt>
