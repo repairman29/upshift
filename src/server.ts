@@ -89,7 +89,7 @@ const apiKeys = new Set(
   (process.env.UPSHIFT_API_KEYS ?? "").split(",").map((s) => s.trim()).filter(Boolean)
 );
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "", {
-  apiVersion: "2024-06-20",
+  apiVersion: "2026-01-28.clover",
 });
 const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET ?? "";
 const stripePricePro = process.env.STRIPE_PRICE_PRO ?? "";

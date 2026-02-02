@@ -27,6 +27,7 @@ export function initCommand(): Command {
       console.log(chalk.gray("  ignore        - Packages to skip during upgrades"));
       console.log(chalk.gray("  defaultMode   - Default batch mode (all/minor/patch)"));
       console.log(chalk.gray("  autoTest      - Run tests after upgrades"));
+      console.log(chalk.gray("  approval      - HITL: prompt for major upgrades (mode: prompt|none, requireFor: [major])"));
       console.log(chalk.gray("  ai.autoEnable - Auto-use AI for explains"));
       console.log("");
       console.log(chalk.gray("Edit the file to customize your settings."));

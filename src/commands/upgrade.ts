@@ -40,6 +40,7 @@ export function upgradeCommand(): Command {
         packageName: pkg,
         toVersion: options.to,
         dryRun: options.dryRun,
+        yes: options.yes,
       });
     });
 

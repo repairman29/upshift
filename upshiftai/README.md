@@ -115,6 +115,22 @@ upshiftai-deps fix <pkg> [path] [--dry-run] [--yes]
 
 Copy [.upshiftai.example.json](.upshiftai.example.json) to `.upshiftai.json` and set your webhook URLs and approval policy.
 
+### Human-in-the-loop: I want oversight
+
+If you **don’t** want fully automatic upgrades and prefer to approve risky changes:
+
+| Mode | When to use |
+|------|-------------|
+| **`approval.mode: "prompt"`** | CLI asks “Apply? (y/n)” for major upgrades and replaces. Patch/minor can still run without asking. |
+| **`approval.mode: "webhook"`** | We POST to your URL; you respond `{ "approved": true }` or `false`. Use for CI, team gates, or custom tooling. |
+| **`approval.mode: "none"`** | No approval (e.g. CI with `--yes`). Use only when you’re sure. |
+
+**Quick setup (prompt for major/replace):** copy [.upshiftai.example.json](.upshiftai.example.json) to `.upshiftai.json`. Defaults are already `approval.mode: "prompt"` and `approval.requireFor: ["replace", "major"]`, so you get a prompt for major upgrades and package replaces; patch/minor apply without asking.
+
+**Override per run:** use `--yes` to skip approval for that run; omit `--yes` to respect config (prompt or webhook).
+
+See [docs/HITL.md](docs/HITL.md) for webhook payloads, response format, and a sample approval server.
+
 ---
 
 ## What it reports

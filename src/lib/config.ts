@@ -29,7 +29,13 @@ export type UpshiftConfig = {
     // Only show packages above this severity
     minSeverity?: "low" | "moderate" | "high" | "critical";
   };
-  
+
+  // Approval / HITL: require confirmation for risky upgrades (e.g. major)
+  approval?: {
+    mode?: "prompt" | "none";
+    requireFor?: ("major" | "all")[];
+  };
+
   // Registry settings
   registry?: {
     // Custom npm registry URL
@@ -57,6 +63,10 @@ const DEFAULT_CONFIG: UpshiftConfig = {
   scan: {
     exclude: [],
     minSeverity: "low",
+  },
+  approval: {
+    mode: "prompt",
+    requireFor: ["major"],
   },
 };
 
@@ -96,6 +106,7 @@ function mergeConfig(
     ...user,
     ai: { ...defaults.ai, ...user.ai },
     scan: { ...defaults.scan, ...user.scan },
+    approval: user.approval ? { ...defaults.approval, ...user.approval } : defaults.approval,
     registry: user.registry ? { ...defaults.registry, ...user.registry } : defaults.registry,
   };
 }
@@ -128,6 +139,10 @@ export function createConfigTemplate(): string {
       scan: {
         exclude: [],
         minSeverity: "low",
+      },
+      approval: {
+        mode: "prompt",
+        requireFor: ["major"],
       },
     },
     null,
