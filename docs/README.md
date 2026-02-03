@@ -6,7 +6,7 @@ Index of product and developer documentation.
 
 | Doc | Description |
 |-----|--------------|
-| [User guide](user-guide.md) | Getting started, workflow (scan → explain → upgrade → fix), suggest/plan, migrate, Radar, config, Python/Ruby/Go, VS Code, CI |
+| [User guide](user-guide.md) | **Quick start (5 min)** · Getting started, workflow (scan → explain → upgrade → fix), suggest/plan, migrate, Radar, config, Python/Ruby/Go, VS Code, CI |
 | [CLI reference](cli-reference.md) | All commands and options |
 | [Configuration](configuration.md) | Full `.upshiftrc.json` reference |
 | [Radar](radar.md) | Central dependency view (free + Pro) |
@@ -19,7 +19,7 @@ Index of product and developer documentation.
 | Doc | Description |
 |-----|--------------|
 | [Development guide](development.md) | Project structure, adding commands, migration templates, config schema, key flows |
-| [GitHub App (scaffold)](github-app.md) | How to build an App for scan-on-PR |
+| [GitHub App (scaffold + beta)](github-app.md) | How to build an App for scan-on-PR; beta workflow for scan + comment with App token |
 | [CONTRIBUTING.md](../CONTRIBUTING.md) | How to contribute, PR guidelines, migration templates |
 
 ## Team & platform (design)

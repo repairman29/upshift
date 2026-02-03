@@ -118,5 +118,11 @@ export async function runRubyUpgrade(options: RubyUpgradeOptions): Promise<void>
     process.stdout.write(chalk.gray("No test command configured. Skipping tests.\n"));
   }
 
+  const { emitAuditEvent } = await import("./audit-log.js");
+  await emitAuditEvent("upgrade", "package", options.packageName, {
+    ecosystem: "ruby",
+    outcome: "success",
+  });
+
   spinner.succeed("Upgrade complete");
 }

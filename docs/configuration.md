@@ -115,6 +115,18 @@ Example:
 - **--skip-tests** — Skips running tests after upgrade (overrides `autoTest` for that run).
 - **--dry-run** — No file changes; policy and approval still apply unless `-y`.
 
+## Environment variables (Team / audit)
+
+For Team/Enterprise and audit logging, the CLI supports:
+
+| Variable | Description |
+|----------|-------------|
+| **UPSHIFT_AUDIT_URL** | When set, the CLI POSTs audit events (upgrade, fix, scan_upload) to this URL after each action. Fire-and-forget; no impact on CLI flow if the request fails. |
+| **UPSHIFT_ORG** | When set, included as `org_id` in audit payloads (and future credit/billing calls) so the platform can attribute usage to the org. |
+| **UPSHIFT_API_TOKEN** | Optional. Sent as `Authorization: Bearer <token>` when POSTing to `UPSHIFT_AUDIT_URL`. |
+
+See [Team features (design)](team-features.md) for platform schema and API shape.
+
 ## See also
 
 - [User guide](user-guide.md) — Workflow and features

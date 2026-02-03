@@ -6,6 +6,7 @@ import { glob } from "glob";
 import { Project, SyntaxKind, Node } from "ts-morph";
 import { createTwoFilesPatch } from "diff";
 import { consumeCredit } from "./credits.js";
+import { emitAuditEvent } from "./audit-log.js";
 
 export type FixOptions = {
   cwd: string;
@@ -120,6 +121,12 @@ export async function runFix(options: FixOptions): Promise<void> {
       
       try {
         applyFixes(fixes);
+        await emitAuditEvent("fix", "package", options.packageName, {
+          applied: true,
+          fix_count: fixes.length,
+          from_version: currentVersion ?? undefined,
+          to_version: targetVersion,
+        });
         applySpinner.succeed(`Applied ${fixes.length} fixes`);
         
         process.stdout.write(chalk.green("\n✔ Code updated successfully!\n"));

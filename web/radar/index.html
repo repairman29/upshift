@@ -128,18 +128,18 @@
 
     <section class="radar-dashboard radar">
       <h2>Try Radar free</h2>
-      <p class="radar-sub">Paste JSON below, or load a report file. One object or one report per line (NDJSON).</p>
+      <p class="radar-sub">Paste scan JSON below or upload a file. Use one report per line for multiple repos (NDJSON).</p>
       <div class="radar-actions">
         <button type="button" id="load" class="primary">Load report(s)</button>
         <button type="button" id="upload-btn">Upload file</button>
         <input type="file" id="file-input" accept=".json,application/json" />
         <button type="button" id="clear">Clear</button>
       </div>
-      <textarea id="json" placeholder='{"status":"ok","packageManager":"npm","outdated":[...],"cwd":"/path/to/repo",...}'></textarea>
-      <p class="hint">From CLI: <code>upshift scan --report report.json</code> in each repo, then paste the file contents or concatenate multiple reports (one per line).</p>
+      <textarea id="json" placeholder='Paste output of: upshift scan --report report.json&#10;Or: {"status":"ok","packageManager":"npm","outdated":[...],"cwd":"/path/to/repo",...}'></textarea>
+      <p class="hint">Run <code>upshift scan --report report.json</code> in each repo, then paste the file contents here. For multiple repos, paste one JSON object per line.</p>
 
       <div id="summary" class="card-row" style="display: none;"></div>
-      <div id="table-wrap"></div>
+      <div id="table-wrap"><p class="empty" id="empty-state">No reports yet. Paste JSON from <code>upshift scan --report report.json</code> or upload a file, then click <strong>Load report(s)</strong>.</p></div>
 
       <div class="cta-pro" id="cta-pro" style="display: none;">
         <p>Need persisted dashboards, history, and alerts?</p>
@@ -200,11 +200,13 @@
       }));
     }
 
+    const emptyStateHtml = '<p class="empty" id="empty-state">No reports yet. Paste JSON from <code>upshift scan --report report.json</code> or upload a file, then click <strong>Load report(s)</strong>.</p>';
+
     function renderFromReports(reports) {
       if (!reports || reports.length === 0) {
         summaryEl.style.display = 'none';
         ctaPro.style.display = 'none';
-        tableWrap.innerHTML = '<p class="empty">No reports to display.</p>';
+        tableWrap.innerHTML = '<p class="empty">No valid reports to display. Check that the JSON has <code>outdated</code> (array) and optionally <code>cwd</code>.</p>';
         return;
       }
       const rows = rowsFromReports(reports);
@@ -230,7 +232,7 @@
       if (reports.length === 0) {
         summaryEl.style.display = 'none';
         ctaPro.style.display = 'none';
-        tableWrap.innerHTML = '<p class="empty">Paste one or more scan report JSON objects above (or upload a file), then click Load.</p>';
+        tableWrap.innerHTML = emptyStateHtml;
         return;
       }
       renderFromReports(reports);
@@ -320,7 +322,7 @@
       textarea.value = '';
       summaryEl.style.display = 'none';
       ctaPro.style.display = 'none';
-      tableWrap.innerHTML = '';
+      tableWrap.innerHTML = emptyStateHtml;
     });
     uploadBtn.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', function() {

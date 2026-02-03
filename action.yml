@@ -26,6 +26,10 @@ inputs:
     description: "Post scan results as a PR comment (true/false)"
     required: false
     default: "true"
+  report-path:
+    description: "Write JSON report to this path (e.g. scan-report.json) for artifacts or upload"
+    required: false
+    default: ""
 
 outputs:
   outdated-count:
@@ -61,7 +65,11 @@ runs:
         UPSHIFT_API_TOKEN: ${{ inputs.token }}
       run: |
         set +e
-        RESULT=$(upshift scan --json 2>&1)
+        REPORT_ARGS=""
+        if [ -n "${{ inputs.report-path }}" ]; then
+          REPORT_ARGS="--report ${{ inputs.report-path }}"
+        fi
+        RESULT=$(upshift scan --json $REPORT_ARGS 2>&1)
         EXIT_CODE=$?
         set -e
 
@@ -96,19 +104,34 @@ runs:
           if (parseInt(vulns) > 0) {
             body += `⚠️ **Vulnerabilities detected.** Run \`upshift explain <pkg>\` for details.\n`;
           } else if (parseInt(outdated) > 0) {
-            body += `📦 Some dependencies are outdated. Run \`upshift explain <pkg>\` for upgrade info.\n`;
+            body += `📦 Some dependencies are outdated. Run \`upshift explain <pkg>\` or \`upshift upgrade --all-minor\` for safe upgrades.\n`;
           } else {
             body += `✅ All dependencies are up to date with no known vulnerabilities.\n`;
           }
 
-          body += `\n---\n*Scanned by [UpShift](https://upshiftai.dev)*`;
+          body += `\n[View in Radar](https://upshiftai.dev/radar) · *Scanned by [UpShift](https://upshiftai.dev)*`;
 
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
+          const { data: comments } = await github.rest.issues.listComments({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            body: body
+            issue_number: context.issue.number,
           });
+          const bot = comments.find(c => c.body && c.body.includes('UpShift Dependency Scan'));
+          if (bot) {
+            await github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: bot.id,
+              body,
+            });
+          } else {
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body,
+            });
+          }
 
     - name: Fail on vulnerabilities
       if: ${{ inputs.fail-on-vulnerabilities == 'true' && steps.scan.outputs.vulnerability-count != '0' }}

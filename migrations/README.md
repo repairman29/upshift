@@ -10,6 +10,7 @@ Templates for major framework/library upgrades. Used by `upshift upgrade` and `u
 - **angular-16-17** — Angular 16 → 17 (@angular/core, @angular/cli; run `ng update` for control flow / standalone)
 - **typescript-4-5** — TypeScript 4 → 5 (typescript, tslib package bumps)
 - **jest-28-29** — Jest 28 → 29 (jest, jest-environment-jsdom; see upgrade guide for snapshot/API changes)
+- **vite-4-5** — Vite 4 → 5 (vite, @vitejs/plugin-react; Node 18+, ESM config; see official migration guide)
 
 ## Contributing a template
 
@@ -26,6 +27,7 @@ Templates for major framework/library upgrades. Used by `upshift upgrade` and `u
 ## Usage
 
 - **List templates:** `upshift migrate <package> --list` (e.g. `upshift migrate react --list`, `upshift migrate @angular/core --list`, `upshift migrate typescript --list`)
-- **Apply template:** `upshift migrate react` or `upshift migrate next --template next-13-to-14` or `upshift migrate @angular/core --template angular-16-to-17`
+- **Apply template:** `upshift migrate react` or `upshift migrate next --template next-13-14` or `upshift migrate @angular/core --template angular-16-17`
+- **Custom template:** `upshift migrate <package> --template-file path/to/my-migration.json` — load a JSON file with the same schema (package, steps, from, to, description, links). Path is relative to `--cwd` or absolute.
 - **Dry run:** `upshift migrate react --dry-run` to see what would be changed without modifying files
-- `upshift explain react --ai` may reference a matching template when upgrading across majors.
+- `upshift explain <pkg> --ai` works for Node, Python, Ruby, and Go (1 credit); may reference a matching template when upgrading across majors.

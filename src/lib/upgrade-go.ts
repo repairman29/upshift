@@ -112,5 +112,11 @@ export async function runGoUpgrade(options: GoUpgradeOptions): Promise<void> {
     process.stdout.write(chalk.gray("No test command configured. Skipping tests.\n"));
   }
 
+  const { emitAuditEvent } = await import("./audit-log.js");
+  await emitAuditEvent("upgrade", "package", options.packageName, {
+    ecosystem: "go",
+    outcome: "success",
+  });
+
   spinner.succeed("Upgrade complete");
 }

@@ -69,19 +69,20 @@ This document outlines planned features and improvements for Upshift.
 
 ### Integrations
 - [x] **GitHub App scaffold** — [docs/github-app.md](docs/github-app.md): how to build an App (permissions, webhook flow, example workflow with App token)
-- [ ] **GitHub App (beta)** — Published installable App that runs scan on PR and comments
+- [x] **GitHub App (beta)** — Workflow [.github/workflows/upshift-app-scan.yml](.github/workflows/upshift-app-scan.yml): scan on PR with App token (private repos), post/update comment; docs in [docs/github-app.md](docs/github-app.md). Published installable Upshift App (one-click) still coming.
 - [x] **Radar Pro (MVP)** — Persisted dashboard (Supabase `radar_reports`), report history (list + load), upload from CLI; dashboard UI (Radar Pro section). **Alerts:** `radar_alert_settings` table + webhook when report exceeds thresholds; Edge Function `radar-alert-settings` (GET/PUT); dashboard UI for webhook URL and max outdated/vulns.
 
 ### Language Support
 - [x] **Python explain (minimal)** — In Python projects, `upshift explain <pkg>` shows version delta (pip show / PyPI), upgrade hint (`pip install -U <pkg>`); no AI yet
 - [x] **Python (pip/poetry) full parity** — `upshift upgrade <pkg>` in Python projects: pip/poetry upgrade, backup, test, rollback
 - [x] **Ruby/Go upgrade parity** — `upshift upgrade <pkg>` in Ruby (Gemfile) and Go (go.mod) projects: backup (Gemfile/Gemfile.lock or go.mod/go.sum), bundle update / go get, run tests, rollback on failure
-- [ ] Python/Ruby/Go: full explain (changelog, risk) for Ruby/Go
+- [x] **Batch upgrade (Python/Ruby/Go)** — `upshift upgrade --all` / `--all-minor` / `--all-patch` in Python, Ruby, and Go projects: list outdated, filter by mode, run upgrades with tests and rollback tip
+- [x] **Ruby/Go full explain** — In Ruby/Go projects, `upshift explain <pkg> --risk` and `--changelog` show risk (major-delta based) and changelog (GitHub from RubyGems source_code_uri or Go module path); JSON output includes risk and changelog
 
 ### Team Features
 - [x] **Upgrade policies** — `.upshiftrc.json`: `upgradePolicy: { blockRisk: ["high"] }` blocks high (or medium) risk upgrades; single and batch upgrade respect policy; use `-y` to override
-- [ ] **Org-level credit pools** — Shared credit pool per org (Team plan); design: [docs/team-features.md](docs/team-features.md)
-- [ ] **Audit logs** — Who ran which upgrade/fix, when, from where; design: [docs/team-features.md](docs/team-features.md)
+- [ ] **Org-level credit pools** — Shared credit pool per org (Team plan); design: [docs/team-features.md](docs/team-features.md). CLI ready: `UPSHIFT_ORG` for org context when platform is live.
+- [ ] **Audit logs** — Who ran which upgrade/fix, when, from where; design: [docs/team-features.md](docs/team-features.md). **CLI ready:** set `UPSHIFT_AUDIT_URL` (and optional `UPSHIFT_ORG`, `UPSHIFT_API_TOKEN`); CLI POSTs events after upgrade, fix, scan_upload. Platform implements endpoint and storage.
 
 ### IDE & UX
 - [x] **VS Code: Explain for current file** — Right-click in .ts/.tsx/.js/.jsx → “Upshift: Explain dependency for current file”; detects package from imports, runs explain, shows result in Upshift output channel
@@ -99,12 +100,19 @@ This document outlines planned features and improvements for Upshift.
 
 v0.4.0 stacked deliverables across all four innovation areas. **Full checklist:** [RELEASE-v0.4.0.md](RELEASE-v0.4.0.md). **Shipped items:** see **Completed (v0.4.0)** above.
 
-| Section | Shipped in v0.4.0 | Still coming |
-|--------|-------------------|--------------|
-| **1. AI & intelligence** | Context-aware explain, `upshift plan`, `upshift suggest`, migration templates (first set), `upgrade --dry-run`, `upshift migrate` (apply template from CLI) | More templates (Vue, Angular) |
-| **2. Ecosystems & reach** | Python/Ruby/Go scan, `scan --report`, `scan --licenses` | Explain/upgrade parity for Python/Ruby/Go |
-| **3. Workflow & platform** | HITL approval + webhook, Radar Free + `upshift radar`, regression recording | Radar Pro (persisted), GitHub App, VS Code explain/fix in editor |
+| Section | Shipped in v0.4.0 | Still coming (platform / v0.5.0) |
+|--------|-------------------|----------------------------------|
+| **1. AI & intelligence** | Context-aware explain, `upshift plan`, `upshift suggest`, migration templates (React, Next, Vue, Angular, TS, Jest), `upgrade --dry-run`, `upshift migrate`, **custom template** (`--template-file`) | Custom migration generators (learn from code style) |
+| **2. Ecosystems & reach** | Python/Ruby/Go scan, explain (minimal + risk/changelog + **--ai**), upgrade (single + batch), `scan --report`, `scan --licenses` | — |
+| **3. Workflow & platform** | HITL approval + webhook, Radar Free + Pro (MVP), `upshift radar`, GitHub App (beta) workflow, VS Code explain/fix in editor, regression recording, CLI audit emission | Published one-click GitHub App, platform audit/credit endpoints |
 | **4. Research & experiments** | Changelog in explain, regression signal (opt-in), community templates, opt-in insights doc | — |
+
+### Next (platform / v0.5.0)
+
+- **Published GitHub App** — One-click installable Upshift App (scan on PR, comment); backend or marketplace listing.
+- **Platform audit endpoint** — Backend accepts `UPSHIFT_AUDIT_URL` payloads; store in `audit_logs`; API for Team/Enterprise.
+- **Org-level credit pools** — Platform: orgs, members, credit_balance; CLI already sends `UPSHIFT_ORG` when set.
+- **Enterprise** — SSO (SAML/OIDC), on-premise deployment option, SLA and dedicated support.
 
 ---
 
@@ -143,7 +151,7 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 **Areas we'd love help with:**
 - Migration templates for popular frameworks (React, Next.js, Vue, Angular)
-- Package manager improvements (yarn, pnpm edge cases)
+- Package manager improvements (yarn, pnpm edge cases) — *Node single-package upgrade and batch upgrade now support yarn and pnpm.*
 - GitHub Action enhancements
 - Radar: dashboard UX, report format, future Radar Pro backend
 - Documentation: [User guide](docs/user-guide.md), [CLI reference](docs/cli-reference.md), [Configuration](docs/configuration.md), [Development](docs/development.md); examples and tutorials welcome

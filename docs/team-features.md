@@ -57,7 +57,20 @@ Planned Pro/Team features that require platform or backend work. This doc is a d
 
 ---
 
+## CLI readiness (audit and org context)
+
+The CLI is ready for the platform to plug in:
+
+- **Audit events** — When `UPSHIFT_AUDIT_URL` is set, the CLI POSTs audit events (fire-and-forget) after:
+  - **upgrade** — `event_type: "upgrade"`, `resource_type: "package"`, metadata: `from_version`, `to_version`, `outcome`
+  - **fix** — `event_type: "fix"`, `resource_type: "package"`, metadata: `applied`, `fix_count`, `from_version`, `to_version`
+  - **scan_upload** — `event_type: "scan_upload"`, `resource_type: "report"`, metadata: `outdated_count`, `cwd`
+- **Org context** — When `UPSHIFT_ORG` is set, the CLI includes `org_id` in audit payloads (and future credit/billing calls). The platform can use this to attribute usage to the org.
+- **Auth** — Optional `UPSHIFT_API_TOKEN` is sent as `Authorization: Bearer <token>` when POSTing to `UPSHIFT_AUDIT_URL`.
+
+No events are sent if `UPSHIFT_AUDIT_URL` is not set. See [docs/configuration.md](configuration.md) for env vars.
+
 ## Implementation notes
 
 - Credit pools and audit logs live in the **platform** (e.g. upshiftai/platform with Stripe + Supabase), not in the CLI. The CLI sends usage and context (org_id, user token) to the platform.
-- This repo can document the intended behavior and API shape; actual tables and endpoints are implemented in the platform repo or backend services.
+- This repo documents the intended behavior and API shape; actual tables and endpoints are implemented in the platform repo or backend services.

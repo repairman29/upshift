@@ -41,6 +41,21 @@ function getMigrationsDir(): string {
   return fromCwd;
 }
 
+/** Load a migration template from a JSON file path (custom template). */
+export function loadTemplateFromFile(filePath: string, cwd?: string): MigrationTemplate | null {
+  const base = cwd ?? process.cwd();
+  const resolved = path.isAbsolute(filePath) ? filePath : path.resolve(base, filePath);
+  if (!existsSync(resolved)) return null;
+  try {
+    const raw = readFileSync(resolved, "utf8");
+    const t = JSON.parse(raw) as MigrationTemplate;
+    if (!t.package || !t.steps || !Array.isArray(t.steps)) return null;
+    return { ...t, name: t.name || path.basename(resolved, ".json") };
+  } catch {
+    return null;
+  }
+}
+
 /** List available migration templates (by package name or all). */
 export function listTemplates(packageName?: string): MigrationTemplate[] {
   const dir = getMigrationsDir();

@@ -65,10 +65,16 @@ Upshift can run in CI via the **GitHub Action** today. A **GitHub App** would ad
 
 5. **For private repos / org-wide:** Install the GitHub App on the org; use `tibdex/github-app-token` with the App’s private key and app ID to get an installation access token; pass that token to `actions/checkout` so the workflow can clone the repo.
 
+**Beta workflow:** Copy [.github/workflows/upshift-app-scan.yml](../.github/workflows/upshift-app-scan.yml) into your repo; set secrets `APP_ID` and `APP_PRIVATE_KEY`. The workflow runs scan on PR and posts/updates a comment.
+
+## Checklist
+
+Run `npm run github-app-checklist` (or `node scripts/github-app-checklist.mjs`) to print a step-by-step checklist: create App, permissions, install, add secrets, add workflow.
+
 ## Status
 
 - **Scaffold / docs:** This document.
-- **Beta:** A published “Upshift” GitHub App (installable, runs scan on PR and comments) is planned; not yet available.
+- **Beta:** A published “Upshift” GitHub App (installable, runs scan on PR and comments) — use workflow [.github/workflows/upshift-app-scan.yml](../.github/workflows/upshift-app-scan.yml) with your own App (or the upcoming installable Upshift App when published).
 - **Radar Pro:** Future App could optionally upload scan results to Radar Pro when the user has a subscription.
 
 If you want to build your own App using this scaffold, see [GitHub Apps](https://docs.github.com/en/apps) and the [Upshift Action](../.github/workflows/example-scan.yml) for the scan step.

@@ -207,6 +207,12 @@ export async function runPythonUpgrade(options: PythonUpgradeOptions): Promise<v
     process.stdout.write(chalk.gray("No test command configured. Skipping tests.\n"));
   }
 
+  const { emitAuditEvent } = await import("./audit-log.js");
+  await emitAuditEvent("upgrade", "package", options.packageName, {
+    ecosystem: "python",
+    outcome: "success",
+  });
+
   spinner.succeed("Upgrade complete");
 }
 

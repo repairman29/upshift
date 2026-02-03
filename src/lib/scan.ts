@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import ora from "ora";
-import { existsSync } from "fs";
+import { existsSync, readFileSync } from "fs";
 import path from "path";
 import { runCommand } from "./exec.js";
 import {
@@ -71,9 +71,11 @@ export async function runScan(options: ScanOptions): Promise<void> {
     if (ecosystem !== "node") {
       let outdated: OutdatedEntry[];
       let label: string;
+      let licenses: Record<string, string> | undefined;
       if (ecosystem === "python") {
         outdated = await getPythonOutdated(options.cwd);
         label = "python (pip/poetry)";
+        if (options.licenses) licenses = await getPythonLicenses(options.cwd);
       } else if (ecosystem === "ruby") {
         outdated = await getRubyOutdated(options.cwd);
         label = "ruby (bundler)";
@@ -87,6 +89,7 @@ export async function runScan(options: ScanOptions): Promise<void> {
             status: "ok",
             ecosystem: label,
             outdated,
+            licenses: licenses ?? undefined,
             cwd: options.cwd,
             timestamp: new Date().toISOString(),
           }
@@ -99,12 +102,12 @@ export async function runScan(options: ScanOptions): Promise<void> {
         await uploadReport(options.uploadUrl, options.uploadToken, reportPayload);
       }
       if (options.json) {
-        process.stdout.write(
-          JSON.stringify({ status: "ok", ecosystem: label, outdated }, null, 2) + "\n"
-        );
+        const out: Record<string, unknown> = { status: "ok", ecosystem: label, outdated };
+        if (licenses) out.licenses = licenses;
+        process.stdout.write(JSON.stringify(out, null, 2) + "\n");
         return;
       }
-      renderHumanOutput(label, outdated, null, undefined);
+      renderHumanOutput(label, outdated, null, licenses);
       return;
     }
 
@@ -137,6 +140,11 @@ export async function runScan(options: ScanOptions): Promise<void> {
     }
     if (options.uploadUrl && options.uploadToken && reportPayload) {
       await uploadReport(options.uploadUrl, options.uploadToken, reportPayload);
+      const { emitAuditEvent } = await import("./audit-log.js");
+      await emitAuditEvent("scan_upload", "report", undefined, {
+        outdated_count: reportPayload.outdated?.length ?? 0,
+        cwd: options.cwd,
+      });
     }
 
     spinner.succeed("Scan complete");
@@ -192,6 +200,55 @@ async function getLicenses(cwd: string): Promise<Record<string, string>> {
           licenses[name] = trimmed;
         }
       }
+    } catch {
+      licenses[name] = "unknown";
+    }
+  }
+  return licenses;
+}
+
+/** Python: fetch license per direct dep from PyPI. */
+async function getPythonLicenses(cwd: string): Promise<Record<string, string>> {
+  const reqPath = path.join(cwd, "requirements.txt");
+  const pyPath = path.join(cwd, "pyproject.toml");
+  const names: string[] = [];
+  if (existsSync(reqPath)) {
+    const raw = readFileSync(reqPath, "utf8");
+    for (const line of raw.split("\n")) {
+      const m = line.match(/^([a-zA-Z0-9_-]+)/);
+      if (m && !line.startsWith("#")) names.push(m[1]);
+    }
+  }
+  if (existsSync(pyPath)) {
+    const raw = readFileSync(pyPath, "utf8");
+    const depMatch = raw.match(/dependencies\s*=\s*\[([\s\S]*?)\]/);
+    if (depMatch) {
+      for (const part of depMatch[1].split(/["']([a-zA-Z0-9_-]+)["']/)) {
+        if (part && /^[a-zA-Z0-9_-]+$/.test(part)) names.push(part);
+      }
+    }
+  }
+  const seen = new Set<string>();
+  const licenses: Record<string, string> = {};
+  for (const name of names) {
+    if (seen.has(name)) continue;
+    seen.add(name);
+    try {
+      const res = await fetch(`https://pypi.org/pypi/${encodeURIComponent(name)}/json`, {
+        headers: { Accept: "application/json" },
+      });
+      if (!res.ok) {
+        licenses[name] = "unknown";
+        continue;
+      }
+      const data = (await res.json()) as { info?: { license?: string; classifiers?: string[] } };
+      const info = data.info;
+      let licenseStr = info?.license?.trim();
+      if (!licenseStr && info?.classifiers?.length) {
+        const licenseClassifier = info.classifiers.find((c) => c.startsWith("License ::"));
+        if (licenseClassifier) licenseStr = licenseClassifier.replace(/^License :: /, "");
+      }
+      licenses[name] = licenseStr || "unknown";
     } catch {
       licenses[name] = "unknown";
     }

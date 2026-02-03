@@ -19,7 +19,7 @@ Scan dependencies for updates and vulnerabilities.
 ```bash
 upshift scan [options]
   --json           Output as JSON
-  --licenses       Include license per direct dependency (npm)
+  --licenses       Include license per direct dependency (npm, Python)
   --report <path>  Write JSON report to file (for Radar)
   --cwd <path>     Project directory (default: .)
 ```
@@ -41,7 +41,7 @@ upshift explain <package> [options]
   --cwd <path> Project directory
 ```
 
-In **Python** projects: version delta + “pip install -U <pkg>”. No AI yet for non-Node.
+In **Python/Ruby/Go** projects: version delta, optional `--risk` / `--changelog`, and `--ai` (1 credit) for AI analysis in all ecosystems.
 
 ### fix
 
@@ -55,7 +55,7 @@ upshift fix <package> [options]
 
 ### upgrade
 
-Upgrade a dependency (single or batch). Runs tests; rolls back on failure.
+Upgrade a dependency (single or batch). Runs tests; rolls back on failure. **Node:** uses npm, yarn, or pnpm based on lockfile.
 
 ```bash
 upshift upgrade [package] [options]
@@ -119,9 +119,10 @@ Apply migration templates (e.g. React 18→19, Vue 2→3).
 
 ```bash
 upshift migrate <package> [options]
-  --template <name>  Template id (e.g. react-18-19)
-  --dry-run          Preview, no file changes
-  --list             List templates for package
+  --template <name>       Template id (e.g. react-18-19)
+  --template-file <path>  Path to custom migration JSON (same schema as migrations/*.json)
+  --dry-run               Preview, no file changes
+  --list                  List templates for package
   --cwd <path>
 ```
 

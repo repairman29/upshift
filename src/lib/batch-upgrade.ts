@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import ora from "ora";
-import { existsSync, mkdirSync, readFileSync, copyFileSync } from "fs";
+import { existsSync, mkdirSync, readFileSync, copyFileSync, readdirSync } from "fs";
 import path from "path";
 import semver from "semver";
 import {
@@ -13,6 +13,12 @@ import {
 } from "./package-manager.js";
 import { loadConfig } from "./config.js";
 import { assessRisk } from "./explain.js";
+import { detectEcosystem } from "./ecosystem.js";
+import { getPythonOutdated, getRubyOutdated, getGoOutdated } from "./ecosystem.js";
+import { runCommand } from "./exec.js";
+import { runPythonUpgrade } from "./upgrade-python.js";
+import { runRubyUpgrade } from "./upgrade-ruby.js";
+import { runGoUpgrade } from "./upgrade-go.js";
 
 export type BatchUpgradeOptions = {
   cwd: string;
@@ -32,6 +38,20 @@ export type UpgradeCandidate = {
 };
 
 export async function runBatchUpgrade(options: BatchUpgradeOptions): Promise<void> {
+  const ecosystem = detectEcosystem(options.cwd);
+  if (ecosystem === "python") {
+    await runBatchUpgradePython(options);
+    return;
+  }
+  if (ecosystem === "ruby") {
+    await runBatchUpgradeRuby(options);
+    return;
+  }
+  if (ecosystem === "go") {
+    await runBatchUpgradeGo(options);
+    return;
+  }
+
   const spinner = ora("Scanning for upgradeable dependencies...").start();
 
   try {
@@ -154,6 +174,259 @@ export async function runBatchUpgrade(options: BatchUpgradeOptions): Promise<voi
     spinner.fail("Batch upgrade failed");
     throw error;
   }
+}
+
+async function runBatchUpgradePython(options: BatchUpgradeOptions): Promise<void> {
+  const spinner = ora("Scanning for outdated Python packages...").start();
+  try {
+    const outdatedRaw = await getPythonOutdated(options.cwd);
+    const outdated: UpgradeCandidate[] = outdatedRaw.map((pkg) => ({
+      ...pkg,
+      upgradeType: getUpgradeType(pkg.current, pkg.latest),
+      target: pkg.latest,
+    }));
+    if (outdated.length === 0) {
+      spinner.succeed("All Python dependencies are up to date!");
+      return;
+    }
+    const candidates = filterCandidates(outdated, options.mode);
+    if (candidates.length === 0) {
+      spinner.succeed(`No ${options.mode} updates available`);
+      process.stdout.write(
+        chalk.gray(`Found ${outdated.length} outdated packages, but none match the ${options.mode} criteria.\n`)
+      );
+      return;
+    }
+    spinner.succeed(`Found ${candidates.length} ${options.mode} upgrades (Python)`);
+    process.stdout.write(chalk.bold("\nPackages to upgrade:\n\n"));
+    for (const pkg of candidates) {
+      const typeColor =
+        pkg.upgradeType === "major" ? chalk.red : pkg.upgradeType === "minor" ? chalk.yellow : chalk.green;
+      process.stdout.write(
+        `  ${chalk.cyan(pkg.name.padEnd(30))} ${pkg.current.padEnd(12)} → ${typeColor(pkg.target.padEnd(12))} ${chalk.gray(`(${pkg.upgradeType})`)}\n`
+      );
+    }
+    if (options.dryRun) {
+      process.stdout.write(chalk.gray("\nDry run - no changes applied.\n"));
+      return;
+    }
+    if (!options.yes) {
+      const confirmed = await confirmUpgrade(candidates.length);
+      if (!confirmed) {
+        process.stdout.write(chalk.gray("\nNo changes applied.\n"));
+        return;
+      }
+    }
+    let succeeded = 0;
+    let failed = 0;
+    for (const pkg of candidates) {
+      const pkgSpinner = ora(`Upgrading ${pkg.name}...`).start();
+      try {
+        await runPythonUpgrade({
+          cwd: options.cwd,
+          packageName: pkg.name,
+          toVersion: pkg.target,
+          dryRun: false,
+          yes: true,
+          skipTests: true,
+        });
+        pkgSpinner.succeed(`${pkg.name} ${pkg.current} → ${pkg.target}`);
+        succeeded++;
+      } catch {
+        pkgSpinner.fail(`${pkg.name} failed to upgrade`);
+        failed++;
+      }
+    }
+    if (!options.skipTests) {
+      const config = loadConfig(options.cwd);
+      const parts = parseTestCommand(config.testCommand) ?? ["pytest"];
+      const testSpinner = ora("Running tests...").start();
+      try {
+        await runCommand(parts[0], parts.slice(1), options.cwd);
+        testSpinner.succeed("Tests passed");
+      } catch {
+        testSpinner.fail("Tests failed - consider rolling back with `upshift rollback`");
+      }
+    }
+    process.stdout.write(chalk.bold("\nUpgrade Summary:\n"));
+    process.stdout.write(chalk.green(`  ✔ ${succeeded} packages upgraded\n`));
+    if (failed > 0) process.stdout.write(chalk.red(`  ✖ ${failed} packages failed\n`));
+    process.stdout.write(chalk.gray("\nTip: Run `upshift rollback` to undo all changes.\n"));
+  } catch (error) {
+    spinner.fail("Batch upgrade failed");
+    throw error;
+  }
+}
+
+async function runBatchUpgradeRuby(options: BatchUpgradeOptions): Promise<void> {
+  const spinner = ora("Scanning for outdated Ruby gems...").start();
+  try {
+    const outdatedRaw = await getRubyOutdated(options.cwd);
+    const outdated: UpgradeCandidate[] = outdatedRaw.map((pkg) => ({
+      ...pkg,
+      upgradeType: getUpgradeType(pkg.current, pkg.latest),
+      target: pkg.latest,
+    }));
+    if (outdated.length === 0) {
+      spinner.succeed("All Ruby dependencies are up to date!");
+      return;
+    }
+    const candidates = filterCandidates(outdated, options.mode);
+    if (candidates.length === 0) {
+      spinner.succeed(`No ${options.mode} updates available`);
+      process.stdout.write(
+        chalk.gray(`Found ${outdated.length} outdated packages, but none match the ${options.mode} criteria.\n`)
+      );
+      return;
+    }
+    spinner.succeed(`Found ${candidates.length} ${options.mode} upgrades (Ruby)`);
+    process.stdout.write(chalk.bold("\nPackages to upgrade:\n\n"));
+    for (const pkg of candidates) {
+      const typeColor =
+        pkg.upgradeType === "major" ? chalk.red : pkg.upgradeType === "minor" ? chalk.yellow : chalk.green;
+      process.stdout.write(
+        `  ${chalk.cyan(pkg.name.padEnd(30))} ${pkg.current.padEnd(12)} → ${typeColor(pkg.target.padEnd(12))} ${chalk.gray(`(${pkg.upgradeType})`)}\n`
+      );
+    }
+    if (options.dryRun) {
+      process.stdout.write(chalk.gray("\nDry run - no changes applied.\n"));
+      return;
+    }
+    if (!options.yes) {
+      const confirmed = await confirmUpgrade(candidates.length);
+      if (!confirmed) {
+        process.stdout.write(chalk.gray("\nNo changes applied.\n"));
+        return;
+      }
+    }
+    let succeeded = 0;
+    let failed = 0;
+    for (const pkg of candidates) {
+      const pkgSpinner = ora(`Upgrading ${pkg.name}...`).start();
+      try {
+        await runRubyUpgrade({
+          cwd: options.cwd,
+          packageName: pkg.name,
+          toVersion: pkg.target,
+          dryRun: false,
+          yes: true,
+          skipTests: true,
+        });
+        pkgSpinner.succeed(`${pkg.name} ${pkg.current} → ${pkg.target}`);
+        succeeded++;
+      } catch {
+        pkgSpinner.fail(`${pkg.name} failed to upgrade`);
+        failed++;
+      }
+    }
+    if (!options.skipTests) {
+      const config = loadConfig(options.cwd);
+      const parts = parseTestCommand(config.testCommand) ?? ["bundle", "exec", "rspec"];
+      const testSpinner = ora("Running tests...").start();
+      try {
+        await runCommand(parts[0], parts.slice(1), options.cwd);
+        testSpinner.succeed("Tests passed");
+      } catch {
+        testSpinner.fail("Tests failed - consider rolling back with `upshift rollback`");
+      }
+    }
+    process.stdout.write(chalk.bold("\nUpgrade Summary:\n"));
+    process.stdout.write(chalk.green(`  ✔ ${succeeded} packages upgraded\n`));
+    if (failed > 0) process.stdout.write(chalk.red(`  ✖ ${failed} packages failed\n`));
+    process.stdout.write(chalk.gray("\nTip: Run `upshift rollback` to undo all changes.\n"));
+  } catch (error) {
+    spinner.fail("Batch upgrade failed");
+    throw error;
+  }
+}
+
+async function runBatchUpgradeGo(options: BatchUpgradeOptions): Promise<void> {
+  const spinner = ora("Scanning for outdated Go modules...").start();
+  try {
+    const outdatedRaw = await getGoOutdated(options.cwd);
+    const outdated: UpgradeCandidate[] = outdatedRaw.map((pkg) => ({
+      ...pkg,
+      upgradeType: getUpgradeType(pkg.current, pkg.latest),
+      target: pkg.latest,
+    }));
+    if (outdated.length === 0) {
+      spinner.succeed("All Go dependencies are up to date!");
+      return;
+    }
+    const candidates = filterCandidates(outdated, options.mode);
+    if (candidates.length === 0) {
+      spinner.succeed(`No ${options.mode} updates available`);
+      process.stdout.write(
+        chalk.gray(`Found ${outdated.length} outdated packages, but none match the ${options.mode} criteria.\n`)
+      );
+      return;
+    }
+    spinner.succeed(`Found ${candidates.length} ${options.mode} upgrades (Go)`);
+    process.stdout.write(chalk.bold("\nPackages to upgrade:\n\n"));
+    for (const pkg of candidates) {
+      const typeColor =
+        pkg.upgradeType === "major" ? chalk.red : pkg.upgradeType === "minor" ? chalk.yellow : chalk.green;
+      process.stdout.write(
+        `  ${chalk.cyan(pkg.name.padEnd(30))} ${pkg.current.padEnd(12)} → ${typeColor(pkg.target.padEnd(12))} ${chalk.gray(`(${pkg.upgradeType})`)}\n`
+      );
+    }
+    if (options.dryRun) {
+      process.stdout.write(chalk.gray("\nDry run - no changes applied.\n"));
+      return;
+    }
+    if (!options.yes) {
+      const confirmed = await confirmUpgrade(candidates.length);
+      if (!confirmed) {
+        process.stdout.write(chalk.gray("\nNo changes applied.\n"));
+        return;
+      }
+    }
+    let succeeded = 0;
+    let failed = 0;
+    for (const pkg of candidates) {
+      const pkgSpinner = ora(`Upgrading ${pkg.name}...`).start();
+      try {
+        await runGoUpgrade({
+          cwd: options.cwd,
+          packageName: pkg.name,
+          toVersion: pkg.target,
+          dryRun: false,
+          yes: true,
+          skipTests: true,
+        });
+        pkgSpinner.succeed(`${pkg.name} ${pkg.current} → ${pkg.target}`);
+        succeeded++;
+      } catch {
+        pkgSpinner.fail(`${pkg.name} failed to upgrade`);
+        failed++;
+      }
+    }
+    if (!options.skipTests) {
+      const config = loadConfig(options.cwd);
+      const parts = parseTestCommand(config.testCommand) ?? ["go", "test", "./..."];
+      const testSpinner = ora("Running tests...").start();
+      try {
+        await runCommand(parts[0], parts.slice(1), options.cwd);
+        testSpinner.succeed("Tests passed");
+      } catch {
+        testSpinner.fail("Tests failed - consider rolling back with `upshift rollback`");
+      }
+    }
+    process.stdout.write(chalk.bold("\nUpgrade Summary:\n"));
+    process.stdout.write(chalk.green(`  ✔ ${succeeded} packages upgraded\n`));
+    if (failed > 0) process.stdout.write(chalk.red(`  ✖ ${failed} packages failed\n`));
+    process.stdout.write(chalk.gray("\nTip: Run `upshift rollback` to undo all changes.\n"));
+  } catch (error) {
+    spinner.fail("Batch upgrade failed");
+    throw error;
+  }
+}
+
+function parseTestCommand(tc: string | string[] | undefined): string[] | null {
+  if (!tc) return null;
+  if (Array.isArray(tc)) return tc.length > 0 ? tc : null;
+  const parts = (tc as string).trim().split(/\s+/).filter(Boolean);
+  return parts.length > 0 ? parts : null;
 }
 
 function getUpgradeType(current: string, target: string): "major" | "minor" | "patch" {

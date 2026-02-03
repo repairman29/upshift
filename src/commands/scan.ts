@@ -6,7 +6,7 @@ export function scanCommand(): Command {
   command
     .description("Scan dependencies for updates and vulnerabilities")
     .option("--json", "Output results as JSON", false)
-    .option("--licenses", "Include license for each direct dependency (npm)", false)
+    .option("--licenses", "Include license for each direct dependency (npm, Python)", false)
     .option("--report <path>", "Write JSON report to file (for Radar/dashboard)")
     .option("--upload", "Upload report to Radar Pro (requires --report, UPSHIFT_RADAR_TOKEN, UPSHIFT_RADAR_UPLOAD_URL)", false)
     .option("--cwd <path>", "Project directory to scan", process.cwd())

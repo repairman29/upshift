@@ -1,0 +1,89 @@
+# Upshift scan on PR using GitHub App token (for private repos / org-wide)
+# Requires: Create a GitHub App, install on org/repo, add secrets APP_ID and APP_PRIVATE_KEY
+# See docs/github-app.md for setup. Use this workflow with the Upshift GitHub App (beta) or your own App.
+
+name: Upshift Scan (GitHub App)
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+  workflow_dispatch:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get GitHub App token
+        id: app-token
+        uses: tibdex/github-app-token@v2
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Upshift
+        run: npm install -g upshift-cli
+
+      - name: Run scan
+        id: scan
+        run: |
+          set +e
+          RESULT=$(upshift scan --json 2>&1)
+          EXIT=$?
+          set -e
+          echo "result<<EOF" >> $GITHUB_OUTPUT
+          echo "$RESULT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          OUTDATED=$(echo "$RESULT" | jq -r '.outdated | length // 0' 2>/dev/null || echo "0")
+          VULNS=$(echo "$RESULT" | jq -r '.vulnerabilities.items | length // 0' 2>/dev/null || echo "0")
+          echo "outdated=$OUTDATED" >> $GITHUB_OUTPUT
+          echo "vulns=$VULNS" >> $GITHUB_OUTPUT
+          echo "Outdated: $OUTDATED, Vulnerabilities: $VULNS"
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const outdated = '${{ steps.scan.outputs.outdated }}';
+            const vulns = '${{ steps.scan.outputs.vulns }}';
+            let body = `## Upshift Dependency Scan\n\n`;
+            body += `| Metric | Count |\n|--------|-------|\n`;
+            body += `| Outdated | ${outdated} |\n| Vulnerabilities | ${vulns} |\n\n`;
+            if (parseInt(vulns) > 0) {
+              body += `⚠️ **Vulnerabilities detected.** Run \`upshift explain <pkg>\` for details.\n`;
+            } else if (parseInt(outdated) > 0) {
+              body += `📦 Some dependencies are outdated. Run \`upshift upgrade --all-minor\` for safe upgrades.\n`;
+            } else {
+              body += `✅ All dependencies are up to date with no known vulnerabilities.\n`;
+            }
+            body += `\n---\n*Scanned by [Upshift](https://upshiftai.dev)*`;
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const bot = comments.find(c => c.body && c.body.includes('Upshift Dependency Scan'));
+            if (bot) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: bot.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }

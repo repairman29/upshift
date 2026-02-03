@@ -14,6 +14,8 @@ export function statusCommand(): Command {
         options.endpoint ?? process.env.UPSHIFT_CREDITS_ENDPOINT ?? "";
       const token = options.token ?? process.env.UPSHIFT_API_TOKEN ?? "";
       const json = Boolean(options.json);
+      const org = process.env.UPSHIFT_ORG?.trim() || undefined;
+      const auditUrl = process.env.UPSHIFT_AUDIT_URL?.trim() || undefined;
 
       if (endpoint && token) {
         const data = await fetchBillingStatus(endpoint, token);
@@ -27,6 +29,8 @@ export function statusCommand(): Command {
               balance: data.balance,
               bonusMultiplier: data.bonusMultiplier ?? 1,
               source: "remote",
+              org,
+              auditEmission: Boolean(auditUrl),
             }) + "\n"
           );
           return;
@@ -38,17 +42,26 @@ export function statusCommand(): Command {
         process.stdout.write(
           `tier: ${data.tier}\nbalance: ${data.balance}\nbonus: ${data.bonusMultiplier ?? 1}${bonusPct}\n`
         );
+        if (org) process.stdout.write(`org: ${org}\n`);
+        if (auditUrl) process.stdout.write("audit: emission enabled\n");
         return;
       }
 
       const balance = getCreditBalance();
       if (json) {
         process.stdout.write(
-          JSON.stringify({ balance, source: "local" }) + "\n"
+          JSON.stringify({
+            balance,
+            source: "local",
+            org,
+            auditEmission: Boolean(auditUrl),
+          }) + "\n"
         );
         return;
       }
       process.stdout.write(`Credits: ${balance} (local)\n`);
+      if (org) process.stdout.write(`org: ${org}\n`);
+      if (auditUrl) process.stdout.write("audit: emission enabled\n");
       process.stdout.write(
         "Set UPSHIFT_CREDITS_ENDPOINT and UPSHIFT_API_TOKEN for subscription status.\n"
       );

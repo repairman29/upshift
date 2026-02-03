@@ -2,6 +2,16 @@
 
 For product users: getting started, core workflow, and features. See [Docs index](README.md) for all documentation (product + devs).
 
+## Quick start (5 minutes)
+
+1. **Install:** `npm install -g upshift-cli`
+2. **Scan:** In your project, run `upshift scan` to see outdated deps and vulnerabilities.
+3. **Explain:** Pick a package and run `upshift explain <pkg> --risk` (or `--ai` for AI analysis, 1 credit).
+4. **Upgrade:** Run `upshift upgrade <pkg>` — Upshift runs your tests and rolls back if they fail.
+5. **Batch (optional):** Run `upshift upgrade --all-minor` for safe minor/patch upgrades across all deps.
+
+Works with **Node** (npm, yarn, pnpm), **Python** (pip/poetry), **Ruby** (bundler), and **Go** (go.mod). Use `upshift radar` to open the central dashboard and paste scan reports.
+
 ## Getting started
 
 1. **Install:** `npm install -g upshift-cli`

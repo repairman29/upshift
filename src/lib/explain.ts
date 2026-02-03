@@ -34,8 +34,12 @@ export async function runExplain(options: ExplainOptions): Promise<void> {
     await runExplainPython(options);
     return;
   }
-  if (ecosystem === "ruby" || ecosystem === "go") {
-    process.stdout.write(chalk.yellow(`Explain for ${ecosystem} is not yet implemented. Use \`upshift scan\` for version overview.\n`));
+  if (ecosystem === "ruby") {
+    await runExplainRuby(options);
+    return;
+  }
+  if (ecosystem === "go") {
+    await runExplainGo(options);
     return;
   }
 
@@ -219,10 +223,14 @@ function escapeRe(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-/** Python: version delta and upgrade hint (no AI). */
+/** Python: version delta, optional changelog/risk/AI, upgrade hint. */
 async function runExplainPython(options: ExplainOptions): Promise<void> {
   const spinner = ora(`Explaining ${options.packageName} (Python)...`).start();
   try {
+    if (options.ai) {
+      await consumeCredit("explain");
+    }
+
     let currentVersion = options.fromVersion ?? null;
     if (!currentVersion) {
       try {
@@ -230,7 +238,6 @@ async function runExplainPython(options: ExplainOptions): Promise<void> {
         const match = result.stdout.match(/^Version:\s*(.+)$/m);
         currentVersion = match ? match[1].trim() : null;
       } catch {
-        // try requirements.txt / pyproject.toml
         const reqPath = path.join(options.cwd, "requirements.txt");
         const pyPath = path.join(options.cwd, "pyproject.toml");
         if (existsSync(reqPath)) {
@@ -249,25 +256,37 @@ async function runExplainPython(options: ExplainOptions): Promise<void> {
     }
 
     let targetVersion = options.toVersion ?? null;
-    if (!targetVersion) {
-      try {
-        const res = await fetch(`https://pypi.org/pypi/${encodeURIComponent(options.packageName)}/json`, {
-          headers: { Accept: "application/json" },
-        });
-        if (res.ok) {
-          const data = (await res.json()) as { info?: { version?: string } };
-          targetVersion = data.info?.version ?? null;
-        }
-      } catch {
-        // ignore
+    let pypiInfo: { project_urls?: Record<string, string> } = {};
+    try {
+      const res = await fetch(`https://pypi.org/pypi/${encodeURIComponent(options.packageName)}/json`, {
+        headers: { Accept: "application/json" },
+      });
+      if (res.ok) {
+        const data = (await res.json()) as { info?: { version?: string; project_urls?: Record<string, string> } };
+        pypiInfo = data.info ?? {};
+        if (!targetVersion) targetVersion = data.info?.version ?? null;
       }
+    } catch {
+      // ignore
     }
-
-    spinner.succeed("Explanation ready");
 
     const majorDelta = targetVersion && currentVersion
       ? getMajorDelta(currentVersion, targetVersion)
       : 0;
+
+    let changelog: string | null = null;
+    if ((options.changelog || options.ai) && pypiInfo.project_urls) {
+      const repoUrl = pypiInfo.project_urls["Source"] ?? pypiInfo.project_urls["Home"] ?? pypiInfo.project_urls["Homepage"];
+      if (repoUrl?.includes("github.com")) changelog = await fetchChangelog(options.packageName, repoUrl);
+    }
+
+    let aiAnalysis: string | null = null;
+    if (options.ai) {
+      spinner.text = "Getting AI analysis...";
+      aiAnalysis = await getAIAnalysisEcosystem("python", options.packageName, currentVersion ?? undefined, targetVersion ?? "unknown", changelog);
+    }
+
+    spinner.succeed(options.ai ? "AI analysis ready" : "Explanation ready");
 
     if (options.json) {
       process.stdout.write(
@@ -278,6 +297,8 @@ async function runExplainPython(options: ExplainOptions): Promise<void> {
           targetVersion,
           majorDelta,
           breakingChanges: majorDelta > 0,
+          changelog: options.changelog ? changelog : undefined,
+          aiAnalysis: aiAnalysis ?? undefined,
           upgradeHint: "pip install -U " + options.packageName,
         }) + "\n"
       );
@@ -290,11 +311,242 @@ async function runExplainPython(options: ExplainOptions): Promise<void> {
     if (majorDelta > 0) {
       process.stdout.write(chalk.yellow(`Potential breaking changes: major version increase (${majorDelta}).\n`));
     }
+    if (options.changelog && changelog) {
+      process.stdout.write(chalk.bold("\nChangelog (recent releases):\n"));
+      process.stdout.write(changelog + "\n");
+    }
+    if (options.ai && aiAnalysis) {
+      process.stdout.write(chalk.bold.cyan("\n🤖 AI Analysis:\n"));
+      process.stdout.write(aiAnalysis + "\n");
+    }
     process.stdout.write(chalk.gray("\nUpgrade: pip install -U " + options.packageName + "\n"));
   } catch (err) {
     spinner.fail("Explain failed");
     throw err;
   }
+}
+
+/** Ruby: version delta, optional changelog/risk/AI, upgrade hint. */
+async function runExplainRuby(options: ExplainOptions): Promise<void> {
+  const spinner = ora(`Explaining ${options.packageName} (Ruby)...`).start();
+  try {
+    if (options.ai) {
+      await consumeCredit("explain");
+    }
+    let currentVersion = options.fromVersion ?? null;
+    if (!currentVersion) {
+      try {
+        const result = await runCommand("bundle", ["show", options.packageName], options.cwd, [0, 1]);
+        const match = result.stdout.match(/^\s*\*?\s*[\w-]+\s+\(([^)]+)\)/m) || result.stdout.match(/[\d]+\.[\d.]+/);
+        currentVersion = match ? (match[1] ?? match[0]).trim() : null;
+      } catch {
+        const gemfile = path.join(options.cwd, "Gemfile");
+        if (existsSync(gemfile)) {
+          const raw = readFileSync(gemfile, "utf8");
+          const re = new RegExp(`gem\\s+["']${options.packageName}["']\\s*,\\s*["']([^"']+)["']`, "m");
+          const m = raw.match(re);
+          currentVersion = m ? m[1] : null;
+        }
+      }
+    }
+
+    let targetVersion = options.toVersion ?? null;
+    let gemInfo: { version?: string; homepage?: string; source_code_uri?: string; project_uri?: string } = {};
+    try {
+      const res = await fetch(`https://rubygems.org/api/v1/gems/${encodeURIComponent(options.packageName)}.json`, {
+        headers: { Accept: "application/json" },
+      });
+      if (res.ok) {
+        const data = (await res.json()) as { version?: string; homepage?: string; source_code_uri?: string; project_uri?: string };
+        gemInfo = data;
+        targetVersion = targetVersion ?? data.version ?? null;
+      }
+    } catch {
+      // ignore
+    }
+
+    const majorDelta = targetVersion && currentVersion ? getMajorDelta(currentVersion, targetVersion) : 0;
+
+    let risk: RiskAssessment | undefined;
+    if (options.risk || options.json) {
+      risk = assessRiskRubyGo(currentVersion, targetVersion, majorDelta);
+    }
+    let changelog: string | null = null;
+    if ((options.changelog || options.ai) && (gemInfo.source_code_uri || gemInfo.homepage)) {
+      const repo = gemInfo.source_code_uri ?? gemInfo.homepage ?? undefined;
+      if (repo?.includes("github.com")) changelog = await fetchChangelog(options.packageName, repo);
+    }
+
+    let aiAnalysis: string | null = null;
+    if (options.ai) {
+      spinner.text = "Getting AI analysis...";
+      aiAnalysis = await getAIAnalysisEcosystem("ruby", options.packageName, currentVersion ?? undefined, targetVersion ?? "unknown", changelog);
+    }
+
+    spinner.succeed(options.ai ? "AI analysis ready" : "Explanation ready");
+
+    if (options.json) {
+      process.stdout.write(
+        JSON.stringify({
+          package: options.packageName,
+          ecosystem: "ruby",
+          currentVersion,
+          targetVersion,
+          majorDelta,
+          breakingChanges: majorDelta > 0,
+          risk: risk ?? null,
+          changelog,
+          aiAnalysis: aiAnalysis ?? undefined,
+          upgradeHint: "bundle update " + options.packageName,
+        }) + "\n"
+      );
+      return;
+    }
+
+    if (options.risk && risk) {
+      const color = risk.level === "high" ? chalk.red : risk.level === "medium" ? chalk.yellow : chalk.green;
+      process.stdout.write(
+        `${options.packageName} ${currentVersion ?? "?"} → ${targetVersion ?? "?"}: ${color(risk.level.toUpperCase())}\n`
+      );
+      risk.reasons.forEach((r) => process.stdout.write(`  - ${r}\n`));
+      return;
+    }
+
+    process.stdout.write(chalk.bold(`${options.packageName} (Ruby)\n`));
+    process.stdout.write(`Current: ${currentVersion ?? "unknown"}\n`);
+    process.stdout.write(`Target:  ${targetVersion ?? "unknown"}\n`);
+    if (majorDelta > 0) {
+      process.stdout.write(chalk.yellow(`Potential breaking changes: major version increase (${majorDelta}).\n`));
+    }
+    if (options.changelog && changelog) {
+      process.stdout.write(chalk.bold("\nChangelog (recent releases):\n"));
+      process.stdout.write(changelog + "\n");
+    } else if (options.changelog && !changelog) {
+      process.stdout.write(chalk.gray("\nNo changelog found.\n"));
+    }
+    if (options.ai && aiAnalysis) {
+      process.stdout.write(chalk.bold.cyan("\n🤖 AI Analysis:\n"));
+      process.stdout.write(aiAnalysis + "\n");
+    }
+    process.stdout.write(chalk.gray("\nUpgrade: bundle update " + options.packageName + "\n"));
+  } catch (err) {
+    spinner.fail("Explain failed");
+    throw err;
+  }
+}
+
+/** Go: version delta, optional changelog/risk/AI, upgrade hint. */
+async function runExplainGo(options: ExplainOptions): Promise<void> {
+  const spinner = ora(`Explaining ${options.packageName} (Go)...`).start();
+  try {
+    if (options.ai) {
+      await consumeCredit("explain");
+    }
+    let currentVersion = options.fromVersion ?? null;
+    let targetVersion = options.toVersion ?? null;
+    if (!currentVersion || !targetVersion) {
+      try {
+        const result = await runCommand("go", ["list", "-m", "-u", "-json", options.packageName], options.cwd, [0, 1]);
+        const data = JSON.parse(result.stdout) as { Version?: string; Update?: { Version: string } };
+        currentVersion = currentVersion ?? data.Version ?? null;
+        targetVersion = targetVersion ?? data.Update?.Version ?? data.Version ?? null;
+      } catch {
+        try {
+          const result = await runCommand("go", ["list", "-m", "-json", options.packageName], options.cwd, [0, 1]);
+          const data = JSON.parse(result.stdout) as { Version?: string };
+          currentVersion = currentVersion ?? data.Version ?? null;
+        } catch {
+          // ignore
+        }
+      }
+    }
+
+    const majorDelta = targetVersion && currentVersion ? getMajorDelta(currentVersion, targetVersion) : 0;
+
+    let risk: RiskAssessment | undefined;
+    if (options.risk || options.json) {
+      risk = assessRiskRubyGo(currentVersion ?? undefined, targetVersion ?? undefined, majorDelta);
+    }
+    let changelog: string | null = null;
+    if ((options.changelog || options.ai) && options.packageName.startsWith("github.com/")) {
+      changelog = await fetchChangelog(options.packageName, "https://" + options.packageName);
+    }
+
+    let aiAnalysis: string | null = null;
+    if (options.ai) {
+      spinner.text = "Getting AI analysis...";
+      aiAnalysis = await getAIAnalysisEcosystem("go", options.packageName, currentVersion ?? undefined, targetVersion ?? "unknown", changelog);
+    }
+
+    spinner.succeed(options.ai ? "AI analysis ready" : "Explanation ready");
+
+    if (options.json) {
+      process.stdout.write(
+        JSON.stringify({
+          package: options.packageName,
+          ecosystem: "go",
+          currentVersion,
+          targetVersion,
+          majorDelta,
+          breakingChanges: majorDelta > 0,
+          risk: risk ?? null,
+          changelog,
+          aiAnalysis: aiAnalysis ?? undefined,
+          upgradeHint: "go get " + options.packageName + "@latest",
+        }) + "\n"
+      );
+      return;
+    }
+
+    if (options.risk && risk) {
+      const color = risk.level === "high" ? chalk.red : risk.level === "medium" ? chalk.yellow : chalk.green;
+      process.stdout.write(
+        `${options.packageName} ${currentVersion ?? "?"} → ${targetVersion ?? "?"}: ${color(risk.level.toUpperCase())}\n`
+      );
+      risk.reasons.forEach((r) => process.stdout.write(`  - ${r}\n`));
+      return;
+    }
+
+    process.stdout.write(chalk.bold(`${options.packageName} (Go)\n`));
+    process.stdout.write(`Current: ${currentVersion ?? "unknown"}\n`);
+    process.stdout.write(`Target:  ${targetVersion ?? "unknown"}\n`);
+    if (majorDelta > 0) {
+      process.stdout.write(chalk.yellow(`Potential breaking changes: major version increase (${majorDelta}).\n`));
+    }
+    if (options.changelog && changelog) {
+      process.stdout.write(chalk.bold("\nChangelog (recent releases):\n"));
+      process.stdout.write(changelog + "\n");
+    } else if (options.changelog && !changelog) {
+      process.stdout.write(chalk.gray("\nNo changelog found.\n"));
+    }
+    if (options.ai && aiAnalysis) {
+      process.stdout.write(chalk.bold.cyan("\n🤖 AI Analysis:\n"));
+      process.stdout.write(aiAnalysis + "\n");
+    }
+    process.stdout.write(chalk.gray("\nUpgrade: go get " + options.packageName + "@latest\n"));
+  } catch (err) {
+    spinner.fail("Explain failed");
+    throw err;
+  }
+}
+
+/** Simple risk for Ruby/Go (major delta only; no ecosystem vuln data). */
+function assessRiskRubyGo(
+  fromVersion: string | undefined,
+  toVersion: string | undefined,
+  majorDelta: number
+): RiskAssessment {
+  const reasons: string[] = [];
+  let level: RiskLevel = "low";
+  if (majorDelta >= 2) {
+    level = "high";
+    reasons.push(`Major version jump of ${majorDelta}`);
+  } else if (majorDelta === 1) {
+    level = "medium";
+    reasons.push("Major version bump (potential breaking changes)");
+  }
+  if (reasons.length === 0) reasons.push("Minor or patch update; no ecosystem risk data");
+  return { level, majorDelta, hasVulnerabilities: false, weeklyDownloads: 0, reasons };
 }
 
 function getCurrentVersion(cwd: string, packageName: string): string | undefined {
@@ -490,18 +742,43 @@ async function getAIAnalysis(
   toVersion: string,
   changelog: string | null
 ): Promise<string> {
+  return getAIAnalysisEcosystem("node", packageName, fromVersion, toVersion, changelog);
+}
+
+/** AI analysis for any ecosystem (Python/Ruby/Go/Node). */
+async function getAIAnalysisEcosystem(
+  ecosystem: "node" | "python" | "ruby" | "go",
+  packageName: string,
+  fromVersion: string | undefined,
+  toVersion: string,
+  changelog: string | null
+): Promise<string> {
   const apiKey = process.env.OPENAI_API_KEY;
-  
   if (!apiKey) {
     return chalk.yellow("AI analysis unavailable (OPENAI_API_KEY not configured).\n") +
       "Set OPENAI_API_KEY environment variable to enable AI-powered explanations.";
   }
 
+  const labels: Record<string, string> = {
+    node: "npm package",
+    python: "Python package",
+    ruby: "Ruby gem",
+    go: "Go module",
+  };
+  const upgradeCmds: Record<string, string> = {
+    node: `npm install ${packageName}@${toVersion}`,
+    python: `pip install -U ${packageName}`,
+    ruby: `bundle update ${packageName}`,
+    go: `go get ${packageName}@latest`,
+  };
+  const label = labels[ecosystem];
+  const upgradeCmd = upgradeCmds[ecosystem];
+
   try {
     const { default: OpenAI } = await import("openai");
     const openai = new OpenAI({ apiKey });
 
-    const systemPrompt = `You are a senior software engineer helping developers upgrade npm dependencies safely.
+    const systemPrompt = `You are a senior software engineer helping developers upgrade ${label} dependencies safely.
 Your task is to analyze a package upgrade and provide actionable guidance.
 Be concise but thorough. Focus on:
 1. Breaking changes that require code modifications
@@ -512,7 +789,7 @@ Be concise but thorough. Focus on:
 
 Format your response with clear sections using markdown. Keep it under 500 words.`;
 
-    const userPrompt = `Analyze upgrading **${packageName}** from ${fromVersion ?? "unknown"} to ${toVersion}.
+    const userPrompt = `Analyze upgrading **${packageName}** (${label}) from ${fromVersion ?? "unknown"} to ${toVersion}.
 
 ${changelog ? `Here's the recent changelog:\n\n${changelog.slice(0, 3000)}` : "No changelog available - provide general guidance for this package."}
 
@@ -520,7 +797,9 @@ Provide:
 1. Summary of what changed
 2. Breaking changes (if any)
 3. Migration steps
-4. Code patterns to search for in my codebase`;
+4. Code patterns to search for in my codebase
+
+Upgrade command: ${upgradeCmd}`;
 
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
@@ -536,7 +815,6 @@ Provide:
     if (!content) {
       return chalk.yellow("AI returned empty response. Try again.");
     }
-
     return content;
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";

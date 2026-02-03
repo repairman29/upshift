@@ -10,6 +10,15 @@ import { detectEcosystem } from "./ecosystem.js";
 import { runPythonUpgrade } from "./upgrade-python.js";
 import { runRubyUpgrade } from "./upgrade-ruby.js";
 import { runGoUpgrade } from "./upgrade-go.js";
+import { emitAuditEvent } from "./audit-log.js";
+import {
+  detectPackageManager,
+  installPackage,
+  getLockfileName,
+  runTests as runPmTests,
+  reinstallDependencies,
+  getAddCommand,
+} from "./package-manager.js";
 
 export type UpgradeOptions = {
   cwd: string;
@@ -59,9 +68,6 @@ export async function runUpgrade(options: UpgradeOptions): Promise<void> {
   const spinner = ora(`Upgrading ${options.packageName}...`).start();
   try {
     const packageManager = detectPackageManager(options.cwd);
-    if (packageManager !== "npm") {
-      throw new Error("Only npm is supported for upgrade in this MVP (use Python project for pip/poetry).");
-    }
 
     const target = options.toVersion ?? "latest";
     const config = loadConfig(options.cwd);
@@ -114,25 +120,27 @@ export async function runUpgrade(options: UpgradeOptions): Promise<void> {
       }
     }
 
-    const backupDir = createBackup(options.cwd);
+    const backupDir = createBackup(options.cwd, packageManager);
 
     if (options.dryRun) {
       spinner.succeed("Dry run complete");
+      const addCmd = getAddCommand(packageManager, options.packageName, target === "latest" ? undefined : target);
       process.stdout.write(
         [
           `Package manager: ${packageManager}`,
-          `Command: npm install ${options.packageName}@${target}`,
+          `Command: ${addCmd}`,
           `Backup dir: ${backupDir}`,
-          "Tests: npm test (if configured)",
+          "Tests: " + (getTestScript(options.cwd) ? `${packageManager} test` : "not configured"),
         ].join("\n") + "\n"
       );
       return;
     }
 
-    await runCommand(
-      "npm",
-      ["install", `${options.packageName}@${target}`],
-      options.cwd
+    await installPackage(
+      options.cwd,
+      options.packageName,
+      target === "latest" ? undefined : target,
+      packageManager
     );
 
     process.stdout.write(
@@ -146,7 +154,7 @@ export async function runUpgrade(options: UpgradeOptions): Promise<void> {
     if (testScript) {
       process.stdout.write(chalk.gray("Running tests...\n"));
       try {
-        await runCommand("npm", ["test"], options.cwd);
+        await runPmTests(options.cwd, packageManager);
         testsPassed = true;
         process.stdout.write(chalk.green("Tests passed.\n"));
       } catch {
@@ -167,38 +175,28 @@ export async function runUpgrade(options: UpgradeOptions): Promise<void> {
       });
     }
 
+    await emitAuditEvent("upgrade", "package", options.packageName, {
+      from_version: currentVersion,
+      to_version: targetVersion,
+      outcome: testsPassed ? "success" : "tests_failed",
+    });
+
     spinner.succeed("Upgrade complete");
   } catch (error) {
     spinner.fail("Upgrade failed");
-    tryRollback(options.cwd);
+    tryRollback(options.cwd, packageManager);
     throw error;
   }
 }
 
-function detectPackageManager(cwd: string): "npm" | "yarn" | "pnpm" {
-  const pnpmLock = path.join(cwd, "pnpm-lock.yaml");
-  const yarnLock = path.join(cwd, "yarn.lock");
-  const npmLock = path.join(cwd, "package-lock.json");
-  const pkgJson = path.join(cwd, "package.json");
-
-  if (existsSync(pnpmLock)) return "pnpm";
-  if (existsSync(yarnLock)) return "yarn";
-  if (existsSync(npmLock)) return "npm";
-  if (existsSync(pkgJson)) return "npm";
-
-  throw new Error(
-    "No package.json or lockfile found. Run in a project directory."
-  );
-}
-
-function createBackup(cwd: string): string {
+function createBackup(cwd: string, pm: import("./package-manager.js").PackageManager): string {
   const backupRoot = path.join(cwd, ".upshift", "backups");
   mkdirSync(backupRoot, { recursive: true });
   const stamp = new Date().toISOString().replace(/[:.]/g, "-");
   const backupDir = path.join(backupRoot, stamp);
   mkdirSync(backupDir, { recursive: true });
 
-  const files = ["package.json", "package-lock.json"];
+  const files = ["package.json", getLockfileName(pm)];
   for (const file of files) {
     const src = path.join(cwd, file);
     if (existsSync(src)) {
@@ -217,7 +215,7 @@ function getTestScript(cwd: string): string | null {
   return pkg.scripts?.test ?? null;
 }
 
-function tryRollback(cwd: string): void {
+function tryRollback(cwd: string, pm: import("./package-manager.js").PackageManager): void {
   const backupRoot = path.join(cwd, ".upshift", "backups");
   if (!existsSync(backupRoot)) return;
 
@@ -227,7 +225,7 @@ function tryRollback(cwd: string): void {
   if (!latest) return;
 
   const backupDir = path.join(backupRoot, latest);
-  const files = ["package.json", "package-lock.json"];
+  const files = ["package.json", getLockfileName(pm)];
   for (const file of files) {
     const src = path.join(backupDir, file);
     if (existsSync(src)) {
@@ -235,9 +233,9 @@ function tryRollback(cwd: string): void {
     }
   }
 
-  runCommand("npm", ["install"], cwd).catch(() => {
+  reinstallDependencies(cwd, pm).catch(() => {
     process.stdout.write(
-      chalk.red("Rollback npm install failed. Please reinstall manually.\n")
+      chalk.red(`Rollback ${pm} install failed. Please reinstall manually.\n`)
     );
   });
 }

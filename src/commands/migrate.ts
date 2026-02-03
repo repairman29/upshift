@@ -3,6 +3,7 @@ import chalk from "chalk";
 import {
   listTemplates,
   findTemplate,
+  loadTemplateFromFile,
   applyTemplate,
   type MigrationTemplate,
 } from "../lib/migrate.js";
@@ -12,17 +13,18 @@ export function migrateCommand(): Command {
     .description("Apply a migration template for a package (e.g. React 18→19)")
     .argument("<package>", "Package name (e.g. react, next)")
     .option("--template <name>", "Template id (e.g. react-18-19); default: auto-detect from package")
+    .option("--template-file <path>", "Path to a custom migration JSON file (overrides --template)")
     .option("--dry-run", "Show what would be changed without modifying files", false)
     .option("--list", "List available templates for the package")
     .option("--cwd <path>", "Project directory", process.cwd())
     .action(async (pkg, options) => {
       const cwd = options.cwd ?? process.cwd();
 
-      if (options.list) {
+      if (options.list && !options.templateFile) {
         const templates = listTemplates(pkg);
         if (templates.length === 0) {
           process.stdout.write(chalk.yellow(`No migration templates found for "${pkg}".\n`));
-          process.stdout.write(chalk.gray("Run `upshift migrate <package>` without --list to see all templates.\n"));
+          process.stdout.write(chalk.gray("Run `upshift migrate <package>` without --list to see all templates, or use --template-file <path> for a custom template.\n"));
           return;
         }
         process.stdout.write(chalk.bold(`Templates for ${pkg}:\n\n`));
@@ -38,7 +40,14 @@ export function migrateCommand(): Command {
       }
 
       let template: MigrationTemplate | null;
-      if (options.template) {
+      if (options.templateFile) {
+        template = loadTemplateFromFile(options.templateFile, cwd);
+        if (!template) {
+          process.stdout.write(chalk.yellow(`Could not load template from "${options.templateFile}".\n`));
+          process.stdout.write(chalk.gray("File must be valid JSON with package and steps.\n"));
+          process.exit(1);
+        }
+      } else if (options.template) {
         const all = listTemplates(pkg);
         template = all.find((t) => t.name === options.template) ?? all[0] ?? null;
       } else {
