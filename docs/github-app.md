@@ -81,11 +81,35 @@ This repo includes a webhook handler so you can receive installation events and 
 
 After that, you can list installations from `github_app_installations` (e.g. for dashboard or linking to orgs).
 
+## Publish the Upshift App (one-click)
+
+To make your App installable and record installations in the backend:
+
+1. **Create the App** (or use an existing one) — GitHub → Settings → Developer settings → GitHub Apps → New. Name, homepage (e.g. https://upshiftai.dev), set **Webhook: Active** and use the URL below.
+
+2. **Webhook URL** (Supabase Edge Function, already deployed):
+   ```
+   https://rbfzlqmkwhbvrrfdcain.supabase.co/functions/v1/github-app-webhook
+   ```
+   In the App settings, set **Webhook URL** to that, and **Webhook secret** to a random string (e.g. generate one). Subscribe to **Installation** and **Installation repositories** if you want to store installs.
+
+3. **Set the secret in Supabase** (use the same value as Webhook secret):
+   ```bash
+   npx supabase secrets set GITHUB_WEBHOOK_SECRET=your_webhook_secret --project-ref rbfzlqmkwhbvrrfdcain
+   ```
+   Or in [Supabase Dashboard](https://supabase.com/dashboard/project/rbfzlqmkwhbvrrfdcain/settings/vault) → Edge Function secrets.
+
+4. **Install App** — In the App, Install App → choose org/repos. Installations will be stored in `github_app_installations` when users install.
+
+5. **Repos using the App** — Add [.github/workflows/upshift-app-scan.yml](../.github/workflows/upshift-app-scan.yml) and secrets `APP_ID` and `APP_PRIVATE_KEY` (see Checklist below).
+
+---
+
 ## Status
 
 - **Scaffold / docs:** This document.
 - **Beta:** A published “Upshift” GitHub App (installable, runs scan on PR and comments) — use workflow [.github/workflows/upshift-app-scan.yml](../.github/workflows/upshift-app-scan.yml) with your own App (or the upcoming installable Upshift App when published).
-- **Webhook backend:** Edge Function `github-app-webhook` + table `github_app_installations` in this repo; deploy and set `GITHUB_WEBHOOK_SECRET` to complete the one-click backend.
+- **Webhook backend:** Edge Function `github-app-webhook` + table `github_app_installations` in this repo; set `GITHUB_WEBHOOK_SECRET` and webhook URL above to complete the one-click backend.
 - **Radar Pro:** Future App could optionally upload scan results to Radar Pro when the user has a subscription.
 
 If you want to build your own App using this scaffold, see [GitHub Apps](https://docs.github.com/en/apps) and the [Upshift Action](../.github/workflows/example-scan.yml) for the scan step.
