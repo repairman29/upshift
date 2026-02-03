@@ -44,11 +44,9 @@
 
 ---
 
-## Still coming (platform / backend)
+## Backend in-repo (post–v0.4.1)
 
-- Published one-click GitHub App (marketplace + backend).
-- Platform audit endpoint (store and expose audit logs).
-- Org-level credit pools (backend).
-- Enterprise: SSO, on-premise, SLA.
-
-CLI is ready for these integrations; see ROADMAP.md “Next (platform / v0.5.0)”.
+- **Platform audit endpoint** — `supabase/functions/audit-events` + migration `20250203120000_audit_logs.sql`. Set `UPSHIFT_AUDIT_URL` to the function URL.
+- **Org-level credit pools** — Migration `20250203130000_org_credit_pools.sql` (orgs, org_members, credit_transactions). Platform (Next.js + Stripe) implements billing.
+- **GitHub App webhook** — `supabase/functions/github-app-webhook` + migration `20250203140000_github_app_installations.sql`. Set `GITHUB_WEBHOOK_SECRET` and point App webhook at the function.
+- **Enterprise** — [docs/enterprise.md](docs/enterprise.md): SSO, on-premise, SLA, contact.

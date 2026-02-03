@@ -38,7 +38,7 @@ See [Pricing](https://upshiftai.dev/#pricing) on the site.
 
 ### Radar Pro setup (MVP)
 
-1. **Backend:** Deploy Supabase Edge Functions `radar-upload`, `radar-reports`, `radar-report` and run the migration `supabase/migrations/20250201120000_radar_reports.sql` so the `radar_reports` table exists.
+1. **Backend:** Deploy Supabase Edge Functions `radar-upload`, `radar-reports`, `radar-report`, `radar-alert-settings` and run migrations in `supabase/migrations/` (e.g. `npm run supabase:push` or `supabase db push --linked`). See [Supabase deploy (CLI & I/O monitoring)](supabase-deploy.md).
 2. **Upload token:** Generate a UUID (e.g. in the Radar Pro dashboard or locally) and use it as your upload token. Store it in env: `UPSHIFT_RADAR_TOKEN=<uuid>`.
 3. **API URL:** Set `UPSHIFT_RADAR_UPLOAD_URL` to your Supabase functions base, e.g. `https://YOUR_REF.supabase.co/functions/v1/radar-upload`.
 4. **CLI:** Run `upshift scan --report report.json --upload` in each repo; reports are stored under your token.

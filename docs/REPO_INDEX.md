@@ -14,7 +14,7 @@ Map of the repo: where things live, key docs, and apps.
 | **Site (canonical, new)** | `web/` | Marketing site: Indistractable design, hero “Stop reading changelogs”, Radar + Radar Pro, pricing, blog. Deploy: Vercel with outputDirectory `web`. Verify: `npm run verify-site` / `verify-site:live`. |
 | **Site (old, still at upshiftai.dev)** | `upshiftai/site/` | Static site: “UpshiftAI — Ancient dependency lineage”, live scanner, docs, pricing, blog. Brand voice: `BRAND-VOICE.md`. Blog media: `blog/BLOG-MEDIA.md`. Domain upshiftai.dev points here until repointed to project that deploys `web/`. |
 | **Platform (API + dashboard)** | `upshiftai/platform/` | Next.js: auth, dashboard, Stripe, Supabase (subscriptions, api_keys, ai_usage). |
-| **Edge / JARVIS + Radar Pro on Supabase** | `supabase/functions/` | `jarvis/` = JARVIS Edge; `radar-upload`, `radar-reports`, `radar-report` = Radar Pro (persisted reports). See `docs/radar.md`, `supabase/migrations/`. |
+| **Edge / JARVIS + Radar Pro on Supabase** | `supabase/functions/` | `jarvis/` = JARVIS Edge; `radar-upload`, `radar-reports`, `radar-report`, `radar-alert-settings` = Radar Pro; `audit-events` = platform audit; `github-app-webhook` = GitHub App installs. See `docs/radar.md`, `docs/team-features.md`, `docs/github-app.md`, `supabase/migrations/`. |
 | **Docs** | `docs/` | Repo-level docs: when-it-breaks, radar, endpoint, blog posts, **REPO_INDEX.md**, **CURSOR_SESSION_ONBOARDING.md**. |
 | **UpshiftAI docs** | `upshiftai/docs/`, `upshiftai/*.md` | HITL, JARVIS-AI-SETUP, JARVIS-EDGE-SUPABASE, design, capabilities. |
 
@@ -25,6 +25,9 @@ Map of the repo: where things live, key docs, and apps.
 - **README.md** (root) — Upshift CLI overview, install, usage.
 - **ROADMAP.md** (root) — What’s next for main CLI.
 - **docs/when-it-breaks-and-guardrails.md** — When it breaks, CI/CD guardrails, HITL.
+- **docs/team-features.md** — Team/Pro design: audit, org credit pools, CLI readiness.
+- **docs/enterprise.md** — Enterprise: SSO, on-premise, SLA, contact.
+- **docs/supabase-deploy.md** — Supabase: upgrade CLI, run migrations (`db push`), I/O monitoring (`inspect db`), deploy Edge Functions, Management API.
 - **upshiftai/README.md** — UpshiftAI overview, CLI, platform, JARVIS.
 - **upshiftai/JARVIS-AI-SETUP.md** — JARVIS API key, quotas, skill usage.
 - **upshiftai/docs/JARVIS-EDGE-SUPABASE.md** — JARVIS on the edge: deploy, secrets, how to call.
@@ -39,7 +42,7 @@ Map of the repo: where things live, key docs, and apps.
 - **Site (new):** `web/` — Vercel from repo root; `vercel.json` has `outputDirectory: "web"`. Point upshiftai.dev to this project to show new site. Verify: `npm run verify-site:live`.
 - **Site (old):** `upshiftai/site/` — still served at upshiftai.dev until domain is repointed.
 - **Platform:** Next.js; deploy `upshiftai/platform/` (e.g. Vercel). Needs Stripe + Supabase env.
-- **Edge:** `supabase functions deploy jarvis`; `radar-upload`, `radar-reports`, `radar-report` for Radar Pro. Run migration `supabase/migrations/20250201120000_radar_reports.sql`. Set secrets in Supabase Dashboard.
+- **Edge:** `supabase functions deploy jarvis`; `radar-upload`, `radar-reports`, `radar-report`, `radar-alert-settings` for Radar Pro; `audit-events` for platform audit; `github-app-webhook` for GitHub App (set `GITHUB_WEBHOOK_SECRET`). Run migrations in `supabase/migrations/` (radar_reports, radar_alert_settings, audit_logs, org_credit_pools, github_app_installations). Set secrets in Supabase Dashboard.
 
 ---
 

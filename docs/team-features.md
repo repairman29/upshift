@@ -72,5 +72,7 @@ No events are sent if `UPSHIFT_AUDIT_URL` is not set. See [docs/configuration.md
 
 ## Implementation notes
 
-- Credit pools and audit logs live in the **platform** (e.g. upshiftai/platform with Stripe + Supabase), not in the CLI. The CLI sends usage and context (org_id, user token) to the platform.
-- This repo documents the intended behavior and API shape; actual tables and endpoints are implemented in the platform repo or backend services.
+- **Audit endpoint** — This repo includes a Supabase Edge Function and table: `supabase/functions/audit-events` and migration `20250203120000_audit_logs.sql`. Point `UPSHIFT_AUDIT_URL` at your deployed function (e.g. `https://<ref>.supabase.co/functions/v1/audit-events`) to store CLI events.
+- **Org credit pools** — Migrations `20250203130000_org_credit_pools.sql` define `orgs`, `org_members`, and `credit_transactions`. The platform (e.g. Next.js + Stripe) implements billing and deducts from org balance; CLI sends `org_id` via `UPSHIFT_ORG`.
+- **GitHub App webhook** — Edge Function `supabase/functions/github-app-webhook` and table `github_app_installations` receive installation events. Set `GITHUB_WEBHOOK_SECRET` in Supabase secrets and point your App’s webhook URL at the function.
+- See [docs/configuration.md](configuration.md) for env vars and [docs/enterprise.md](enterprise.md) for Enterprise (SSO, on-premise, SLA).

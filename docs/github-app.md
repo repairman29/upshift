@@ -71,10 +71,21 @@ Upshift can run in CI via the **GitHub Action** today. A **GitHub App** would ad
 
 Run `npm run github-app-checklist` (or `node scripts/github-app-checklist.mjs`) to print a step-by-step checklist: create App, permissions, install, add secrets, add workflow.
 
+## Webhook backend (one-click App)
+
+This repo includes a webhook handler so you can receive installation events and store them:
+
+- **Edge Function:** `supabase/functions/github-app-webhook` — Verifies `X-Hub-Signature-256`, handles `installation` (created/deleted), and upserts/deletes rows in `github_app_installations`.
+- **Migration:** `supabase/migrations/20250203140000_github_app_installations.sql` — Table for installation_id, account_login, account_id, target_type.
+- **Setup:** Deploy the function, set secret `GITHUB_WEBHOOK_SECRET` in Supabase (your App’s webhook secret), and set your GitHub App’s webhook URL to `https://<project-ref>.supabase.co/functions/v1/github-app-webhook`. Subscribe to **Installation** and **Installation repositories** if you need repo add/remove.
+
+After that, you can list installations from `github_app_installations` (e.g. for dashboard or linking to orgs).
+
 ## Status
 
 - **Scaffold / docs:** This document.
 - **Beta:** A published “Upshift” GitHub App (installable, runs scan on PR and comments) — use workflow [.github/workflows/upshift-app-scan.yml](../.github/workflows/upshift-app-scan.yml) with your own App (or the upcoming installable Upshift App when published).
+- **Webhook backend:** Edge Function `github-app-webhook` + table `github_app_installations` in this repo; deploy and set `GITHUB_WEBHOOK_SECRET` to complete the one-click backend.
 - **Radar Pro:** Future App could optionally upload scan results to Radar Pro when the user has a subscription.
 
 If you want to build your own App using this scaffold, see [GitHub Apps](https://docs.github.com/en/apps) and the [Upshift Action](../.github/workflows/example-scan.yml) for the scan step.

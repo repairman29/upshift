@@ -33,6 +33,10 @@
     "verify-site": "node scripts/verify-site.mjs",
     "verify-site:live": "node scripts/verify-site.mjs --live",
     "github-app-checklist": "node scripts/github-app-checklist.mjs",
+    "supabase:push": "supabase db push --linked",
+    "supabase:push:dry": "supabase db push --linked --dry-run",
+    "supabase:inspect": "supabase inspect db traffic-profile --linked",
+    "supabase:deploy": "supabase db push --linked && supabase functions deploy",
     "dogfood": "npm run build && node dist/cli.js scan",
     "dogfood:upgrade": "node dist/cli.js upgrade"
   },
@@ -55,6 +59,7 @@
   "devDependencies": {
     "@types/express": "^5.0.6",
     "@types/node": "^25.2.0",
+    "supabase": "^2.9.0",
     "ts-node": "^10.9.2",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2"

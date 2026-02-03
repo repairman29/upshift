@@ -109,10 +109,10 @@ v0.4.0 stacked deliverables across all four innovation areas. **Full checklist:*
 
 ### Next (platform / v0.5.0)
 
-- **Published GitHub App** — One-click installable Upshift App (scan on PR, comment); backend or marketplace listing.
-- **Platform audit endpoint** — Backend accepts `UPSHIFT_AUDIT_URL` payloads; store in `audit_logs`; API for Team/Enterprise.
-- **Org-level credit pools** — Platform: orgs, members, credit_balance; CLI already sends `UPSHIFT_ORG` when set.
-- **Enterprise** — SSO (SAML/OIDC), on-premise deployment option, SLA and dedicated support.
+- **Published GitHub App** — One-click installable Upshift App (scan on PR, comment). **Backend in-repo:** Edge Function `github-app-webhook` + table `github_app_installations`; set `GITHUB_WEBHOOK_SECRET` and point App webhook URL at the function. See [docs/github-app.md](docs/github-app.md). Marketplace listing when ready.
+- **Platform audit endpoint** — **In-repo:** Edge Function `audit-events` + table `audit_logs`; set `UPSHIFT_AUDIT_URL` to the function URL. See [docs/team-features.md](docs/team-features.md).
+- **Org-level credit pools** — **In-repo:** Migrations for `orgs`, `org_members`, `credit_transactions`; platform (Next.js + Stripe) implements billing; CLI sends `UPSHIFT_ORG` when set.
+- **Enterprise** — SSO (SAML/OIDC), on-premise deployment option, SLA and dedicated support. See [docs/enterprise.md](docs/enterprise.md).
 
 ---
 
