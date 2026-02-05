@@ -1,0 +1,209 @@
+/* Shared blog & article styles — use with styles.css for header/footer/buttons */
+
+/* ----- Blog index ----- */
+.blog-index {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4rem;
+}
+.blog-index h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 2rem;
+  letter-spacing: -0.02em;
+}
+.blog-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.blog-list li {
+  border-bottom: 1px solid var(--border);
+  padding: 1.5rem 0;
+  transition: background 0.15s;
+}
+.blog-list li:first-child { padding-top: 0; }
+.blog-list li:hover { background: rgba(255,255,255,0.02); }
+.blog-list a {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  line-height: 1.35;
+  display: block;
+}
+.blog-list a:hover { color: var(--accent); }
+.blog-list .meta {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin-top: 0.35rem;
+  font-variant-numeric: tabular-nums;
+}
+.blog-list .excerpt {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+  line-height: 1.55;
+}
+
+/* ----- Article layout ----- */
+.blog-content {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4rem;
+}
+.blog-meta {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  font-variant-numeric: tabular-nums;
+}
+.blog-back {
+  display: inline-block;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-decoration: none;
+  margin-bottom: 1.5rem;
+}
+.blog-back:hover { color: var(--accent); }
+
+.blog-content .blog-subtitle,
+.blog-content .subtitle {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin: -0.5rem 0 2rem;
+}
+
+/* ----- Article typography ----- */
+.blog-content h1 {
+  font-size: clamp(2rem, 4vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 1rem;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+.blog-content h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 2.5rem 0 0.75rem;
+  color: var(--text);
+  scroll-margin-top: 5rem;
+}
+.blog-content h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 2rem 0 0.5rem;
+  color: var(--text);
+}
+.blog-content p {
+  margin-bottom: 1.5rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+.blog-content p:first-of-type {
+  font-size: 1.125rem;
+  color: var(--text);
+  line-height: 1.7;
+}
+.blog-content strong { color: var(--text); }
+.blog-content em { color: var(--text-muted); font-style: italic; }
+
+/* ----- Links in content ----- */
+.blog-content a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.blog-content a:hover { text-decoration: underline; }
+
+/* ----- Code ----- */
+.blog-content code {
+  font-family: var(--font-mono);
+  background: var(--bg-soft);
+  padding: 0.2rem 0.45rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9em;
+  color: var(--accent);
+  border: 1px solid var(--border);
+}
+.blog-content pre {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+.blog-content pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.85rem;
+  line-height: 1.65;
+  color: var(--text);
+}
+
+/* ----- Lists ----- */
+.blog-content ul,
+.blog-content ol {
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+.blog-content li { margin-bottom: 0.5rem; }
+.blog-content li strong { color: var(--text); }
+
+/* ----- Tables ----- */
+.blog-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+.blog-content th,
+.blog-content td {
+  text-align: left;
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.blog-content th {
+  color: var(--text);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.blog-content tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* ----- Horizontal rule ----- */
+.blog-content hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2.5rem 0;
+}
+
+/* ----- CTA block ----- */
+.blog-cta {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  text-align: center;
+  margin: 3rem 0;
+}
+.blog-cta h3 { margin: 0 0 0.5rem; font-size: 1.15rem; }
+.blog-cta p { margin: 0 0 1.25rem; font-size: 1rem; }
+
+/* ----- More from the blog ----- */
+.blog-more {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+.blog-more strong { display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-weight: 500; }
+.blog-more a { color: var(--accent); }
+.blog-more .blog-signature { margin-top: 1.5rem; margin-bottom: 0; color: var(--text-muted); font-size: 0.9rem; }

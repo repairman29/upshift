@@ -1,37 +1,123 @@
 {
   "redirects": [
-    { "source": "/favicon.ico", "destination": "/favicon.svg", "permanent": false },
-    { "source": "/blog", "destination": "/blog/index.html", "permanent": false },
-    { "source": "/blog/", "destination": "/blog/index.html", "permanent": false },
-    { "source": "/radar", "destination": "/radar/index.html", "permanent": false },
-    { "source": "/radar/", "destination": "/radar/index.html", "permanent": false }
+    {
+      "source": "/favicon.ico",
+      "destination": "/favicon.svg",
+      "permanent": false
+    },
+    {
+      "source": "/blog",
+      "destination": "/blog/index.html",
+      "permanent": false
+    },
+    {
+      "source": "/blog/",
+      "destination": "/blog/index.html",
+      "permanent": false
+    },
+    {
+      "source": "/radar",
+      "destination": "/radar/index.html",
+      "permanent": false
+    },
+    {
+      "source": "/radar/",
+      "destination": "/radar/index.html",
+      "permanent": false
+    }
   ],
   "rewrites": [
-    { "source": "/start", "destination": "/start.html" },
-    { "source": "/radar", "destination": "/radar/index.html" },
-    { "source": "/radar/", "destination": "/radar/index.html" },
-    { "source": "/blog/introducing-upshift", "destination": "/blog/introducing-upshift.html" },
-    { "source": "/blog/when-it-breaks-guardrails-hitl", "destination": "/blog/when-it-breaks-guardrails-hitl.html" },
-    { "source": "/blog/how-we-do-hitl", "destination": "/blog/how-we-do-hitl.html" }
+    {
+      "source": "/docs",
+      "destination": "/docs/index.html"
+    },
+    {
+      "source": "/docs/",
+      "destination": "/docs/index.html"
+    },
+    {
+      "source": "/docs/user-guide",
+      "destination": "/docs/user-guide.html"
+    },
+    {
+      "source": "/docs/cli-reference",
+      "destination": "/docs/cli-reference.html"
+    },
+    {
+      "source": "/docs/configuration",
+      "destination": "/docs/configuration.html"
+    },
+    {
+      "source": "/docs/radar",
+      "destination": "/docs/radar.html"
+    },
+    {
+      "source": "/docs/upgrade-what-to-test",
+      "destination": "/docs/upgrade-what-to-test.html"
+    },
+    {
+      "source": "/docs/github-app",
+      "destination": "/docs/github-app.html"
+    },
+    {
+      "source": "/docs/team-features",
+      "destination": "/docs/team-features.html"
+    },
+    {
+      "source": "/start",
+      "destination": "/start.html"
+    },
+    {
+      "source": "/radar",
+      "destination": "/radar/index.html"
+    },
+    {
+      "source": "/radar/",
+      "destination": "/radar/index.html"
+    },
+    {
+      "source": "/blog/introducing-upshift",
+      "destination": "/blog/introducing-upshift.html"
+    },
+    {
+      "source": "/blog/when-it-breaks-guardrails-hitl",
+      "destination": "/blog/when-it-breaks-guardrails-hitl.html"
+    },
+    {
+      "source": "/blog/how-we-do-hitl",
+      "destination": "/blog/how-we-do-hitl.html"
+    }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "DENY" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        }
       ]
     },
     {
       "source": "/styles.css",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=3600" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
+        }
       ]
     },
     {
       "source": "/favicon.svg",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=86400" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400"
+        }
       ]
     }
   ]

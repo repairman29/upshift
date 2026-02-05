@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Radar | Upshift Docs</title>
+  <meta name="description" content="Central dependency health view: free tier (paste/upload) and Radar Pro (persisted dashboard, history, alerts)." />
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="../docs.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script defer data-domain="upshiftai.dev" src="https://plausible.io/js/script.js"></script>
+  <script defer src="/nav.js"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="wrap">
+      <a href="/" class="logo">upshift</a>
+      <button type="button" class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+      <nav class="nav-main">
+        <a href="/#demo">Demo</a>
+        <a href="/radar/">Radar</a>
+        <a href="/#compare">vs Dependabot</a>
+        <a href="/#pricing">Pricing</a>
+        <a href="/docs/">Docs</a>
+        <a href="/blog/index.html">Blog</a>
+        <a href="https://github.com/repairman29/upshift" class="nav-gh" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="docs-page">
+    <div class="docs-sidebar-layout">
+      <aside class="docs-sidebar">
+        <nav class="docs-nav-section">
+          <div class="docs-nav-section-title">Docs</div>
+          <a href="/docs/">Index</a>
+          <a href="/docs/user-guide.html">User guide</a>
+          <a href="/docs/cli-reference.html">CLI reference</a>
+          <a href="/docs/configuration.html">Configuration</a>
+          <a href="/docs/radar.html" class="active">Radar</a>
+        </nav>
+      </aside>
+      <article class="docs-content">
+        <h1>Radar — Central view of dependency health</h1>
+        <p><strong>Radar</strong> is Upshift’s central view of dependency health across all your repos. It’s a core, revenue-generating product: one dashboard for your whole stack.</p>
+
+        <h2>What Radar is</h2>
+        <ul>
+          <li><strong>One place</strong> to see outdated counts, vulnerabilities, and ecosystems per repo</li>
+          <li><strong>Free tier:</strong> Paste or upload scan reports in-browser; no account required; data stays in your session</li>
+          <li><strong>Radar Pro (paid):</strong> Persisted dashboard, report history, alerts when thresholds are exceeded, export, org-wide visibility (included with Pro and Team)</li>
+        </ul>
+
+        <h2>How to use Radar (free)</h2>
+        <ol>
+          <li>In each repo, run:
+            <pre><code>upshift scan --report report.json</code></pre>
+          </li>
+          <li>Open Radar: <a href="https://upshiftai.dev/radar/">https://upshiftai.dev/radar/</a> or run:
+            <pre><code>upshift radar</code></pre>
+          </li>
+          <li>Paste the contents of <code>report.json</code> (or concatenate multiple reports, one per line) into the text area, or use <strong>Upload file</strong>.</li>
+          <li>Click <strong>Load report(s)</strong>. You’ll see a summary (repos, total outdated, total vulns) and a table per repo.</li>
+        </ol>
+        <p>Reports are not stored; they exist only in your browser session.</p>
+
+        <h2>Radar Pro (revenue)</h2>
+        <p>Radar Pro is included with <strong>Pro</strong> ($9/mo) and <strong>Team</strong> ($29/mo):</p>
+        <ul>
+          <li><strong>Persisted dashboard</strong> — Reports are stored and associated with your upload token</li>
+          <li><strong>Report history</strong> — Load your reports on the Radar page (Radar Pro section: API URL + token)</li>
+          <li><strong>Upload from CLI/CI</strong> — <code>upshift scan --report out.json --upload</code> sends reports to your Radar Pro backend (requires <code>UPSHIFT_RADAR_TOKEN</code> and <code>UPSHIFT_RADAR_UPLOAD_URL</code>)</li>
+          <li><strong>Alerts</strong> — Set a webhook URL and optional thresholds (max outdated, max vulns) in the Radar Pro section. When an uploaded report exceeds those thresholds, we POST to your webhook (<code>event: "radar_alert"</code>, report_id, counts, etc.). Use GET/PUT <code>radar-alert-settings</code> (with X-Upload-Token) to manage settings.</li>
+          <li><strong>Export</strong> — Download or share reports</li>
+          <li><strong>Org-wide</strong> — Team plan: visibility across all repos in your org</li>
+        </ul>
+        <p>See <a href="/#pricing">Pricing</a> on the site.</p>
+
+        <h3>Radar Pro setup (MVP)</h3>
+        <ol>
+          <li><strong>Backend:</strong> Deploy Supabase Edge Functions <code>radar-upload</code>, <code>radar-reports</code>, <code>radar-report</code>, <code>radar-alert-settings</code> and run migrations in <code>supabase/migrations/</code> (e.g. <code>npm run supabase:push</code> or <code>supabase db push --linked</code>). See Supabase deploy docs in the repo.</li>
+          <li><strong>Upload token:</strong> Generate a UUID (e.g. in the Radar Pro dashboard or locally) and use it as your upload token. Store it in env: <code>UPSHIFT_RADAR_TOKEN=&lt;uuid&gt;</code>.</li>
+          <li><strong>API URL:</strong> Set <code>UPSHIFT_RADAR_UPLOAD_URL</code> to your Supabase functions base, e.g. <code>https://YOUR_REF.supabase.co/functions/v1/radar-upload</code>.</li>
+          <li><strong>CLI:</strong> Run <code>upshift scan --report report.json --upload</code> in each repo; reports are stored under your token.</li>
+          <li><strong>Dashboard:</strong> On <a href="/radar/">Radar</a>, open the <strong>Radar Pro</strong> section, enter the same API URL (base, e.g. <code>https://YOUR_REF.supabase.co/functions/v1</code>) and your upload token, then click <strong>Load my reports</strong>. Click <strong>Open</strong> on a report to view it.</li>
+        </ol>
+
+        <h2>Report format</h2>
+        <p>The JSON report produced by <code>upshift scan --report path.json</code> includes:</p>
+        <ul>
+          <li><code>status</code>, <code>packageManager</code> or <code>ecosystem</code></li>
+          <li><code>outdated</code>: array of <code>{ name, current, wanted, latest }</code></li>
+          <li><code>vulnerabilities</code>: optional <code>{ counts, items }</code></li>
+          <li><code>cwd</code>: project path (used as repo label in Radar)</li>
+          <li><code>timestamp</code>: ISO string</li>
+        </ul>
+        <p>Radar accepts one JSON object or NDJSON (one report per line).</p>
+
+        <h2>Summary</h2>
+        <ul>
+          <li><strong>Radar Free:</strong> Try it at <a href="/radar/">upshiftai.dev/radar</a>; paste/upload reports; no account.</li>
+          <li><strong>Radar Pro:</strong> Persisted dashboard, history, alerts, upload from CLI/CI; Pro and Team plans.</li>
+        </ul>
+      </article>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p><a href="/">upshift</a> · <a href="/radar/">Radar</a> · <a href="/docs/">Docs</a> · AI-powered dependency upgrades</p>
+    </div>
+  </footer>
+</body>
+</html>

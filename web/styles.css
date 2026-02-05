@@ -115,6 +115,69 @@ nav a:hover {
   color: var(--accent);
 }
 
+/* Mobile nav toggle (shown only on small screens) */
+.nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 1.25rem;
+  cursor: pointer;
+  line-height: 1;
+}
+.nav-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.nav-toggle:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  .nav-toggle {
+    display: flex;
+  }
+  .header nav,
+  .header .nav-main {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    gap: 0;
+    padding: 1rem 1.5rem 1.5rem;
+    background: rgba(15, 17, 21, 0.98);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+  .header.open nav,
+  .header.open .nav-main {
+    display: flex;
+  }
+  .header nav a,
+  .header .nav-main a {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 1rem;
+  }
+  .header nav a:last-child,
+  .header .nav-main a:last-child {
+    border-bottom: none;
+  }
+  .header .wrap {
+    position: relative;
+  }
+}
+
 /* Hero */
 .hero {
   padding: 6rem 0 4rem;

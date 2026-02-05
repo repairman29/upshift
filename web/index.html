@@ -21,6 +21,7 @@
   <link rel="stylesheet" href="styles.css" />
   <!-- Analytics -->
   <script defer data-domain="upshiftai.dev" src="https://plausible.io/js/script.js"></script>
+  <script defer src="/nav.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -32,12 +33,13 @@
   <header class="header">
     <div class="wrap">
       <a href="/" class="logo">upshift</a>
-      <nav>
+      <button type="button" class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+      <nav class="nav-main">
         <a href="#demo">Demo</a>
         <a href="/radar/">Radar</a>
         <a href="#compare">vs Dependabot</a>
         <a href="#pricing">Pricing</a>
-        <a href="https://github.com/repairman29/upshift/tree/main/docs" target="_blank" rel="noopener">Docs</a>
+        <a href="/docs/">Docs</a>
         <a href="/blog/index.html">Blog</a>
         <a href="https://github.com/repairman29/upshift" class="nav-gh" target="_blank" rel="noopener">GitHub</a>
       </nav>
@@ -262,7 +264,7 @@
 
   <footer class="footer">
     <div class="wrap">
-      <p><a href="/">upshift</a> · <a href="/radar/">Radar</a> · <a href="https://github.com/repairman29/upshift/tree/main/docs" target="_blank" rel="noopener">Docs</a> · AI-powered dependency upgrades</p>
+      <p><a href="/">upshift</a> · <a href="/radar/">Radar</a> · <a href="/docs/">Docs</a> · AI-powered dependency upgrades</p>
       <p class="footer-trademark">Product names and logos used in comparisons are trademarks of their respective owners. Used for informational comparison only; no endorsement or affiliation.</p>
     </div>
   </footer>

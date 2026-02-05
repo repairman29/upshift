@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CLI reference | Upshift Docs</title>
+  <meta name="description" content="All Upshift commands and options: scan, explain, upgrade, fix, suggest, plan, migrate, radar, and more." />
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="../docs.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script defer data-domain="upshiftai.dev" src="https://plausible.io/js/script.js"></script>
+  <script defer src="/nav.js"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="wrap">
+      <a href="/" class="logo">upshift</a>
+      <button type="button" class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+      <nav class="nav-main">
+        <a href="/#demo">Demo</a>
+        <a href="/radar/">Radar</a>
+        <a href="/#compare">vs Dependabot</a>
+        <a href="/#pricing">Pricing</a>
+        <a href="/docs/">Docs</a>
+        <a href="/blog/index.html">Blog</a>
+        <a href="https://github.com/repairman29/upshift" class="nav-gh" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="docs-page">
+    <div class="docs-sidebar-layout">
+      <aside class="docs-sidebar">
+        <nav class="docs-nav-section">
+          <div class="docs-nav-section-title">Docs</div>
+          <a href="/docs/">Index</a>
+          <a href="/docs/user-guide.html">User guide</a>
+          <a href="/docs/cli-reference.html" class="active">CLI reference</a>
+          <a href="/docs/configuration.html">Configuration</a>
+          <a href="/docs/radar.html">Radar</a>
+        </nav>
+      </aside>
+      <article class="docs-content">
+        <h1>CLI Reference</h1>
+        <p>Quick reference for all Upshift commands and options. Run <code>upshift --help</code> or <code>upshift &lt;command&gt; --help</code> for the latest.</p>
+
+        <h2>Global</h2>
+        <pre><code>upshift [options] [command]
+  -V, --version   output version
+  -h, --help      display help</code></pre>
+
+        <h2>Core</h2>
+        <h3>scan</h3>
+        <p>Scan dependencies for updates and vulnerabilities.</p>
+        <pre><code>upshift scan [options]
+  --json           Output as JSON
+  --licenses       Include license per direct dependency (npm, Python)
+  --report &lt;path&gt;  Write JSON report to file (for Radar)
+  --cwd &lt;path&gt;     Project directory (default: .)</code></pre>
+        <p>Supports <strong>Node</strong> (npm/yarn/pnpm), <strong>Python</strong> (pip/poetry), <strong>Ruby</strong> (bundler), <strong>Go</strong> (go.mod). Auto-detects ecosystem.</p>
+
+        <h3>explain</h3>
+        <p>Explain breaking changes for a dependency.</p>
+        <pre><code>upshift explain &lt;package&gt; [options]
+  --json       Output as JSON
+  --risk       Show risk (low/medium/high)
+  --changelog  Fetch changelog from GitHub
+  --ai         AI analysis (1 credit)
+  --from &lt;v&gt;   Current version
+  --to &lt;v&gt;     Target version
+  --cwd &lt;path&gt;</code></pre>
+
+        <h3>fix</h3>
+        <p>AI-powered code fixes for breaking changes (3 credits).</p>
+        <pre><code>upshift fix &lt;package&gt; [options]
+  --dry-run   Preview changes without applying
+  --cwd &lt;path&gt;</code></pre>
+
+        <h3>upgrade</h3>
+        <p>Upgrade a dependency (single or batch). Runs tests; rolls back on failure.</p>
+        <pre><code>upshift upgrade [package] [options]
+  --to &lt;version&gt;   Target version (default: latest)
+  --all            Upgrade all outdated
+  --all-minor      Only minor/patch
+  --all-patch      Only patch
+  --dry-run        Show planned changes, no file changes
+  -y, --yes        Skip confirmation prompts
+  --skip-tests     Skip tests after upgrade
+  --cwd &lt;path&gt;</code></pre>
+
+        <h3>rollback</h3>
+        <pre><code>upshift rollback [options]
+  --list   List available backups
+  --cwd &lt;path&gt;</code></pre>
+
+        <h3>audit</h3>
+        <p>Security audit with optional AI remediation.</p>
+        <pre><code>upshift audit [options]
+  --ai       AI remediation suggestions (2 credits)
+  --cwd &lt;path&gt;</code></pre>
+
+        <h2>Suggest &amp; plan</h2>
+        <h3>suggest</h3>
+        <pre><code>upshift suggest [options]
+  --json       Output as JSON
+  --limit &lt;n&gt;  Max suggestions (default: 5)
+  --cwd &lt;path&gt;</code></pre>
+        <h3>plan</h3>
+        <pre><code>upshift plan [options]
+  --json        Output as JSON
+  --mode &lt;m&gt;    all | minor | patch (default: all)
+  --cwd &lt;path&gt;</code></pre>
+
+        <h2>Migrate</h2>
+        <pre><code>upshift migrate &lt;package&gt; [options]
+  --template &lt;name&gt;       Template id (e.g. react-18-19)
+  --template-file &lt;path&gt;  Custom migration JSON
+  --dry-run               Preview, no file changes
+  --list                  List templates for package
+  --cwd &lt;path&gt;</code></pre>
+
+        <h2>Radar</h2>
+        <pre><code>upshift radar [options]
+  --no-open   Only print URL, don't open browser</code></pre>
+
+        <h2>Interactive &amp; monorepo</h2>
+        <h3>interactive</h3>
+        <pre><code>upshift interactive [options]  --cwd &lt;path&gt;</code></pre>
+        <h3>workspaces</h3>
+        <pre><code>upshift workspaces [options]  --cwd &lt;path&gt;</code></pre>
+
+        <h2>Notifications</h2>
+        <pre><code>upshift notify --slack &lt;url&gt;
+upshift notify --discord &lt;url&gt;
+upshift notify --webhook &lt;url&gt;</code></pre>
+
+        <h2>Setup &amp; billing</h2>
+        <p><code>upshift init</code> — Create <code>.upshiftrc.json</code>. &nbsp; <code>upshift credits</code> — Check balance. &nbsp; <code>upshift buy-credits --pack &lt;size&gt;</code> — Credit packs. &nbsp; <code>upshift subscribe --tier pro</code> — Pro/Team. &nbsp; <code>upshift status</code> — Subscription and credit status.</p>
+
+        <h2>Environment</h2>
+        <p><strong>OPENAI_API_KEY</strong> — For AI explain/fix (or use credits with Upshift API). &nbsp; <strong>UPSHIFT_RECORD_OUTCOMES=1</strong> — Append outcomes to <code>.upshift/outcomes.json</code>. &nbsp; <strong>UPSHIFT_CREDITS_ENDPOINT</strong> / <strong>UPSHIFT_API_TOKEN</strong> — Override credits API.</p>
+        <p>Options can be set in <code>.upshiftrc.json</code>; see <a href="/docs/configuration.html">Configuration</a>. CLI flags override config.</p>
+      </article>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p><a href="/">upshift</a> · <a href="/radar/">Radar</a> · <a href="/docs/">Docs</a> · AI-powered dependency upgrades</p>
+    </div>
+  </footer>
+</body>
+</html>

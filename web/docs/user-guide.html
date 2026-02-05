@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User guide | Upshift Docs</title>
+  <meta name="description" content="Getting started, core workflow (scan, explain, upgrade, fix), suggest/plan, migrate, Radar, and config." />
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="../docs.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script defer data-domain="upshiftai.dev" src="https://plausible.io/js/script.js"></script>
+  <script defer src="/nav.js"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="wrap">
+      <a href="/" class="logo">upshift</a>
+      <button type="button" class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+      <nav class="nav-main">
+        <a href="/#demo">Demo</a>
+        <a href="/radar/">Radar</a>
+        <a href="/#compare">vs Dependabot</a>
+        <a href="/#pricing">Pricing</a>
+        <a href="/docs/">Docs</a>
+        <a href="/blog/index.html">Blog</a>
+        <a href="https://github.com/repairman29/upshift" class="nav-gh" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="docs-page">
+    <div class="docs-sidebar-layout">
+      <aside class="docs-sidebar">
+        <nav class="docs-nav-section">
+          <div class="docs-nav-section-title">Docs</div>
+          <a href="/docs/">Index</a>
+          <a href="/docs/user-guide.html" class="active">User guide</a>
+          <a href="/docs/cli-reference.html">CLI reference</a>
+          <a href="/docs/configuration.html">Configuration</a>
+          <a href="/docs/radar.html">Radar</a>
+        </nav>
+      </aside>
+      <article class="docs-content">
+        <h1>Upshift User Guide</h1>
+        <p>Getting started, core workflow, and features. See the <a href="/docs/">docs index</a> for all documentation.</p>
+
+        <h2>Quick start (5 minutes)</h2>
+        <ol>
+          <li><strong>Install:</strong> <code>npm install -g upshift-cli</code></li>
+          <li><strong>Scan:</strong> In your project, run <code>upshift scan</code> to see outdated deps and vulnerabilities.</li>
+          <li><strong>Explain:</strong> Pick a package and run <code>upshift explain &lt;pkg&gt; --risk</code> (or <code>--ai</code> for AI analysis, 1 credit).</li>
+          <li><strong>Upgrade:</strong> Run <code>upshift upgrade &lt;pkg&gt;</code> — Upshift runs your tests and rolls back if they fail.</li>
+          <li><strong>Batch (optional):</strong> Run <code>upshift upgrade --all-minor</code> for safe minor/patch upgrades.</li>
+        </ol>
+        <p>Works with <strong>Node</strong> (npm, yarn, pnpm), <strong>Python</strong> (pip/poetry), <strong>Ruby</strong> (bundler), and <strong>Go</strong> (go.mod). Use <code>upshift radar</code> to open the central dashboard.</p>
+
+        <h2>Getting started</h2>
+        <ol>
+          <li><strong>Install:</strong> <code>npm install -g upshift-cli</code></li>
+          <li><strong>Run in a project:</strong> <code>cd your-project && upshift scan</code></li>
+          <li><strong>Explain a package:</strong> <code>upshift explain react --risk</code> or <code>upshift explain react --ai</code> (AI costs 1 credit)</li>
+          <li><strong>Upgrade:</strong> <code>upshift upgrade react</code> (runs tests, rolls back on failure)</li>
+        </ol>
+        <p>See <a href="/docs/cli-reference.html">CLI reference</a> for all commands and options.</p>
+
+        <h2>Core workflow</h2>
+        <p><strong>Scan → Explain → Upgrade → Fix (if needed)</strong></p>
+        <h3>1. Scan</h3>
+        <p>See what's outdated and vulnerable:</p>
+        <pre><code>upshift scan
+upshift scan --json
+upshift scan --licenses
+upshift scan --report report.json   # for Radar</code></pre>
+        <h3>2. Explain</h3>
+        <p>Understand breaking changes before upgrading:</p>
+        <pre><code>upshift explain &lt;package&gt;
+upshift explain &lt;package&gt; --risk
+upshift explain &lt;package&gt; --changelog
+upshift explain &lt;package&gt; --ai    # AI analysis (1 credit)</code></pre>
+        <p>Output includes "Used in your code" (import/require scan) and risk (low/medium/high).</p>
+        <h3>3. Upgrade</h3>
+        <pre><code>upshift upgrade &lt;package&gt;
+upshift upgrade &lt;package&gt; --to 19.0.0
+upshift upgrade &lt;package&gt; --dry-run
+upshift upgrade --all
+upshift upgrade --all-minor
+upshift upgrade --all --dry-run</code></pre>
+        <h3>4. Fix</h3>
+        <p>If code breaks, get AI-suggested code changes:</p>
+        <pre><code>upshift fix &lt;package&gt;
+upshift fix &lt;package&gt; --dry-run</code></pre>
+        <h3>5. Rollback</h3>
+        <pre><code>upshift rollback</code></pre>
+
+        <h2>Suggest and plan</h2>
+        <p><strong>Suggest</strong> — Recommended upgrades (low risk, high value):</p>
+        <pre><code>upshift suggest
+upshift suggest --limit 10 --json</code></pre>
+        <p><strong>Plan</strong> — Ordered upgrade plan (dependency order + risk):</p>
+        <pre><code>upshift plan
+upshift plan --mode minor --json</code></pre>
+
+        <h2>Migration templates</h2>
+        <p>Apply curated migration steps (e.g. React 18→19, Vue 2→3):</p>
+        <pre><code>upshift migrate &lt;package&gt; --list
+upshift migrate react --dry-run
+upshift migrate react
+upshift migrate next --template next-13-to-14</code></pre>
+
+        <h2>Radar (central view)</h2>
+        <p>See dependency health across all your repos:</p>
+        <ol>
+          <li>In each repo: <code>upshift scan --report report.json</code></li>
+          <li>Open <a href="/radar/">upshiftai.dev/radar</a> or run <code>upshift radar</code></li>
+          <li>Paste or upload the JSON; view summary (repos, outdated, vulns)</li>
+        </ol>
+        <p><strong>Radar Pro</strong> (Pro/Team): persisted dashboard, history, alerts. See <a href="/docs/radar.html">Radar</a>.</p>
+
+        <h2>Configuration</h2>
+        <p>Create <code>.upshiftrc.json</code> with <code>upshift init</code>. Key options:</p>
+        <ul>
+          <li><strong>Approval (HITL)</strong> — <code>approval.mode</code>: <code>prompt</code> (default), <code>none</code>, or <code>webhook</code>; <code>approval.requireFor</code>: <code>["major"]</code> or <code>["all"]</code>.</li>
+          <li><strong>Upgrade policy</strong> — <code>upgradePolicy: { blockRisk: ["high"] }</code> blocks high-risk upgrades; use <code>-y</code> to override.</li>
+          <li><strong>Auto</strong> — <code>autoConfirm: true</code> skips prompts; <code>autoTest: true</code> runs tests after upgrade.</li>
+        </ul>
+        <p>Full reference: <a href="/docs/configuration.html">Configuration</a>.</p>
+
+        <h2>Python, Ruby, Go</h2>
+        <ul>
+          <li><strong>Scan</strong> — In a Python/Ruby/Go project, <code>upshift scan</code> detects the ecosystem and runs the right scanner.</li>
+          <li><strong>Explain / Upgrade (Python)</strong> — Full parity: version delta, <code>--ai</code>, upgrade with backup, test, rollback.</li>
+          <li><strong>Explain / Upgrade (Ruby/Go)</strong> — Same: explain with risk/changelog, upgrade with tests and rollback.</li>
+        </ul>
+
+        <h2>VS Code</h2>
+        <ul>
+          <li><strong>Explain for current file</strong> — Right-click in a .ts/.tsx/.js/.jsx file → "Upshift: Explain dependency for current file".</li>
+          <li><strong>Fix for current file</strong> — Right-click → "Upshift: Fix dependency for current file" (dry-run in channel; apply in editor or terminal).</li>
+          <li>Command palette: "Upshift: Explain Package", "Upshift: Upgrade Package", etc.</li>
+        </ul>
+
+        <h2>CI/CD</h2>
+        <p>Use <code>-y</code> to skip prompts, or set <code>approval.mode: "none"</code>. For webhook approval, set <code>approval.webhookUrl</code>. Set <code>UPSHIFT_RECORD_OUTCOMES=1</code> to append upgrade outcomes to <code>.upshift/outcomes.json</code> (local only).</p>
+
+        <h2>When it breaks and guardrails</h2>
+        <p>Tests are the guardrail; we roll back on failure. Review LLM-generated fixes (e.g. <code>upshift fix --dry-run</code>). See <a href="/blog/when-it-breaks-guardrails-hitl.html">When it breaks &amp; guardrails</a> and <a href="/docs/">Opt-in insights</a>.</p>
+        <p>For risk checks and a testing checklist, see <a href="/docs/upgrade-what-to-test.html">What to anticipate and test</a>.</p>
+
+        <h2>Credits and billing</h2>
+        <ul>
+          <li><strong>Explain --ai</strong> costs 1 credit; <strong>fix</strong> costs 3 credits. You get 10 free credits by default.</li>
+          <li><code>upshift credits</code> — check balance; <code>upshift buy-credits</code> / <code>upshift subscribe</code> for more.</li>
+        </ul>
+        <p><a href="/#pricing">Pricing</a> · <a href="/docs/">Docs index</a></p>
+      </article>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p><a href="/">upshift</a> · <a href="/radar/">Radar</a> · <a href="/docs/">Docs</a> · AI-powered dependency upgrades</p>
+    </div>
+  </footer>
+</body>
+</html>

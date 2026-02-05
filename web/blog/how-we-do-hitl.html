@@ -12,50 +12,35 @@
   <link rel="icon" href="/favicon.ico" type="image/x-icon" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="../blog.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <script defer data-domain="upshiftai.dev" src="https://plausible.io/js/script.js"></script>
-  <style>
-    .blog-content { max-width: 680px; margin: 0 auto; padding: 3rem 1.5rem; }
-    .blog-meta { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem; }
-    .blog-content h1 { font-size: 2.25rem; line-height: 1.2; margin-bottom: 1rem; }
-    .blog-content h2 { font-size: 1.5rem; margin-top: 2.5rem; margin-bottom: 1rem; }
-    .blog-content p { margin-bottom: 1.5rem; color: var(--text-muted); }
-    .blog-content p:first-of-type { font-size: 1.15rem; color: var(--text); }
-    .blog-content code { font-family: var(--font-mono); background: var(--bg-soft); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.9em; }
-    .blog-content pre { background: var(--bg-soft); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; overflow-x: auto; margin: 1.5rem 0; }
-    .blog-content pre code { background: none; padding: 0; font-size: 0.85rem; line-height: 1.6; color: var(--accent); }
-    .blog-content ul, .blog-content ol { margin-bottom: 1.5rem; padding-left: 1.5rem; color: var(--text-muted); }
-    .blog-content li { margin-bottom: 0.5rem; }
-    .blog-content strong { color: var(--text); }
-    .blog-content hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
-    .blog-content table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem; color: var(--text-muted); }
-    .blog-content th, .blog-content td { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); }
-    .blog-content th { color: var(--text); font-weight: 600; }
-    .blog-cta { background: var(--bg-soft); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; text-align: center; margin: 3rem 0; }
-    .blog-cta h3 { margin: 0 0 0.5rem; }
-    .blog-cta p { margin: 0 0 1rem; font-size: 1rem; }
-  </style>
+  <script defer src="/nav.js"></script>
 </head>
 <body>
   <header class="header">
     <div class="wrap">
       <a href="/" class="logo">upshift</a>
-      <nav>
-        <a href="/#how">How it works</a>
+      <button type="button" class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+      <nav class="nav-main">
+        <a href="/#demo">Demo</a>
+        <a href="/radar/">Radar</a>
         <a href="/#compare">vs Dependabot</a>
         <a href="/#pricing">Pricing</a>
+        <a href="/docs/">Docs</a>
         <a href="/blog/index.html">Blog</a>
-        <a href="https://github.com/repairman29/upshift" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/repairman29/upshift" class="nav-gh" target="_blank" rel="noopener">GitHub</a>
       </nav>
     </div>
   </header>
 
   <article class="blog-content">
+    <a href="/blog/index.html" class="blog-back">← Blog</a>
     <p class="blog-meta">February 2026 · 6 min read</p>
     <h1>How we do human-in-the-loop (HITL)</h1>
-    <p class="subtitle" style="font-size:1.1rem;color:var(--text-muted);margin-bottom:2rem;">Approval and oversight for dependency upgrades and AI-generated fixes—so you can run in auto mode when you want, and stay in the loop when you don’t.</p>
+    <p class="blog-subtitle">Approval and oversight for dependency upgrades and AI-generated fixes—so you can run in auto mode when you want, and stay in the loop when you don’t.</p>
 
     <p>Some teams want Upshift to run fully automatic (<code>-y</code>, CI, no prompts). Others want to <strong>approve</strong> risky changes—major upgrades, package replaces, or AI-generated code fixes—before anything is applied. Here’s how we support both.</p>
 
@@ -119,14 +104,18 @@
     <p>So: dependency upgrades can be guardrailed by tests + optional approval; LLM-generated fixes are always reviewable (dry-run or confirm) unless you explicitly use <code>-y</code>.</p>
 
     <hr />
-    <p>Summary: we support <strong>prompt</strong>, <strong>webhook</strong>, and <strong>none</strong>. Default is prompt for major (and replace in UpshiftAI). Use config and <code>-y</code> to tune. For webhook payloads, response format, and a sample approval server, see the full <a href="https://github.com/repairman29/upshift/blob/main/upshiftai/docs/HITL.md">HITL doc</a>. For the “when it breaks” and guardrails story, see <a href="/blog/when-it-breaks-guardrails-hitl.html">When it breaks, who fixes it, and why human-in-the-loop still matters</a>.</p>
-
-    <p style="margin-top:2rem;"><strong>More from the blog:</strong> <a href="/blog/introducing-upshift.html">Introducing Upshift</a> · <a href="/blog/when-it-breaks-guardrails-hitl.html">When it breaks, guardrails, and HITL</a></p>
+    <p>Summary: we support <strong>prompt</strong>, <strong>webhook</strong>, and <strong>none</strong>. Default is prompt for major (and replace in UpshiftAI). Use config and <code>-y</code> to tune. For webhook payloads, response format, and a sample approval server, see the full <a href="/docs/configuration.html#approval-hitl">approval (HITL) docs</a>. For the “when it breaks” and guardrails story, see <a href="/blog/when-it-breaks-guardrails-hitl.html">When it breaks, who fixes it, and why human-in-the-loop still matters</a>.</p>
 
     <div class="blog-cta">
       <h3>Try Upshift</h3>
       <p>Run with oversight by default; use <code>-y</code> when you want auto.</p>
       <a href="/start" class="btn btn-primary">Get Started</a>
+    </div>
+
+    <div class="blog-more">
+      <strong>More from the blog</strong>
+      <a href="/blog/introducing-upshift.html">Introducing Upshift</a> · <a href="/blog/when-it-breaks-guardrails-hitl.html">When it breaks, guardrails, and HITL</a>
+      <p class="blog-signature">— The Upshift Team</p>
     </div>
   </article>
 

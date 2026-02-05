@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configuration | Upshift Docs</title>
+  <meta name="description" content=".upshiftrc.json reference: ignore, defaultMode, autoTest, approval, upgradePolicy, registry, and schema." />
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="../docs.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script defer data-domain="upshiftai.dev" src="https://plausible.io/js/script.js"></script>
+  <script defer src="/nav.js"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="wrap">
+      <a href="/" class="logo">upshift</a>
+      <button type="button" class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+      <nav class="nav-main">
+        <a href="/#demo">Demo</a>
+        <a href="/radar/">Radar</a>
+        <a href="/#compare">vs Dependabot</a>
+        <a href="/#pricing">Pricing</a>
+        <a href="/docs/">Docs</a>
+        <a href="/blog/index.html">Blog</a>
+        <a href="https://github.com/repairman29/upshift" class="nav-gh" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="docs-page">
+    <div class="docs-sidebar-layout">
+      <aside class="docs-sidebar">
+        <nav class="docs-nav-section">
+          <div class="docs-nav-section-title">Docs</div>
+          <a href="/docs/">Index</a>
+          <a href="/docs/user-guide.html">User guide</a>
+          <a href="/docs/cli-reference.html">CLI reference</a>
+          <a href="/docs/configuration.html" class="active">Configuration</a>
+          <a href="/docs/radar.html">Radar</a>
+        </nav>
+      </aside>
+      <article class="docs-content">
+        <h1>Configuration Reference</h1>
+        <p>Upshift reads configuration from <code>.upshiftrc.json</code>, <code>.upshiftrc</code>, or <code>upshift.config.json</code> in the project directory. Create a file with <code>upshift init</code>.</p>
+
+        <h2>File location</h2>
+        <ul>
+          <li><strong>Lookup order:</strong> <code>.upshiftrc.json</code> → <code>.upshiftrc</code> → <code>upshift.config.json</code></li>
+          <li><strong>Scope:</strong> Project directory (where you run <code>upshift</code>). No global config file; use env vars or repeat config per project.</li>
+        </ul>
+
+        <h2>Schema overview</h2>
+        <pre><code>{
+  "ignore": [],
+  "defaultMode": "minor",
+  "autoTest": true,
+  "autoConfirm": false,
+  "ai": { "autoEnable": false, "maxCredits": 50 },
+  "scan": { "exclude": [], "minSeverity": "low" },
+  "approval": { "mode": "prompt", "requireFor": ["major"], "webhookUrl": null },
+  "upgradePolicy": null,
+  "registry": { "url": null, "token": null }
+}</code></pre>
+
+        <h2>Top-level options</h2>
+        <table class="docs-table">
+          <thead>
+            <tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>ignore</strong></td><td><code>string[]</code></td><td><code>[]</code></td><td>Package names (or globs like <code>@types/*</code>) to skip when upgrading.</td></tr>
+            <tr><td><strong>defaultMode</strong></td><td><code>"all"</code> | <code>"minor"</code> | <code>"patch"</code></td><td><code>"minor"</code></td><td>Default mode for batch upgrade (<code>upshift upgrade --all</code>).</td></tr>
+            <tr><td><strong>autoTest</strong></td><td><code>boolean</code></td><td><code>true</code></td><td>Run tests after upgrade; roll back if tests fail.</td></tr>
+            <tr><td><strong>autoConfirm</strong></td><td><code>boolean</code></td><td><code>false</code></td><td>Skip confirmation prompts (e.g. major upgrade, batch confirm). Use with care.</td></tr>
+            <tr><td><strong>testCommand</strong></td><td><code>string</code> | <code>string[]</code></td><td><em>auto</em></td><td>For Python/non-Node: command to run after upgrade (e.g. <code>"pytest"</code> or <code>["poetry", "run", "pytest"]</code>). If tests fail, upgrade is rolled back.</td></tr>
+          </tbody>
+        </table>
+
+        <h2>ai</h2>
+        <table class="docs-table">
+          <thead>
+            <tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>autoEnable</strong></td><td><code>boolean</code></td><td><code>false</code></td><td>Automatically use AI for <code>explain</code> when available.</td></tr>
+            <tr><td><strong>maxCredits</strong></td><td><code>number</code></td><td><code>50</code></td><td>Max credits to use per session (cap).</td></tr>
+          </tbody>
+        </table>
+
+        <h2>scan</h2>
+        <table class="docs-table">
+          <thead>
+            <tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>exclude</strong></td><td><code>string[]</code></td><td><code>[]</code></td><td>Package names to exclude from scan results.</td></tr>
+            <tr><td><strong>minSeverity</strong></td><td><code>"low"</code> | <code>"moderate"</code> | <code>"high"</code> | <code>"critical"</code></td><td><code>"low"</code></td><td>Minimum severity to include in scan output.</td></tr>
+          </tbody>
+        </table>
+
+        <h2 id="approval-hitl">approval (HITL)</h2>
+        <p>Controls when Upshift asks for approval before applying an upgrade.</p>
+        <table class="docs-table">
+          <thead>
+            <tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>mode</strong></td><td><code>"prompt"</code> | <code>"none"</code> | <code>"webhook"</code></td><td><code>"prompt"</code></td><td><strong>prompt</strong> — Ask in terminal for major (or all) upgrades. <strong>none</strong> — Never prompt. <strong>webhook</strong> — POST proposed upgrade to <code>webhookUrl</code>; 200 = approve, non-200 = reject.</td></tr>
+            <tr><td><strong>requireFor</strong></td><td><code>("major" | "all")[]</code></td><td><code>["major"]</code></td><td>When to require approval: <strong>major</strong> = only major version bumps; <strong>all</strong> = every upgrade.</td></tr>
+            <tr><td><strong>webhookUrl</strong></td><td><code>string</code> | <code>null</code></td><td><code>null</code></td><td>URL for webhook approval. POST body: <code>{ event: "upgrade_proposed", packageName, currentVersion, targetVersion, cwd, timestamp }</code>. Respond 200 to approve.</td></tr>
+          </tbody>
+        </table>
+        <p>Example (webhook):</p>
+        <pre><code>"approval": {
+  "mode": "webhook",
+  "requireFor": ["major"],
+  "webhookUrl": "https://your-service.com/upshift/approve"
+}</code></pre>
+
+        <h2>upgradePolicy</h2>
+        <p>Block upgrades above a risk level. Risk is computed from major delta, vulnerabilities, and popularity.</p>
+        <table class="docs-table">
+          <thead>
+            <tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>blockRisk</strong></td><td><code>("high" | "medium")[]</code></td><td>—</td><td>Block upgrades with this risk level. E.g. <code>["high"]</code> blocks high-risk only; <code>["high", "medium"]</code> blocks both. Use <code>-y</code> on the CLI to override.</td></tr>
+          </tbody>
+        </table>
+        <p>Example:</p>
+        <pre><code>"upgradePolicy": {
+  "blockRisk": ["high"]
+}</code></pre>
+
+        <h2>registry</h2>
+        <table class="docs-table">
+          <thead>
+            <tr><th>Option</th><th>Type</th><th>Default</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>url</strong></td><td><code>string</code> | <code>null</code></td><td><code>null</code></td><td>Custom npm registry URL.</td></tr>
+            <tr><td><strong>token</strong></td><td><code>string</code> | <code>null</code></td><td><code>null</code></td><td>Auth token (or env var reference like <code>$NPM_TOKEN</code>).</td></tr>
+          </tbody>
+        </table>
+
+        <h2>Example: strict policy + webhook</h2>
+        <pre><code>{
+  "ignore": ["@types/*"],
+  "defaultMode": "minor",
+  "autoTest": true,
+  "autoConfirm": false,
+  "approval": {
+    "mode": "webhook",
+    "requireFor": ["major"],
+    "webhookUrl": "https://api.example.com/upshift/approve"
+  },
+  "upgradePolicy": {
+    "blockRisk": ["high"]
+  }
+}</code></pre>
+
+        <h2>Override with CLI</h2>
+        <ul>
+          <li><strong>-y / --yes</strong> — Skips approval prompts and policy block (use with care).</li>
+          <li><strong>--skip-tests</strong> — Skips running tests after upgrade (overrides <code>autoTest</code> for that run).</li>
+          <li><strong>--dry-run</strong> — No file changes; policy and approval still apply unless <code>-y</code>.</li>
+        </ul>
+
+        <h2>Environment variables (Team / audit)</h2>
+        <p>For Team/Enterprise and audit logging, the CLI supports:</p>
+        <table class="docs-table">
+          <thead>
+            <tr><th>Variable</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>UPSHIFT_AUDIT_URL</strong></td><td>When set, the CLI POSTs audit events (upgrade, fix, scan_upload) to this URL after each action. Fire-and-forget; no impact on CLI flow if the request fails. You can use the built-in Supabase Edge Function: deploy <code>audit-events</code> and set this to <code>https://&lt;project-ref&gt;.supabase.co/functions/v1/audit-events</code>.</td></tr>
+            <tr><td><strong>UPSHIFT_ORG</strong></td><td>When set, included as <code>org_id</code> in audit payloads (and future credit/billing calls) so the platform can attribute usage to the org.</td></tr>
+            <tr><td><strong>UPSHIFT_API_TOKEN</strong></td><td>Optional. Sent as <code>Authorization: Bearer &lt;token&gt;</code> when POSTing to <code>UPSHIFT_AUDIT_URL</code>.</td></tr>
+          </tbody>
+        </table>
+        <p>See <a href="/docs/team-features.html">Team features</a> for platform schema and API shape.</p>
+
+        <h2>See also</h2>
+        <ul>
+          <li><a href="/docs/user-guide.html">User guide</a> — Workflow and features</li>
+          <li><a href="/blog/when-it-breaks-guardrails-hitl.html">When it breaks &amp; guardrails</a> — HITL and safety</li>
+        </ul>
+      </article>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p><a href="/">upshift</a> · <a href="/radar/">Radar</a> · <a href="/docs/">Docs</a> · AI-powered dependency upgrades</p>
+    </div>
+  </footer>
+</body>
+</html>

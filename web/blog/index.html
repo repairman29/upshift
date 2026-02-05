@@ -8,30 +8,24 @@
   <link rel="icon" href="/favicon.ico" type="image/x-icon" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="../blog.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <script defer data-domain="upshiftai.dev" src="https://plausible.io/js/script.js"></script>
-  <style>
-    .blog-index { max-width: 680px; margin: 0 auto; padding: 3rem 1.5rem; }
-    .blog-index h1 { font-size: 2rem; margin-bottom: 2rem; }
-    .blog-list { list-style: none; padding: 0; margin: 0; }
-    .blog-list li { border-bottom: 1px solid var(--border); padding: 1.5rem 0; }
-    .blog-list li:first-child { padding-top: 0; }
-    .blog-list a { color: var(--text); text-decoration: none; font-weight: 500; }
-    .blog-list a:hover { color: var(--accent); }
-    .blog-list .meta { color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem; }
-    .blog-list .excerpt { color: var(--text-muted); font-size: 0.95rem; margin-top: 0.5rem; line-height: 1.5; }
-  </style>
+  <script defer src="/nav.js"></script>
 </head>
 <body>
   <header class="header">
     <div class="wrap">
       <a href="/" class="logo">upshift</a>
-      <nav>
+      <button type="button" class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+      <nav class="nav-main">
         <a href="/#demo">Demo</a>
+        <a href="/radar/">Radar</a>
         <a href="/#compare">vs Dependabot</a>
         <a href="/#pricing">Pricing</a>
+        <a href="/docs/">Docs</a>
         <a href="/blog/index.html">Blog</a>
         <a href="https://github.com/repairman29/upshift" class="nav-gh" target="_blank" rel="noopener">GitHub</a>
       </nav>
