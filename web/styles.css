@@ -707,7 +707,18 @@ h3:first-child { margin-top: 0; }
 .install-hero .copy-btn {
   padding: 0.5rem 1rem;
   font-size: 0.9rem;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
 }
+.install-hero .copy-btn .copy-btn-check {
+  opacity: 0;
+  color: #3fb950;
+  transition: opacity 0.2s;
+}
+.install-hero .copy-btn.copied .copy-btn-text { color: #3fb950; }
+.install-hero .copy-btn.copied .copy-btn-check { opacity: 1; }
 
 .gh-btn {
   display: inline-flex;
@@ -827,6 +838,10 @@ h3:first-child { margin-top: 0; }
   width: 100%;
   height: auto;
   display: block;
+  transition: opacity 0.25s ease;
+}
+.demo-main img.demo-img {
+  min-height: 200px;
 }
 
 .demo-grid {
@@ -863,12 +878,13 @@ h3:first-child { margin-top: 0; }
 
 .demo-card:hover {
   border-color: var(--accent);
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.02);
 }
 
 .demo-card.active {
   border-color: var(--accent);
-  background: rgba(46, 160, 67, 0.1);
+  background: rgba(59, 130, 246, 0.08);
+  transition: background 0.2s, border-color 0.2s;
 }
 
 .demo-icon {
@@ -886,3 +902,27 @@ h3:first-child { margin-top: 0; }
   color: var(--text-muted);
   font-family: var(--font-mono);
 }
+
+/* Section reveal (entrance) */
+.section-reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.section-reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+.section-reveal .trust-list > li,
+.section-reveal .compare-card {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.section-reveal.in-view .trust-list > li:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0.05s; }
+.section-reveal.in-view .trust-list > li:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.1s; }
+.section-reveal.in-view .trust-list > li:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.15s; }
+.section-reveal.in-view .trust-list > li:nth-child(4) { opacity: 1; transform: translateY(0); transition-delay: 0.2s; }
+.section-reveal.in-view .trust-list > li:nth-child(5) { opacity: 1; transform: translateY(0); transition-delay: 0.25s; }
+.section-reveal.in-view .compare-card:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0.1s; }
+.section-reveal.in-view .compare-card:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.2s; }

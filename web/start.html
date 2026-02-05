@@ -87,6 +87,7 @@
       font-size: 0.75rem;
       cursor: pointer;
     }
+    .copy-btn-small.copied { color: #3fb950; }
     .copy-btn-small:hover {
       background: var(--border);
       color: var(--text);
@@ -185,7 +186,7 @@
       </div>
       <p class="step-desc">Requires Node.js 18 or higher.</p>
       <div class="code-block">
-        <button class="copy-btn-small" onclick="navigator.clipboard.writeText('npm install -g upshift-cli')">Copy</button>
+        <button type="button" class="copy-btn-small" data-copy="npm install -g upshift-cli">Copy</button>
         <code>npm install -g upshift-cli</code>
       </div>
     </div>
@@ -197,7 +198,7 @@
       </div>
       <p class="step-desc">Navigate to any project with a package.json and run:</p>
       <div class="code-block">
-        <button class="copy-btn-small" onclick="navigator.clipboard.writeText('upshift scan')">Copy</button>
+        <button type="button" class="copy-btn-small" data-copy="upshift scan">Copy</button>
         <code>upshift scan</code>
       </div>
       <div class="output-preview">✔ Scan complete
@@ -218,7 +219,7 @@ Vulnerabilities: <span class="warn">high: 1</span>, moderate: 2</div>
       </div>
       <p class="step-desc">Before upgrading, see what changed and assess the risk:</p>
       <div class="code-block">
-        <button class="copy-btn-small" onclick="navigator.clipboard.writeText('upshift explain react --risk')">Copy</button>
+        <button type="button" class="copy-btn-small" data-copy="upshift explain react --risk">Copy</button>
         <code>upshift explain react --risk</code>
         <code><span class="comment"># or get AI-powered deep analysis:</span></code>
         <code>upshift explain react --ai</code>
@@ -240,7 +241,7 @@ Vulnerabilities: <span class="warn">high: 1</span>, moderate: 2</div>
       </div>
       <p class="step-desc">Upshift upgrades the package, runs tests, and rolls back if anything fails:</p>
       <div class="code-block">
-        <button class="copy-btn-small" onclick="navigator.clipboard.writeText('upshift upgrade react')">Copy</button>
+        <button type="button" class="copy-btn-small" data-copy="upshift upgrade react">Copy</button>
         <code>upshift upgrade react</code>
         <code><span class="comment"># or preview first:</span></code>
         <code>upshift upgrade react --dry-run</code>
@@ -293,5 +294,19 @@ Vulnerabilities: <span class="warn">high: 1</span>, moderate: 2</div>
       <p>&copy; 2026 Upshift. Built for developers who ship.</p>
     </div>
   </footer>
+  <script>
+    document.querySelectorAll('.copy-btn-small[data-copy]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var text = this.getAttribute('data-copy');
+        if (!text) return;
+        navigator.clipboard.writeText(text).then(function() {
+          var orig = btn.textContent;
+          btn.textContent = 'Copied!';
+          btn.classList.add('copied');
+          setTimeout(function() { btn.textContent = orig; btn.classList.remove('copied'); }, 1500);
+        });
+      });
+    });
+  </script>
 </body>
 </html>

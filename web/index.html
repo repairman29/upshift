@@ -26,8 +26,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <!-- Product Hunt: replace PH_URL with your launch URL when live -->
-  <a href="https://www.producthunt.com/posts/upshift" id="ph-banner" class="ph-banner" target="_blank" rel="noopener" aria-label="Upshift on Product Hunt">
+  <a href="https://www.producthunt.com/products/upshift-ai?launch=upshift-ai" id="ph-banner" class="ph-banner" target="_blank" rel="noopener" aria-label="Upshift on Product Hunt">
     We're live on Product Hunt →
   </a>
   <header class="header">
@@ -54,7 +53,10 @@
         <p class="hero-oneliner">Dependabot tells you <em>what</em> to upgrade. Upshift tells you <em>why</em>, <em>what breaks</em>, and <em>fixes the code</em>.</p>
         <div class="install-hero">
           <code>npm install -g upshift-cli</code>
-          <button class="copy-btn" onclick="navigator.clipboard.writeText('npm install -g upshift-cli')">Copy</button>
+          <button type="button" class="copy-btn" id="hero-copy-btn" data-copy="npm install -g upshift-cli" aria-label="Copy install command">
+            <span class="copy-btn-text">Copy</span>
+            <span class="copy-btn-check" aria-hidden="true">✓</span>
+          </button>
         </div>
         <div class="hero-ctas">
           <a href="/start" class="btn btn-primary">Get Started</a>
@@ -66,7 +68,7 @@
       </div>
     </section>
 
-    <section class="trust">
+    <section class="trust section-reveal" id="trust">
       <div class="wrap-wide">
         <ul class="trust-list">
           <li>🤖 AI explains breaking changes</li>
@@ -78,14 +80,14 @@
       </div>
     </section>
 
-    <section class="demo" id="demo">
+    <section class="demo section-reveal" id="demo">
       <div class="wrap-wide">
         <h2>See it in action</h2>
         <p class="demo-subtitle">Click any demo to see the full workflow</p>
         
         <!-- Main Demo Display -->
         <div class="demo-main">
-          <img src="demos/6-full-workflow.gif" alt="Upshift full workflow demo" id="demo-display" />
+          <img src="demos/6-full-workflow.gif" alt="Upshift full workflow demo" id="demo-display" class="demo-img" />
         </div>
         
         <!-- Demo Thumbnails -->
@@ -124,7 +126,7 @@
       </div>
     </section>
 
-    <section class="compare" id="compare">
+    <section class="compare section-reveal" id="compare">
       <div class="wrap-wide">
         <h2>Not just another dependency bot</h2>
         <p class="compare-sub">Dependabot and Renovate open PRs. You still read changelogs and fix code by hand. Upshift does the explaining and the fixing.</p>
@@ -363,21 +365,56 @@
     const waitlistEl = document.getElementById('waitlist-count');
     if (waitlistEl) updateWaitlistCount();
 
-    // Demo gallery switching
+    // Copy buttons with "Copied!" feedback
+    function copyWithFeedback(btn) {
+      const text = btn.getAttribute('data-copy') || btn.closest('.install-hero')?.querySelector('code')?.textContent?.trim();
+      if (!text) return;
+      const textEl = btn.querySelector('.copy-btn-text');
+      const checkEl = btn.querySelector('.copy-btn-check');
+      navigator.clipboard.writeText(text).then(() => {
+        btn.classList.add('copied');
+        if (textEl) textEl.textContent = 'Copied!';
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          if (textEl) textEl.textContent = 'Copy';
+        }, 1500);
+      });
+    }
+    document.querySelectorAll('.copy-btn[data-copy]').forEach(btn => {
+      btn.addEventListener('click', () => copyWithFeedback(btn));
+    });
+
+    // Demo gallery: crossfade when switching
     const demoCards = document.querySelectorAll('.demo-card');
     const demoDisplay = document.getElementById('demo-display');
-    
-    demoCards.forEach(card => {
-      card.addEventListener('click', () => {
-        // Update active state
-        demoCards.forEach(c => c.classList.remove('active'));
-        card.classList.add('active');
-        
-        // Update displayed demo
-        const demoSrc = card.getAttribute('data-demo');
-        demoDisplay.src = demoSrc;
+    if (demoDisplay && demoCards.length) {
+      demoCards.forEach(card => {
+        card.addEventListener('click', () => {
+          const demoSrc = card.getAttribute('data-demo');
+          const currentSrc = (demoDisplay.getAttribute('src') || '').replace(/^.*\//, '');
+          if (currentSrc === demoSrc.replace(/^.*\//, '')) return;
+          demoCards.forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
+          demoDisplay.style.opacity = '0';
+          setTimeout(() => {
+            demoDisplay.src = demoSrc;
+            demoDisplay.alt = (card.getAttribute('data-title') || 'Demo') + ' demo';
+            requestAnimationFrame(() => { demoDisplay.style.opacity = '1'; });
+          }, 220);
+        });
       });
-    });
+    }
+
+    // Section entrance: reveal on scroll
+    const revealSections = document.querySelectorAll('.section-reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+        }
+      });
+    }, { rootMargin: '0px 0px -60px 0px', threshold: 0.1 });
+    revealSections.forEach(section => revealObserver.observe(section));
   </script>
 </body>
 </html>
