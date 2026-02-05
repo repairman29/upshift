@@ -18,7 +18,7 @@ const UPSHIFTAI_CLI = process.env.UPSHIFTAI_CLI_PATH || path.join(CLAWDBOT_ROOT,
 
 function ensureCli() {
   if (!fs.existsSync(UPSHIFTAI_CLI)) {
-    return { error: `UpshiftAI CLI not found at ${UPSHIFTAI_CLI}. Set UPSHIFTAI_CLI_PATH or run from CLAWDBOT.` };
+    return { error: `UpshiftAI CLI not found at ${UPSHIFTAI_CLI}. Set UPSHIFTAI_CLI_PATH or run from upshift repo.` };
   }
   return { cli: UPSHIFTAI_CLI };
 }

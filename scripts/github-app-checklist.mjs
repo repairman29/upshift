@@ -12,9 +12,10 @@ Upshift GitHub App — Setup Checklist
    • GitHub → Your profile/org → Settings → Developer settings → GitHub Apps → New GitHub App
    • Name: e.g. "Upshift Scan" or your org name
    • Homepage URL: https://upshiftai.dev (or your docs URL)
-   • Webhook: Active — URL: https://rbfzlqmkwhbvrrfdcain.supabase.co/functions/v1/github-app-webhook
+   • Webhook: Active — URL: https://<project-ref>.supabase.co/functions/v1/github-app-webhook
+     (replace <project-ref> with your Supabase project ref from the Dashboard URL)
    • Webhook secret: generate one, then run:
-     npx supabase secrets set GITHUB_WEBHOOK_SECRET=<that-secret> --project-ref rbfzlqmkwhbvrrfdcain
+     npx supabase secrets set GITHUB_WEBHOOK_SECRET=<that-secret> --project-ref <project-ref>
    • Permissions:
      - Contents: Read-only
      - Pull requests: Read and write (for comments)

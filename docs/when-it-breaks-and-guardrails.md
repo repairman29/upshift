@@ -1,6 +1,7 @@
 # When it breaks & CI/CD guardrails
 
 Feedback from experienced engineers often centers on three questions. Here’s how Upshift fits in.
+For a practical **checklist on what to anticipate and test** (and how to reduce rollbacks), see [What to anticipate and test](upgrade-what-to-test.md).
 
 ## When does it break?
 

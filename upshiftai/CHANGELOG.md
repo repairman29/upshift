@@ -63,5 +63,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **CLI**: Complete command-line interface
 - **Config**: `.upshiftai.json` for webhooks and approval settings
 
-[0.2.0]: https://github.com/repairman29/CLAWDBOT/compare/upshiftai-v0.1.0...upshiftai-v0.2.0
-[0.1.0]: https://github.com/repairman29/CLAWDBOT/releases/tag/upshiftai-v0.1.0
+[0.2.0]: https://github.com/repairman29/upshift/compare/upshiftai-v0.1.0...upshiftai-v0.2.0
+[0.1.0]: https://github.com/repairman29/upshift/releases/tag/upshiftai-v0.1.0

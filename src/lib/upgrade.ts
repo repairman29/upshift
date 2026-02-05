@@ -133,6 +133,9 @@ export async function runUpgrade(options: UpgradeOptions): Promise<void> {
           "Tests: " + (getTestScript(options.cwd) ? `${packageManager} test` : "not configured"),
         ].join("\n") + "\n"
       );
+      if (isMajor) {
+        process.stdout.write(chalk.gray("Tip: Major upgrade. Run `upshift explain " + options.packageName + " --risk` or `--ai` first. See docs/upgrade-what-to-test.md for what to anticipate.\n"));
+      }
       return;
     }
 
@@ -158,11 +161,17 @@ export async function runUpgrade(options: UpgradeOptions): Promise<void> {
         testsPassed = true;
         process.stdout.write(chalk.green("Tests passed.\n"));
       } catch {
-        process.stdout.write(chalk.red("Tests failed.\n"));
+        process.stdout.write(chalk.red("Tests failed. Rolling back.\n"));
+        tryRollback(options.cwd, packageManager);
+        process.stdout.write(
+          chalk.gray("Tip: Run `upshift fix " + options.packageName + "` for AI-suggested code fixes, or `upshift explain " + options.packageName + " --ai` for breaking changes.\n")
+        );
+        throw new Error("Tests failed after upgrade");
       }
     } else {
       process.stdout.write(
-        chalk.gray("No test script configured. Skipping tests.\n")
+        chalk.yellow("No test script configured. Skipping tests; no rollback on breakage.\n") +
+        chalk.gray("Add a \"test\" script in package.json so Upshift can roll back if an upgrade breaks.\n")
       );
     }
 

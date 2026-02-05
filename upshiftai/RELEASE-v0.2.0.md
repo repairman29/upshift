@@ -166,7 +166,7 @@ npm install -g upshiftai-deps@0.2.0
 
 ### Via Git
 ```bash  
-cd CLAWDBOT/upshiftai
+cd upshift/upshiftai
 git pull origin main
 git checkout upshiftai-v0.2.0
 npm install
@@ -179,6 +179,6 @@ docker run -v $(pwd):/workspace upshiftai/deps:0.2.0 analyze /workspace
 
 ---
 
-**Full Changelog**: [upshiftai-v0.1.0...upshiftai-v0.2.0](https://github.com/repairman29/CLAWDBOT/compare/upshiftai-v0.1.0...upshiftai-v0.2.0)
+**Full Changelog**: [upshiftai-v0.1.0...upshiftai-v0.2.0](https://github.com/repairman29/upshift/compare/upshiftai-v0.1.0...upshiftai-v0.2.0)
 
 **Questions?** Open an issue or contact [@repairman29](https://github.com/repairman29).

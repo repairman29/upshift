@@ -134,6 +134,8 @@ Full reference: [Configuration](configuration.md).
 
 Upgrades break at **upgrade time** when tests run. Tests are the guardrail; we roll back on failure. LLM-generated fixes should be reviewed (e.g. `upshift fix --dry-run`). See [When it breaks & guardrails](when-it-breaks-and-guardrails.md) and [Opt-in insights](opt-in-insights.md).
 
+**Fewer rollbacks:** To better anticipate breakage and test the right things, see [What to anticipate and test](upgrade-what-to-test.md) — risk checks, test script setup, and a testing checklist.
+
 ## Credits and billing
 
 - **Explain --ai** costs 1 credit; **fix** costs 3 credits. You get 10 free credits by default.

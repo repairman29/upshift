@@ -1,18 +1,18 @@
 # Vercel CLI & project setup (upshift repo)
 
-**Verified:** Vercel CLI 44.6.3, logged in as **repairman29** (team: jeff-adkins-projects).
+This doc describes how the repo is structured for Vercel deployments. Use it when setting up your own fork or when deploying the marketing site.
 
 ---
 
 ## 1. Local link map
 
-This repo has **three** deploy roots, each with its own `.vercel/project.json`:
+This repo has **three** deploy roots, each with its own `.vercel/project.json` (created when you run `vercel link`):
 
-| Directory | Project ID (from .vercel) | Linked project (from deploy output) | Production URL |
-|-----------|---------------------------|--------------------------------------|----------------|
-| **upshiftai/site/** | `prj_JfgraZiCruTL00L1TgIr6i1FrcmZ` | **site** | https://site-ochre-iota.vercel.app |
-| **web/** | `prj_FDqOIAvyzlu3GB1QVnyDWXeiHGTb` | **web** | **https://upshiftai.dev** |
-| **Repo root** | `prj_pE7ZFhMCRIN5UcSW05u3HQmfKLyD` | (unknown – run `vercel --prod` from root to see) | (varies) |
+| Directory | Project ID (from .vercel) | Linked project | Production URL |
+|-----------|---------------------------|----------------|----------------|
+| **upshiftai/site/** | (run `vercel link` in dir) | **site** | site-*.vercel.app |
+| **web/** | (run `vercel link` in dir) | **web** | your production domain (e.g. upshiftai.dev) |
+| **Repo root** | (run `vercel link` at root) | (varies) | (varies) |
 
 - **`vercel --prod` from `upshiftai/site`** deploys to the **site** project (site-*.vercel.app).
 - **upshiftai.dev** is the production domain for the **web** project, not for **site**.
@@ -31,20 +31,14 @@ This repo has **three** deploy roots, each with its own `.vercel/project.json`:
 
 ---
 
-## 3. Project list (jeff-adkins-projects)
+## 3. Project roles
 
-Upshift-related:
+When deploying this repo (or a fork), you typically have:
 
-- **site** → https://site-ochre-iota.vercel.app (source: upshiftai/site)
-- **web** → https://upshiftai.dev (source: web or root with outputDirectory web)
-- **platform** → https://api.upshiftai.dev
-- **upshift** → https://upshift-psi.vercel.app
-- **upshift-v2-launch** → upshift-v2-launch.vercel.app
-- **upshiftai-marketing** → upshiftai-marketing.vercel.app
+- **web** — Canonical marketing site (from `web/` or root with `outputDirectory: web`). Point your production domain (e.g. upshiftai.dev) here.
+- **platform** — Next.js API/dashboard (from `upshiftai/platform/`), if you deploy it (e.g. api.upshiftai.dev).
+- **site** — Legacy static site from `upshiftai/site/` (optional; can archive once **web** is the only marketing site).
 
-**Which to keep:** **web** (upshiftai.dev) = canonical marketing site. **platform** (api.upshiftai.dev) = API. **upshift** = keep if separate product. **upshiftai-marketing**, **upshift-v2-launch**, **site** = safe to archive once **web** is the only marketing site.
-
-Other projects (cartpilot, olive, smugglers, playsmuggler, echeo-landing, beast-mode, etc.) are unrelated to this repo’s “upshift website” setup.
 
 ---
 
@@ -113,4 +107,4 @@ After this, **upshiftai.dev** should show the new site (Upshift, “Stop reading
 
 ---
 
-**Last verified:** 2026-02-02 (Vercel CLI 44.6.3).
+**Note:** Run `vercel --version` to confirm CLI version when following this doc.

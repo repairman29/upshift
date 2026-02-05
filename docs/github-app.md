@@ -87,17 +87,17 @@ To make your App installable and record installations in the backend:
 
 1. **Create the App** (or use an existing one) — GitHub → Settings → Developer settings → GitHub Apps → New. Name, homepage (e.g. https://upshiftai.dev), set **Webhook: Active** and use the URL below.
 
-2. **Webhook URL** (Supabase Edge Function, already deployed):
+2. **Webhook URL** (your Supabase Edge Function after deploy):
    ```
-   https://rbfzlqmkwhbvrrfdcain.supabase.co/functions/v1/github-app-webhook
+   https://<project-ref>.supabase.co/functions/v1/github-app-webhook
    ```
-   In the App settings, set **Webhook URL** to that, and **Webhook secret** to a random string (e.g. generate one). Subscribe to **Installation** and **Installation repositories** if you want to store installs.
+   Replace `<project-ref>` with your Supabase project ref (from Dashboard URL). In the App settings, set **Webhook URL** to that, and **Webhook secret** to a random string (e.g. generate one). Subscribe to **Installation** and **Installation repositories** if you want to store installs.
 
 3. **Set the secret in Supabase** (use the same value as Webhook secret):
    ```bash
-   npx supabase secrets set GITHUB_WEBHOOK_SECRET=your_webhook_secret --project-ref rbfzlqmkwhbvrrfdcain
+   npx supabase secrets set GITHUB_WEBHOOK_SECRET=your_webhook_secret --project-ref <project-ref>
    ```
-   Or in [Supabase Dashboard](https://supabase.com/dashboard/project/rbfzlqmkwhbvrrfdcain/settings/vault) → Edge Function secrets.
+   Or in Supabase Dashboard → your project → **Settings** → **Edge Function secrets** (Vault).
 
 4. **Install App** — In the App, Install App → choose org/repos. Installations will be stored in `github_app_installations` when users install.
 

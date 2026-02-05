@@ -34,14 +34,14 @@ When the user asks to **analyze dependencies**, **check for ancient/legacy packa
 
 From the user's machine, analysis can also be run via the UpshiftAI CLI:
 
-**If the user has CLAWDBOT repo (or upshiftai) locally:**
+**If the user has the upshift repo (or upshiftai) locally:**
 
 ```bash
 # Auto-detect (npm / pip / go)
-node /path/to/CLAWDBOT/upshiftai/bin/upshiftai-deps.js analyze /path/to/project [--markdown] [--csv] [--no-registry] [--ecosystem=npm|pip|go]
+node /path/to/upshift/upshiftai/bin/upshiftai-deps.js analyze /path/to/project [--markdown] [--csv] [--no-registry] [--ecosystem=npm|pip|go]
 
 # From inside the upshiftai directory
-cd /path/to/CLAWDBOT/upshiftai && node bin/upshiftai-deps.js analyze /path/to/project
+cd /path/to/upshift/upshiftai && node bin/upshiftai-deps.js analyze /path/to/project
 ```
 
 **If they use npx (once published):**

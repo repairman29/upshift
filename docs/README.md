@@ -10,7 +10,8 @@ Index of product and developer documentation.
 | [CLI reference](cli-reference.md) | All commands and options |
 | [Configuration](configuration.md) | Full `.upshiftrc.json` reference |
 | [Radar](radar.md) | Central dependency view (free + Pro) |
-| [When it breaks & guardrails](when-it-breaks-and-guardrails.md) | When upgrades break, CI/CD guardrails, HITL |
+| [When it breaks & guardrails](when-it-breaks-and-guardrails.md) | Guardrails, rollback, HITL. |
+| [What to anticipate and test](upgrade-what-to-test.md) | Before/after upgrade: risk, test script, checklist, fewer rollbacks. |
 | [Opt-in insights](opt-in-insights.md) | Local outcome recording, no telemetry by default |
 | [API Endpoints](endpoint.md) | Billing API reference |
 
