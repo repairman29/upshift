@@ -15,7 +15,7 @@ Map of the repo: where things live, key docs, and apps.
 | **Site (old, still at upshiftai.dev)** | `upshiftai/site/` | Static site: “UpshiftAI — Ancient dependency lineage”, live scanner, docs, pricing, blog. Brand voice: `BRAND-VOICE.md`. Blog media: `blog/BLOG-MEDIA.md`. Domain upshiftai.dev points here until repointed to project that deploys `web/`. |
 | **Platform (API + dashboard)** | `upshiftai/platform/` | Next.js: auth, dashboard, Stripe, Supabase (subscriptions, api_keys, ai_usage). |
 | **Edge / JARVIS + Radar Pro on Supabase** | `supabase/functions/` | `jarvis/` = JARVIS Edge; `radar-upload`, `radar-reports`, `radar-report`, `radar-alert-settings` = Radar Pro; `audit-events` = platform audit; `github-app-webhook` = GitHub App installs. See `docs/radar.md`, `docs/team-features.md`, `docs/github-app.md`, `supabase/migrations/`. |
-| **Docs** | `docs/` | Repo-level docs: when-it-breaks, radar, endpoint, blog posts, **REPO_INDEX.md**, **CURSOR_SESSION_ONBOARDING.md**. |
+| **Docs** | `docs/` | Repo-level docs: when-it-breaks, radar, endpoint, blog posts, **REPO_INDEX.md**. |
 | **UpshiftAI docs** | `upshiftai/docs/`, `upshiftai/*.md` | HITL, JARVIS-AI-SETUP, JARVIS-EDGE-SUPABASE, design, capabilities. |
 
 ---
@@ -34,7 +34,6 @@ Map of the repo: where things live, key docs, and apps.
 - **upshiftai/site/BRAND-VOICE.md** — Customer-centric voice for all site copy.
 - **upshiftai/site/blog/BLOG-MEDIA.md** — How to add GIFs, videos, code examples to blog posts (JARVIS adds media using these classes).
 - **skills/upshiftai/SKILL.md** — What the UpshiftAI JARVIS skill does and when to use it.
-
 ---
 
 ## Apps & deploy
@@ -46,11 +45,6 @@ Map of the repo: where things live, key docs, and apps.
 
 ---
 
-## JARVIS in Cursor
-
-- **docs/JARVIS_IN_CURSOR.md** — Use JARVIS from Cursor when needed: setup (Edge URL, API key), when to use it, how to call it.
-- **.cursor/rules/jarvis.mdc** — Cursor rule (always on): use JARVIS for dependency analysis, blog media, UpshiftAI skill; points to the doc.
-
 ## One-line cheat sheet
 
-**Map** → docs/REPO_INDEX.md | **UpshiftAI** → upshiftai/README.md | **JARVIS** → upshiftai/JARVIS-AI-SETUP.md + skills/upshiftai/SKILL.md | **Edge** → upshiftai/docs/JARVIS-EDGE-SUPABASE.md | **JARVIS in Cursor** → docs/JARVIS_IN_CURSOR.md + .cursor/rules/jarvis.mdc | **Site (new)** → web/ + npm run verify-site:live | **Site (old)** → upshiftai/site/ | **Site voice** → upshiftai/site/BRAND-VOICE.md | **Blog media** → upshiftai/site/blog/BLOG-MEDIA.md.
+**Map** → docs/REPO_INDEX.md | **UpshiftAI** → upshiftai/README.md | **JARVIS** → upshiftai/JARVIS-AI-SETUP.md + skills/upshiftai/SKILL.md | **Edge** → upshiftai/docs/JARVIS-EDGE-SUPABASE.md | **Site (new)** → web/ + npm run verify-site:live | **Site (old)** → upshiftai/site/ | **Site voice** → upshiftai/site/BRAND-VOICE.md | **Blog media** → upshiftai/site/blog/BLOG-MEDIA.md.

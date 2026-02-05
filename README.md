@@ -202,7 +202,7 @@ scripts/setup-jarvis-cursor.sh
 cd upshiftai/platform && node ../../scripts/create-upshift-api-key.cjs
 ```
 
-Then put **JARVIS_EDGE_URL** in `vault/jarvis.json` (or run the create script with `--edge-url https://YOUR_REF.supabase.co/functions/v1/jarvis`). Deploy Edge first: `supabase functions deploy jarvis`. See [docs/JARVIS_IN_CURSOR.md](docs/JARVIS_IN_CURSOR.md). The Cursor rule in `.cursor/rules/jarvis.mdc` tells the agent to use JARVIS when needed; invoke via `node scripts/call-jarvis.js <task> '<json>'`.
+Then put **JARVIS_EDGE_URL** in `vault/jarvis.json` (or run the create script with `--edge-url https://YOUR_REF.supabase.co/functions/v1/jarvis`). Deploy Edge first: `supabase functions deploy jarvis`. See [upshiftai/docs/JARVIS-EDGE-SUPABASE.md](upshiftai/docs/JARVIS-EDGE-SUPABASE.md). Invoke JARVIS via `node scripts/call-jarvis.js <task> '<json>'`.
 
 ## Documentation
 
