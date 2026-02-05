@@ -48,6 +48,23 @@ body {
   padding: 0 2rem;
 }
 
+/* Product Hunt banner */
+.ph-banner {
+  display: block;
+  text-align: center;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(90deg, #da552f 0%, #e05a32 100%);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.ph-banner:hover {
+  color: #fff;
+  opacity: 0.95;
+}
+
 /* Header */
 .header {
   position: sticky;
@@ -601,7 +618,45 @@ h3:first-child { margin-top: 0; }
 }
 
 .cta h2 {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.cta-primary {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  margin: 0 0 1.5rem;
+}
+
+.cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.cta-newsletter {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin: 0 0 0.75rem;
+}
+
+.waitlist-count-line {
+  margin-top: 0;
+}
+
+.cta .signup-form {
+  margin-top: 0.5rem;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+.btn-outline:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 /* Footer */
