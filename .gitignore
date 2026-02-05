@@ -10,3 +10,7 @@ vault/
 !vault/jarvis.json.example
 supabase/.temp/
 .vercel
+.next
+.upshiftai-tmp/
+.cursor/
+docs/JARVIS_IN_CURSOR.md
