@@ -26,12 +26,17 @@ export type CodeFix = {
   description: string;
 };
 
+/** high = tests passed after apply (deterministic); heuristic = AI-suggested, review recommended */
+export type FixConfidence = "high" | "heuristic";
+
 export type FixResult = {
   package: string;
   fromVersion: string | null;
   toVersion: string;
   fixes: CodeFix[];
   applied: boolean;
+  /** Present when applied or in JSON output; high = tests passed */
+  confidence?: FixConfidence;
 };
 
 export async function runFix(options: FixOptions): Promise<void> {
@@ -86,6 +91,7 @@ export async function runFix(options: FixOptions): Promise<void> {
         toVersion: targetVersion,
         fixes,
         applied: false,
+        confidence: "heuristic", // no apply yet; run tests after apply for high
       };
       process.stdout.write(JSON.stringify(result, null, 2) + "\n");
       return;
@@ -108,9 +114,16 @@ export async function runFix(options: FixOptions): Promise<void> {
       process.stdout.write("\n");
     }
 
-    // Dry run mode
+    // Dry run mode: also print unified diff for PR review
     if (options.dryRun) {
+      const diffText = buildUnifiedDiff(byFile, options.cwd);
+      if (diffText) {
+        process.stdout.write(chalk.bold("\n--- Unified diff (for PR review) ---\n"));
+        process.stdout.write(chalk.gray(diffText));
+        process.stdout.write(chalk.bold("---\n\n"));
+      }
       process.stdout.write(chalk.gray("Dry run - no changes applied.\n"));
+      process.stdout.write(chalk.yellow("Confidence: heuristic (AI-suggested; run tests after applying to verify).\n"));
       process.stdout.write(chalk.gray("Remove --dry-run to apply these changes.\n"));
       return;
     }
@@ -128,8 +141,23 @@ export async function runFix(options: FixOptions): Promise<void> {
           to_version: targetVersion,
         });
         applySpinner.succeed(`Applied ${fixes.length} fixes`);
-        
-        process.stdout.write(chalk.green("\n✔ Code updated successfully!\n"));
+
+        // Confidence: run tests; high if they pass, else heuristic
+        let confidence: FixConfidence = "heuristic";
+        try {
+          const { runTests } = await import("./package-manager.js");
+          await runTests(options.cwd);
+          confidence = "high";
+        } catch {
+          // no test script or tests failed
+        }
+
+        if (confidence === "high") {
+          process.stdout.write(chalk.green("\n✔ Code updated successfully! Confidence: high (tests passed).\n"));
+        } else {
+          process.stdout.write(chalk.green("\n✔ Code updated successfully!\n"));
+          process.stdout.write(chalk.yellow("Confidence: heuristic (tests skipped or failed; review recommended).\n"));
+        }
         process.stdout.write(chalk.gray("Next: run `upshift upgrade " + options.packageName + "` to complete the upgrade.\n"));
       } catch (err) {
         applySpinner.fail("Failed to apply some fixes");
@@ -369,6 +397,27 @@ async function confirmApply(count: number): Promise<boolean> {
       resolve(answer.toLowerCase() === "y" || answer.toLowerCase() === "yes");
     });
   });
+}
+
+/** Build a unified diff (for PR review) from fixes without writing files. */
+function buildUnifiedDiff(byFile: Record<string, CodeFix[]>, cwd: string): string {
+  const chunks: string[] = [];
+  for (const [file, fileFixes] of Object.entries(byFile)) {
+    if (!existsSync(file)) continue;
+    const oldContent = readFileSync(file, "utf8");
+    const lines = oldContent.split("\n");
+    const sortedFixes = [...fileFixes].sort((a, b) => b.line - a.line);
+    for (const fix of sortedFixes) {
+      if (fix.line >= 1 && fix.line <= lines.length) {
+        lines[fix.line - 1] = fix.replacement;
+      }
+    }
+    const newContent = lines.join("\n");
+    const relPath = path.relative(cwd, file);
+    const patch = createTwoFilesPatch(relPath, relPath, oldContent, newContent, "before", "after", { context: 3 });
+    chunks.push(patch);
+  }
+  return chunks.join("");
 }
 
 function applyFixes(fixes: CodeFix[]): void {

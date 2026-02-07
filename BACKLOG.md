@@ -8,7 +8,7 @@ Prioritized list of next steps derived from [ROADMAP.md](ROADMAP.md) and [docs/S
 
 | # | Item | Owner | Notes |
 |---|------|--------|------|
-| 1 | **Ship published GitHub App** | — | **Get started:** [docs/GITHUB_APP_SHIP_CHECKLIST.md](docs/GITHUB_APP_SHIP_CHECKLIST.md). One-click install; scan on PR, comment. Backend: `github-app-webhook` + `github_app_installations`. |
+| 1 | **Ship published GitHub App** | ✅ Done | **Get started:** [docs/GITHUB_APP_SHIP_CHECKLIST.md](docs/GITHUB_APP_SHIP_CHECKLIST.md). One-click install; scan on PR, comment. Backend: `github-app-webhook` + `github_app_installations`. |
 | 2 | **Landing messaging** | ✅ Done | Hero: "Let AI fix what breaks." Compare: "We did your chores for you. Here's the receipt." (Web + README updated.) |
 | 3 | **Platform audit endpoint live** | ✅ Done | **Get started:** [docs/AUDIT_GO_LIVE.md](docs/AUDIT_GO_LIVE.md). Deploy `audit-events`, run migration, set `UPSHIFT_AUDIT_URL`. Position as compliance automation. |
 
@@ -18,10 +18,10 @@ Prioritized list of next steps derived from [ROADMAP.md](ROADMAP.md) and [docs/S
 
 | # | Item | Owner | Notes |
 |---|------|--------|------|
-| 4 | **Confidence score for AI fixes** | — | In UI/CLI: green = high confidence (tests passed, deterministic); yellow = heuristic. Reduces churn when model is wrong. |
-| 5 | **`upshift fix --dry-run` polish** | — | Clear, reviewable diff for PR approval before any code is touched. Required for enterprise trust. |
-| 6 | **Radar PDF Health Report** | — | Export Radar (or summary) as PDF for CTOs, consultants, client reporting. |
-| 7 | **Silent mode / auto-merge** | — | When upgrade + tests pass and no breaking changes, option to merge PR automatically. "Maintenance on autopilot." |
+| 4 | **Confidence score for AI fixes** | ✅ Done | In UI/CLI: green = high confidence (tests passed, deterministic); yellow = heuristic. Reduces churn when model is wrong. |
+| 5 | **`upshift fix --dry-run` polish** | ✅ Done | Clear, reviewable diff for PR approval before any code is touched. Required for enterprise trust. |
+| 6 | **Radar PDF Health Report** | ✅ Done | Export Radar (or summary) as PDF for CTOs, consultants, client reporting. |
+| 7 | **Silent mode / auto-merge** | ✅ Done | When scan is clean (0 outdated, 0 vulns), optional auto-merge via repo secret ENABLE_AUTOMERGE=true. "Maintenance on autopilot." |
 
 ---
 

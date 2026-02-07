@@ -1,6 +1,9 @@
 # Upshift scan on PR using GitHub App token (for private repos / org-wide)
 # Requires: Create a GitHub App, install on org/repo, add secrets APP_ID and APP_PRIVATE_KEY
 # See docs/github-app.md for setup. Use this workflow with the Upshift GitHub App (beta) or your own App.
+#
+# Optional — silent mode / auto-merge: Set repo secret ENABLE_AUTOMERGE=true to enable auto-merge
+# when scan finds 0 outdated and 0 vulns. Requires: Settings → General → Allow auto-merge.
 
 name: Upshift Scan (GitHub App)
 
@@ -94,3 +97,11 @@ jobs:
                 body,
               });
             }
+
+      - name: Enable auto-merge when scan is clean (silent mode)
+        if: github.event_name == 'pull_request' && steps.scan.outputs.outdated == '0' && steps.scan.outputs.vulns == '0' && secrets.ENABLE_AUTOMERGE == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          gh pr merge ${{ github.event.pull_request.number }} --auto --squash
+          echo "Auto-merge enabled (scan clean: 0 outdated, 0 vulns)."

@@ -287,3 +287,39 @@
   margin-bottom: 0.5rem;
   color: var(--text);
 }
+
+/* Print / PDF: show only summary + table for Health Report */
+.radar-print-only {
+  display: none;
+}
+@media print {
+  .header,
+  .nav-main,
+  .nav-toggle,
+  .radar-hero,
+  .radar-tiers,
+  .radar-pro-section,
+  .radar-actions,
+  .radar textarea,
+  .radar .hint,
+  .radar .cta-pro,
+  .footer {
+    display: none !important;
+  }
+  .radar-print-only {
+    display: block !important;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  .radar-print-only .hint {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+  }
+  .radar-dashboard h2 {
+    display: none;
+  }
+}

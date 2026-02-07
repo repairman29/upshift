@@ -8,8 +8,8 @@ Reference: [github-app.md](github-app.md) for full scaffold and webhook details.
 
 ## Pre-requisites
 
-- [ ] Supabase project linked (`supabase link` or `--project-ref`)
-- [ ] Supabase migrations applied (`supabase db push` or `npm run supabase:push`) so `github_app_installations` exists
+- [x] Supabase project linked (`supabase link` or `--project-ref`)
+- [x] Supabase migrations applied (`supabase db push` or `npm run supabase:push`) so `github_app_installations` exists
 
 ---
 
@@ -59,18 +59,18 @@ Then in GitHub App settings, set **Webhook URL** and **Webhook secret** to the v
 
 ## 3. Public install flow
 
-- [ ] **Setup URL (in App settings):** Set to **`https://upshiftai.dev/github-app-installed`** so after someone installs the App they land on the "Next: add the workflow" page.
-- [ ] **Install App URL:** Use GitHub’s install URL:  
+- [x] **Setup URL (in App settings):** Set to **`https://upshiftai.dev/github-app-installed`** so after someone installs the App they land on the "Next: add the workflow" page.
+- [x] **Install App URL:** Use GitHub’s install URL:  
   `https://github.com/apps/<app-slug>/installations/new`  
   (App slug is the URL-friendly name from App settings; for Upshift it's `upshift-ai`.)
-- [ ] Add a **"Install Upshift"** or **"Add to GitHub"** CTA on [upshiftai.dev](https://upshiftai.dev) (e.g. Pricing or Docs) that links to this URL — **done** (homepage, start page, docs).
-- [ ] After install, installations are stored in `github_app_installations` (for future dashboard/billing)
+- [x] Add a **"Install Upshift"** or **"Add to GitHub"** CTA on [upshiftai.dev](https://upshiftai.dev) (e.g. Pricing or Docs) that links to this URL — homepage, start page, docs.
+- [x] After install, installations are stored in `github_app_installations` (for future dashboard/billing)
 
 ---
 
 ## 4. Repos: run scan on PR
 
-- [ ] Document for users: **After installing the App**, add the workflow to each repo:
+- [x] Document for users: **After installing the App**, add the workflow to each repo:
   - Copy [.github/workflows/upshift-app-scan.yml](../.github/workflows/upshift-app-scan.yml) into the repo
   - Add secrets: **APP_ID** (App ID from step 1), **APP_PRIVATE_KEY** (contents of the .pem file)
 - [ ] Optional: Build a "one-click add workflow" that creates the file and prompts for secrets (or use GitHub’s “Add to repo” flow if you have an OAuth App)
@@ -88,6 +88,14 @@ Then in GitHub App settings, set **Webhook URL** and **Webhook secret** to the v
 
 - Users can click a link on upshiftai.dev → install the App on an org/repo → add workflow + secrets → get scan comments on PRs.
 - Installations are recorded in `github_app_installations` for future use (billing, dashboard).
+
+---
+
+## Optional: Silent mode (auto-merge)
+
+- In repos where you want PRs to auto-merge when the scan is clean (0 outdated, 0 vulns), add a **repository secret** **ENABLE_AUTOMERGE** = `true`.
+- Enable **Settings → General → Pull Requests → Allow auto-merge** for the repo.
+- The workflow will run `gh pr merge --auto --squash` when the scan passes with zero issues.
 
 ---
 

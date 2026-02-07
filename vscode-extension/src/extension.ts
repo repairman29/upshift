@@ -261,7 +261,7 @@ async function fixCurrentFileCommand() {
     const { stdout } = await execAsync(`upshift fix ${pkg} --dry-run --json`, {
       cwd: workspaceFolder.uri.fsPath,
     });
-    const result = JSON.parse(stdout) as { fixes: CodeFix[]; fromVersion: string | null; toVersion: string };
+    const result = JSON.parse(stdout) as { fixes: CodeFix[]; fromVersion: string | null; toVersion: string; confidence?: "high" | "heuristic" };
     const fixes = result.fixes || [];
 
     if (fixes.length === 0) {
@@ -270,7 +270,8 @@ async function fixCurrentFileCommand() {
       return;
     }
 
-    channel.appendLine(`${fixes.length} fix(es) for ${pkg} ${result.fromVersion ?? "?"} → ${result.toVersion}:`);
+    const confidence = result.confidence ?? "heuristic";
+    channel.appendLine(`${fixes.length} fix(es) for ${pkg} ${result.fromVersion ?? "?"} → ${result.toVersion} | Confidence: ${confidence}`);
     const byFile = new Map<string, CodeFix[]>();
     for (const f of fixes) {
       const rel = f.file.startsWith(workspaceFolder.uri.fsPath)

@@ -26,6 +26,7 @@
         <a href="/#pricing">Pricing</a>
         <a href="/docs/">Docs</a>
         <a href="/blog/index.html">Blog</a>
+        <a href="https://api.upshiftai.dev" target="_blank" rel="noopener">Sign in</a>
         <a href="https://github.com/repairman29/upshift" class="nav-gh" target="_blank" rel="noopener">GitHub</a>
       </nav>
     </div>
@@ -38,6 +39,7 @@
         <h1>Radar</h1>
         <p class="lead">See every repo’s dependency health in one place. Outdated counts, vulnerabilities, ecosystems. One dashboard for your whole stack.</p>
         <p class="hint">Generate reports with <code>upshift scan --report report.json</code> in each repo, then paste or upload below. Or use <code>upshift radar</code> to open this page. <a href="/docs/radar.html">Learn more in the docs</a>.</p>
+        <p style="margin-top:1rem; font-size:0.95rem;"><strong>Use the tools:</strong> No account needed for the free tier—paste or upload JSON below. For a persisted dashboard and Pro features, <a href="https://api.upshiftai.dev" target="_blank" rel="noopener">sign in</a> or use your Radar Pro API URL + token in the section below. <a href="/docs/access-and-auth.html">Access &amp; auth</a>.</p>
       </div>
     </section>
 
@@ -93,6 +95,7 @@
         <button type="button" id="load" class="primary">Load report(s)</button>
         <button type="button" id="upload-btn">Upload file</button>
         <input type="file" id="file-input" accept=".json,application/json" />
+        <button type="button" id="export-pdf" title="Print or save as PDF">Export / print report</button>
         <button type="button" id="clear">Clear</button>
       </div>
       <textarea id="json" placeholder='Paste output of: upshift scan --report report.json&#10;Or: {"status":"ok","packageManager":"npm","outdated":[...],"cwd":"/path/to/repo",...}'></textarea>
@@ -285,6 +288,24 @@
       tableWrap.innerHTML = emptyStateHtml;
     });
     uploadBtn.addEventListener('click', () => fileInput.click());
+    document.getElementById('export-pdf').addEventListener('click', function() {
+      if (summaryEl.style.display !== 'flex') {
+        alert('Load at least one report first, then click Export / print report. Use your browser\'s "Save as PDF" when printing.');
+        return;
+      }
+      var dashboard = document.querySelector('.radar-dashboard');
+      var titleEl = document.getElementById('radar-print-title');
+      if (!titleEl) {
+        titleEl = document.createElement('div');
+        titleEl.id = 'radar-print-title';
+        titleEl.className = 'radar-print-only';
+        dashboard.insertBefore(titleEl, dashboard.firstChild);
+      }
+      titleEl.innerHTML = '<strong>Upshift Radar — Dependency Health Report</strong><br><span class="hint">Generated ' + new Date().toLocaleDateString() + '</span>';
+      document.body.classList.add('radar-print');
+      window.print();
+      document.body.classList.remove('radar-print');
+    });
     fileInput.addEventListener('change', function() {
       const f = this.files && this.files[0];
       if (!f) return;
