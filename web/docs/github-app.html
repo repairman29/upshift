@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GitHub App | Upshift Docs</title>
-  <meta name="description" content="Scan-on-PR with GitHub App token; workflow and webhook setup." />
+  <meta name="description" content="Install the Upshift GitHub App for scan-on-push and PR comments. Setup and after-install steps." />
   <link rel="icon" href="/favicon.ico" type="image/x-icon" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="../styles.css" />
@@ -25,6 +25,7 @@
         <a href="/#pricing">Pricing</a>
         <a href="/docs/">Docs</a>
         <a href="/blog/index.html">Blog</a>
+        <a href="https://api.upshiftai.dev" target="_blank" rel="noopener">Sign in</a>
         <a href="https://github.com/repairman29/upshift" class="nav-gh" target="_blank" rel="noopener">GitHub</a>
       </nav>
     </div>
@@ -40,12 +41,40 @@
           <a href="/docs/cli-reference.html">CLI reference</a>
           <a href="/docs/configuration.html">Configuration</a>
           <a href="/docs/radar.html">Radar</a>
+          <a href="/docs/access-and-auth.html">Access &amp; auth</a>
         </nav>
       </aside>
       <article class="docs-content">
-        <h1>GitHub App (scaffold + beta)</h1>
-        <p>Scan-on-PR with App token; workflow and webhook setup.</p>
-        <p>Full content for this page is coming soon. See the <a href="/docs/user-guide.html">User guide</a> for CI and CLI usage in the meantime.</p>
+        <h1>GitHub App</h1>
+        <p>Install the Upshift GitHub App to run a dependency scan on every push to <code>main</code> and on every pull request. Optionally, the App posts a comment on PRs with outdated and vulnerability counts.</p>
+
+        <h2>Install the App</h2>
+        <p><a href="https://github.com/apps/upshift-ai/installations/new" class="btn btn-primary" target="_blank" rel="noopener">Add to GitHub</a></p>
+        <p>Choose the account or org, then select which repositories can use the App. After you install, you’ll be sent to the <strong>next steps</strong> page (or set your App’s Setup URL to <code>https://upshiftai.dev/github-app-installed</code> so users land there).</p>
+
+        <h2>After you install</h2>
+        <p>For each repo where you installed the App:</p>
+        <ol>
+          <li><strong>Add the workflow file.</strong> Copy <a href="https://github.com/repairman29/upshift/blob/main/.github/workflows/upshift-app-scan.yml" target="_blank" rel="noopener">.github/workflows/upshift-app-scan.yml</a> from the Upshift repo into your repo’s <code>.github/workflows/</code> (create the folder if needed).</li>
+          <li><strong>Add repository secrets.</strong> In the repo: <strong>Settings → Secrets and variables → Actions</strong>. Create:
+            <ul>
+              <li><strong>APP_ID</strong> — Your GitHub App’s App ID (GitHub → Settings → Developer settings → GitHub Apps → your App).</li>
+              <li><strong>APP_PRIVATE_KEY</strong> — The full contents of the <code>.pem</code> file you downloaded when creating the App (include the BEGIN/END lines).</li>
+            </ul>
+          </li>
+          <li><strong>Commit and push.</strong> The next push to <code>main</code> or the next PR will trigger the scan. On PRs, the App will post or update a comment with the results.</li>
+        </ol>
+        <p>Detailed page: <a href="/github-app-installed.html">Upshift installed — next steps</a>.</p>
+
+        <h2>Creating your own App (self-host)</h2>
+        <p>If you want to run your own GitHub App (e.g. for a private backend), use the <a href="https://github.com/repairman29/upshift/blob/main/docs/GITHUB_APP_SHIP_CHECKLIST.md" target="_blank" rel="noopener">ship checklist</a> in the repo: create the App, set webhook URL and secret, deploy the Edge Function, then use the same workflow file and secrets (<code>APP_ID</code>, <code>APP_PRIVATE_KEY</code>) for your App’s values.</p>
+
+        <h2>What the workflow does</h2>
+        <ul>
+          <li>Triggers on <strong>push to <code>main</code></strong>, <strong>pull_request</strong> (opened/synchronize), and <strong>workflow_dispatch</strong>.</li>
+          <li>Installs dependencies (<code>npm ci</code> or equivalent), then runs <code>upshift scan --json</code>.</li>
+          <li>On PRs, posts a comment with outdated and vulnerability counts (or updates the existing comment).</li>
+        </ul>
         <p><a href="/docs/">← Back to Docs index</a></p>
       </article>
     </div>
