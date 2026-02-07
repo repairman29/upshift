@@ -64,8 +64,16 @@
       "destination": "/docs/team-features.html"
     },
     {
+      "source": "/docs/access-and-auth",
+      "destination": "/docs/access-and-auth.html"
+    },
+    {
       "source": "/start",
       "destination": "/start.html"
+    },
+    {
+      "source": "/github-app-installed",
+      "destination": "/github-app-installed.html"
     },
     {
       "source": "/radar",
