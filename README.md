@@ -4,15 +4,15 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![VS Code Extension](https://img.shields.io/visual-studio-marketplace/v/jeffadkins10463.upshift-vscode)](https://marketplace.visualstudio.com/items?itemName=jeffadkins10463.upshift-vscode)
 
-**AI-powered dependency upgrades.** Stop reading changelogs—let AI tell you what breaks.
+**AI-powered dependency upgrades.** Stop reading changelogs—let AI fix what breaks.
 
 Upshift scans for outdated and vulnerable packages, explains breaking changes with AI, generates code fixes, and upgrades safely with automatic rollback. **Radar** is the central view of dependency health across all your repos—one dashboard for your whole stack (free: paste reports; Pro/Team: persisted dashboard, history, alerts).
 
-> **Dependabot tells you *what* to upgrade. Upshift tells you *why*, *what breaks*, and *fixes the code*.**
+> **They hand you a list of chores. We did your chores—here's the receipt.**
 
 ## Status
 
-Supports npm, yarn, and pnpm. See [ROADMAP.md](ROADMAP.md) for what's next.
+Supports npm, yarn, and pnpm. **What's next:** [ROADMAP.md](ROADMAP.md) · [BACKLOG.md](BACKLOG.md) (prioritized work) · [docs/STRATEGY_AND_FEEDBACK.md](docs/STRATEGY_AND_FEEDBACK.md) (strategy).
 
 **When does it break?** At upgrade time: when you or CI run `upshift upgrade`, we run your tests and roll back if they fail. CI/CD and your existing smoke/integration tests are the guardrail—we don't replace them. See [When it breaks & guardrails](docs/when-it-breaks-and-guardrails.md).
 
@@ -158,19 +158,29 @@ jobs:
 
 See `.github/workflows/example-scan.yml` for a full example.
 
+## Install the GitHub App
+
+One-click scan on push and PRs (and optional comment with outdated/vuln counts):
+
+1. **Install the App** on your org or repo: [**Install Upshift**](https://github.com/apps/upshift-ai/installations/new) (or use your own App’s install URL from GitHub → Settings → Developer settings → GitHub Apps).
+2. **Add the workflow** to the repo: copy [.github/workflows/upshift-app-scan.yml](.github/workflows/upshift-app-scan.yml) into your repo’s `.github/workflows/`.
+3. **Add repo secrets:** `APP_ID` (your GitHub App ID) and `APP_PRIVATE_KEY` (contents of the App’s .pem file).
+
+After that, every push to `main` (and every PR) runs a dependency scan. Full setup (webhook, Supabase, permissions): [GitHub App ship checklist](docs/GITHUB_APP_SHIP_CHECKLIST.md).
+
 ## What's available now
 
 - ✅ AI-powered explanations (`upshift explain --ai`)
 - ✅ AI code fixes (`upshift fix`)
 - ✅ VS Code extension ([install](https://marketplace.visualstudio.com/items?itemName=jeffadkins10463.upshift-vscode))
 - ✅ GitHub Action for CI/CD
+- ✅ **GitHub App** — [Install Upshift](https://github.com/apps/upshift-ai/installations/new) for scan-on-push/PR ([setup](docs/GITHUB_APP_SHIP_CHECKLIST.md))
 - ✅ Interactive mode (`upshift interactive`)
 - ✅ Monorepo support (`upshift workspaces`)
 - ✅ Slack/Discord notifications (`upshift notify`)
 
 ## Coming next
 
-- GitHub App for repo-level scanning
 - Multi-repo dashboard (Radar)
 - Python support (pip/poetry)
 
@@ -208,7 +218,7 @@ Then put **JARVIS_EDGE_URL** in `vault/jarvis.json` (or run the create script wi
 
 **Product / users:** [User guide](docs/user-guide.md) · [CLI reference](docs/cli-reference.md) · [Configuration](docs/configuration.md) · [Radar](docs/radar.md) · [When it breaks & guardrails](docs/when-it-breaks-and-guardrails.md) · [Opt-in insights](docs/opt-in-insights.md)
 
-**Developers:** [Development guide](docs/development.md) · [GitHub App (scaffold)](docs/github-app.md) · [Contributing](CONTRIBUTING.md)
+**Developers:** [Development guide](docs/development.md) · [GitHub App (ship checklist)](docs/GITHUB_APP_SHIP_CHECKLIST.md) · [Contributing](CONTRIBUTING.md)
 
 **Reference:** [API Endpoints](docs/endpoint.md) · [Roadmap](ROADMAP.md) · [Release v0.4.0](RELEASE-v0.4.0.md) · [Docs index](docs/README.md)
 
