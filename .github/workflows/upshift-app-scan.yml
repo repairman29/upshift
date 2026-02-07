@@ -33,7 +33,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          if [ -f package-lock.json ]; then npm ci; elif [ -f yarn.lock ]; then yarn install --frozen-lockfile; elif [ -f pnpm-lock.yaml ]; then pnpm install --frozen-lockfile; else npm install; fi
+          if [ -f package-lock.json ]; then npm ci || npm install; elif [ -f yarn.lock ]; then yarn install --frozen-lockfile || yarn install; elif [ -f pnpm-lock.yaml ]; then pnpm install --frozen-lockfile || pnpm install; elif [ -f package.json ]; then npm install; else echo "No package.json found, skipping install"; fi
 
       - name: Install Upshift
         run: npm install -g upshift-cli
