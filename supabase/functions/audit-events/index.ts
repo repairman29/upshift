@@ -63,6 +63,7 @@ Deno.serve(async (req) => {
     metadata: payload.metadata ?? null,
     ip: req.headers.get("x-forwarded-for") ?? req.headers.get("x-real-ip") ?? null,
     user_agent: req.headers.get("user-agent") ?? null,
+    action: payload.event_type, // some DBs have action column; use event_type
   });
 
   if (error) {

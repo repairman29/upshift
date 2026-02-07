@@ -13,3 +13,7 @@ port = 54322
 [studio]
 enabled = true
 port = 54323
+
+# Audit endpoint: CLI POSTs without Supabase JWT (uses optional UPSHIFT_API_TOKEN in body/header)
+[functions.audit-events]
+verify_jwt = false
