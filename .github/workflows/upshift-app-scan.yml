@@ -42,7 +42,8 @@ jobs:
         id: scan
         run: |
           set +e
-          RESULT=$(upshift scan --json 2>&1)
+          # Capture only stdout so JSON is not mixed with spinner (stderr)
+          RESULT=$(upshift scan --json 2>/dev/null)
           EXIT=$?
           set -e
           echo "result<<EOF" >> $GITHUB_OUTPUT
