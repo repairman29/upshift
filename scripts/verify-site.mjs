@@ -23,7 +23,32 @@ const checks = [
   {
     name: "web/index.html has Radar link",
     file: path.join(webDir, "index.html"),
-    expect: "/radar/",
+    expect: 'href="/radar/"',
+  },
+  {
+    name: "web/index.html Docs link points to /docs/",
+    file: path.join(webDir, "index.html"),
+    expect: 'href="/docs/"',
+  },
+  {
+    name: "web/index.html has mobile nav toggle",
+    file: path.join(webDir, "index.html"),
+    expect: "nav-toggle",
+  },
+  {
+    name: "web/index.html has Sign in link to platform",
+    file: path.join(webDir, "index.html"),
+    expect: "api.upshiftai.dev",
+  },
+  {
+    name: "web/docs/access-and-auth.html exists",
+    file: path.join(webDir, "docs", "access-and-auth.html"),
+    expect: "Use the tools",
+  },
+  {
+    name: "web/docs/index.html exists and has Documentation",
+    file: path.join(webDir, "docs", "index.html"),
+    expect: "Documentation",
   },
   {
     name: "web/radar/index.html has Radar Pro section",

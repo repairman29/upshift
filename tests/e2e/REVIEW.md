@@ -27,7 +27,7 @@ All checks **passed** on last run.
 - `upshift upgrade` (mutating, needs isolated env)
 - `upshift migrate <pkg> --dry-run` (apply template in fixture)
 - Python/Ruby/Go scan from fixture (optional fixtures with pyproject.toml / Gemfile / go.mod)
-- Browser e2e for `web/` and Radar (manual: open `web/index.html` and `web/radar/index.html` via local server)
+- **Browser e2e** — `tests/e2e/browser/site.spec.js` (Playwright). Run: `npm run e2e:browser`. Serves `web/` on port 3333 and tests homepage, Radar, docs, mobile nav, 404. Projects: chromium + mobile viewport.
 
 ---
 
@@ -52,7 +52,7 @@ All checks **passed** on last run.
 ### Recommendations
 
 1. **Blog font:** Switch blog page to Inter (or document that blog uses DM Sans) for consistency with main site.
-2. **Browser e2e (optional):** Add Playwright or similar to open `/` and `/radar/`, assert visible headings and no console errors.
+2. **Browser e2e:** Implemented. `npm run e2e:browser` runs Playwright (home, Radar, docs, mobile nav, 404). Full pipeline: `npm run e2e:all` (CLI e2e + verify-site + browser e2e).
 3. **Explain e2e:** Add test with mocked API or `OPENAI_API_KEY` in env for `upshift explain chalk` in fixture.
 
 ---

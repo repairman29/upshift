@@ -26,6 +26,10 @@ Map of the repo: where things live, key docs, and apps.
 - **ROADMAP.md** (root) — What’s next for main CLI.
 - **docs/when-it-breaks-and-guardrails.md** — When it breaks, CI/CD guardrails, HITL.
 - **docs/team-features.md** — Team/Pro design: audit, org credit pools, CLI readiness.
+- **BACKLOG.md** (root) — Ordered next steps (P0–P3) for sprint planning; from ROADMAP + strategy feedback.
+- **docs/STRATEGY_AND_FEEDBACK.md** — External strategy analysis: value, product, biz, GTM, technical priorities; reference for ROADMAP and messaging.
+- **docs/GITHUB_APP_SHIP_CHECKLIST.md** — P0: Step-by-step to ship the published GitHub App (create App, webhook, install URL, workflow).
+- **docs/AUDIT_GO_LIVE.md** — P0: Deploy audit-events, run migration, document UPSHIFT_AUDIT_URL for compliance.
 - **docs/enterprise.md** — Enterprise: SSO, on-premise, SLA, contact.
 - **docs/supabase-deploy.md** — Supabase: upgrade CLI, run migrations (`db push`), I/O monitoring (`inspect db`), deploy Edge Functions, Management API.
 - **upshiftai/README.md** — UpshiftAI overview, CLI, platform, JARVIS.

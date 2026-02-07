@@ -54,7 +54,7 @@ npx upshift scan --json | jq '{outdated: (.outdated | length), vulns: (.vulnerab
 | echeovid | — | 36, 19 | — |
 | slidemate | — | 6, 4 | — |
 | trove-app | — | 28, 15 | — |
-| postsub | 45, 26 | *fail* (npm ci: lockfile sync) | fixed with ci \|\| install |
+| postsub | 45, 26 | 45, 26 (after npm ci \|\| npm install) | ✓ |
 | berry-avenue-codes | — | *fail* (no package.json in root) | not a Node root repo |
 
 ---
@@ -72,3 +72,5 @@ npx upshift scan --json | jq '{outdated: (.outdated | length), vulns: (.vulnerab
 - **repairman29/berry-avenue-codes** — no package.json in root; workflow will fail at install until repo has Node at root or we add subdir support
 
 To add another repo: copy `.github/workflows/upshift-app-scan.yml`, set secrets `APP_ID` and `APP_PRIVATE_KEY`, ensure the App is installed on that repo. Then run once and compare to a local scan.
+
+**Rollback and tests:** The App workflow is **scan-only** (no upgrade, no rollback). Where rollback runs and what tests trigger it: [ROLLBACK_AND_TESTS.md](ROLLBACK_AND_TESTS.md).

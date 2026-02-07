@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Access &amp; auth | Upshift Docs</title>
+  <meta name="description" content="How to use Upshift: CLI, Radar (free and Pro), and platform sign-in. No account needed to start; sign in for dashboard and Pro." />
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="../docs.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script defer data-domain="upshiftai.dev" src="https://plausible.io/js/script.js"></script>
+  <script defer src="/nav.js"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="wrap">
+      <a href="/" class="logo">upshift</a>
+      <button type="button" class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+      <nav class="nav-main">
+        <a href="/#demo">Demo</a>
+        <a href="/radar/">Radar</a>
+        <a href="/#compare">vs Dependabot</a>
+        <a href="/#pricing">Pricing</a>
+        <a href="/docs/">Docs</a>
+        <a href="/blog/index.html">Blog</a>
+        <a href="https://api.upshiftai.dev" target="_blank" rel="noopener">Sign in</a>
+        <a href="https://github.com/repairman29/upshift" class="nav-gh" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="docs-page">
+    <div class="docs-sidebar-layout">
+      <aside class="docs-sidebar">
+        <nav class="docs-nav-section">
+          <div class="docs-nav-section-title">Docs</div>
+          <a href="/docs/">Index</a>
+          <a href="/docs/user-guide.html">User guide</a>
+          <a href="/docs/cli-reference.html">CLI reference</a>
+          <a href="/docs/configuration.html">Configuration</a>
+          <a href="/docs/radar.html">Radar</a>
+          <a href="/docs/access-and-auth.html" class="active">Access &amp; auth</a>
+        </nav>
+      </aside>
+      <article class="docs-content">
+        <h1>Access &amp; auth</h1>
+        <p>Use the CLI and Radar with no account. Sign in to the dashboard for Pro features, report history, and API keys.</p>
+
+        <h2>Use the tools (no account required)</h2>
+        <ol>
+          <li><strong>Install the CLI:</strong> <code>npm install -g upshift-cli</code></li>
+          <li><strong>Scan a project:</strong> <code>cd your-project && upshift scan</code></li>
+          <li><strong>Try Radar (free):</strong> Run <code>upshift scan --report report.json</code>, then open <a href="/radar/">upshiftai.dev/radar</a> (or <code>upshift radar</code>) and paste or upload the JSON. No sign-in; data stays in your browser.</li>
+        </ol>
+        <p>That’s enough to see outdated deps, get risk summaries, upgrade with rollback, and view a multi-repo summary on Radar. See the <a href="/docs/user-guide.html">User guide</a> for the full workflow.</p>
+
+        <h2>When do I need to sign in?</h2>
+        <ul>
+          <li><strong>Radar Free</strong> — No sign-in. Use the <a href="/radar/">Radar page</a> anytime; paste or upload reports.</li>
+          <li><strong>Dashboard, Pro, API keys</strong> — Sign in at <a href="https://api.upshiftai.dev" target="_blank" rel="noopener">api.upshiftai.dev</a>. After sign-in you get: reports list, Pro subscription (Stripe), AI usage, and the option to create an API key for the CLI.</li>
+          <li><strong>Radar Pro (persisted reports)</strong> — Two options:
+            <ol>
+              <li><strong>Platform:</strong> Sign in at the dashboard; use the platform’s report upload and view reports there.</li>
+              <li><strong>Your own backend:</strong> Deploy the repo’s Supabase Radar functions and use an <strong>upload token</strong> (UUID). On the Radar page, open the “Radar Pro” section and enter your API URL + token to load your reports. No sign-in on the marketing site; the token is your credential. See <a href="/docs/radar.html">Radar</a>.</li>
+            </ol>
+          </li>
+        </ul>
+
+        <h2>Sign in (dashboard)</h2>
+        <p>Go to <a href="https://api.upshiftai.dev" target="_blank" rel="noopener">api.upshiftai.dev</a> and click <strong>Sign in</strong>.</p>
+        <ul>
+          <li><strong>Email:</strong> Any email with password <code>demo</code> (for try-it/demo).</li>
+          <li><strong>GitHub:</strong> If your instance has GitHub OAuth configured, you can sign in with GitHub.</li>
+        </ul>
+        <p>Once signed in you can upgrade to Pro, view reports, create an API key, and check AI usage.</p>
+
+        <h2>CLI and credentials</h2>
+        <ul>
+          <li><strong>Radar upload (Pro, your backend):</strong> Set <code>UPSHIFT_RADAR_TOKEN</code> (your UUID) and <code>UPSHIFT_RADAR_UPLOAD_URL</code> (e.g. your Supabase functions URL). Then <code>upshift scan --report out.json --upload</code>. No “login” command; the token is the credential.</li>
+          <li><strong>Platform API (credits, usage):</strong> Create an API key in the dashboard after sign-in, then set <code>UPSHIFTAI_API_KEY</code> (or in config). The CLI uses it for AI and platform features.</li>
+        </ul>
+
+        <h2>Summary</h2>
+        <table class="docs-table">
+          <thead>
+            <tr><th>What</th><th>Auth</th><th>Where</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>CLI (scan, upgrade, etc.)</td><td>None</td><td>Install and run in your repo</td></tr>
+            <tr><td>Radar Free</td><td>None</td><td><a href="/radar/">upshiftai.dev/radar</a></td></tr>
+            <tr><td>Dashboard, Pro, API key</td><td>Sign in</td><td><a href="https://api.upshiftai.dev" target="_blank" rel="noopener">api.upshiftai.dev</a></td></tr>
+            <tr><td>Radar Pro (persisted)</td><td>Sign in to dashboard, or token + your backend</td><td>Dashboard or Radar page (API URL + token)</td></tr>
+          </tbody>
+        </table>
+        <p><a href="/docs/">Docs index</a> · <a href="/docs/user-guide.html">User guide</a> · <a href="/start">Get started</a></p>
+      </article>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p><a href="/">upshift</a> · <a href="/radar/">Radar</a> · <a href="/docs/">Docs</a> · AI-powered dependency upgrades</p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -109,8 +109,15 @@ v0.4.0 stacked deliverables across all four innovation areas. **Full checklist:*
 
 ### Next (platform / v0.5.0)
 
-- **Published GitHub App** — One-click installable Upshift App (scan on PR, comment). **Backend in-repo:** Edge Function `github-app-webhook` + table `github_app_installations`; set `GITHUB_WEBHOOK_SECRET` and point App webhook URL at the function. See [docs/github-app.md](docs/github-app.md). Marketplace listing when ready.
-- **Platform audit endpoint** — **In-repo:** Edge Function `audit-events` + table `audit_logs`; set `UPSHIFT_AUDIT_URL` to the function URL. See [docs/team-features.md](docs/team-features.md).
+*Strategic priorities from [docs/STRATEGY_AND_FEEDBACK.md](docs/STRATEGY_AND_FEEDBACK.md): GitHub App as primary paid entry for teams; monetize the fix, not the scan; audit/compliance as enterprise wedge.*
+
+- **Published GitHub App (priority #1 for growth)** — One-click installable Upshift App (scan on PR, comment). **Make the GitHub App the primary paid entry point for teams**—zero-friction adoption vs asking everyone to install the CLI. **Backend in-repo:** Edge Function `github-app-webhook` + table `github_app_installations`; set `GITHUB_WEBHOOK_SECRET` and point App webhook URL at the function. See [docs/github-app.md](docs/github-app.md). Marketplace listing when ready.
+- **Platform audit endpoint & compliance positioning** — **In-repo:** Edge Function `audit-events` + table `audit_logs`; set `UPSHIFT_AUDIT_URL` to the function URL. See [docs/team-features.md](docs/team-features.md). **GTM:** Sell "Compliance automation" for fintech/healthtech—proof that upgrades were assessed for CVEs and tested.
+- **Radar: PDF Health Report export** — Export Radar dashboard (or a summary) as a PDF "Health Report" so CTOs, consultants, and agencies can use it for client reporting and board/audit visibility.
+- **Confidence score ("Trust battery")** — In UI/CLI output, show a confidence level for AI fixes: e.g. green when high confidence (tests passed, deterministic mods), yellow when heuristic. Reduces churn when the model occasionally gets it wrong.
+- **Silent mode / auto-merge when safe** — When Upshift can upgrade, run tests, and verify no breaking changes, offer an option to merge the PR automatically without human intervention. "Maintenance on autopilot" differentiator vs Dependabot.
+- **Stronger `fix --dry-run` for enterprise** — Produce a clear, reviewable diff that can be approved in a PR before any code is touched. Critical for enterprise safety and trust.
+- **Pricing: seats vs credits (explore)** — For Pro/Team, consider unlimited usage per seat instead of credit caps to avoid "usage anxiety." Align with [docs/STRATEGY_AND_FEEDBACK.md](docs/STRATEGY_AND_FEEDBACK.md).
 - **Org-level credit pools** — **In-repo:** Migrations for `orgs`, `org_members`, `credit_transactions`; platform (Next.js + Stripe) implements billing; CLI sends `UPSHIFT_ORG` when set.
 - **Enterprise** — SSO (SAML/OIDC), on-premise deployment option, SLA and dedicated support. See [docs/enterprise.md](docs/enterprise.md).
 
@@ -133,8 +140,8 @@ Longer-term directions and experiments—beyond incremental features—where we'
 
 ### Workflow & platform
 - **Human-in-the-loop (HITL) at scale** — Approval gates, webhooks, and event streams so teams can adopt AI fixes with the right level of control (see [When it breaks & guardrails](docs/when-it-breaks-and-guardrails.md)). *(v0.4.0: approval.webhookUrl.)*
-- **Radar (central, revenue)** — Central view of dependency health across all repos. Free: paste/upload reports at [upshiftai.dev/radar](https://upshiftai.dev/radar). Radar Pro (Pro/Team): persisted dashboard, history, alerts, upload from CLI/CI. *(v0.4.0: Radar Free + `upshift radar`.)*
-- **IDE and CI-native** — Deeper VS Code (and other editors) integration; GitHub App and native CI UX so upgrades and fixes feel built-in, not bolted-on.
+- **Radar (central, revenue)** — Central view of dependency health across all repos. Free: paste/upload reports at [upshiftai.dev/radar](https://upshiftai.dev/radar). Radar Pro (Pro/Team): persisted dashboard, history, alerts, upload from CLI/CI. *(v0.4.0: Radar Free + `upshift radar`.)* **GTM:** PDF "Health Report" export for CTOs/consultants (see [Strategy & feedback](docs/STRATEGY_AND_FEEDBACK.md)).
+- **IDE and CI-native** — Deeper VS Code (and other editors) integration; GitHub App and native CI UX so upgrades and fixes feel built-in, not bolted-on. **VS Code as acquisition:** When user opens `package.json`, highlight 1–2 critical vulns and offer "Fix with Upshift" for zero-friction conversion.
 
 ### Research & experiments
 - **Changelog and commit intelligence** — Better use of release notes, commit history, and issue trackers to improve risk scoring and explanation quality. *(v0.4.0: changelog in explain + risk.)*
@@ -142,6 +149,10 @@ Longer-term directions and experiments—beyond incremental features—where we'
 - **Community and open source** — Shared migration templates, contribution workflows for framework upgrades, and optional anonymized insights to improve models for everyone. *(v0.4.0: migrations/ + CONTRIBUTING + docs/opt-in-insights.md.)*
 
 *These are directions we care about, not promises or dates. We’ll update this section as we learn and ship.*
+
+### GTM & messaging (see [Strategy & feedback](docs/STRATEGY_AND_FEEDBACK.md))
+- **Position vs Dependabot:** "We did your chores for you. Here's the receipt." / "Let AI fix what breaks."
+- **Content:** "Why it broke" blog series—when a major framework ships breaking changes, publish how `upshift fix` handles that migration.
 
 ---
 

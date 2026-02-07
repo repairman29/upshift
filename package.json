@@ -28,7 +28,7 @@
     "dev": "node --loader ts-node/esm src/cli.ts",
     "start": "node dist/cli.js",
     "server": "node dist/server.js",
-    "test": "echo \"No tests yet\"",
+    "test": "npm run e2e:all",
     "e2e": "npm run build && node tests/e2e/cli.e2e.mjs",
     "verify-site": "node scripts/verify-site.mjs",
     "verify-site:live": "node scripts/verify-site.mjs --live",
@@ -38,7 +38,10 @@
     "supabase:inspect": "supabase inspect db traffic-profile --linked",
     "supabase:deploy": "supabase db push --linked && supabase functions deploy",
     "dogfood": "npm run build && node dist/cli.js scan",
-    "dogfood:upgrade": "node dist/cli.js upgrade"
+    "dogfood:upgrade": "node dist/cli.js upgrade",
+    "e2e:browser": "playwright test",
+    "e2e:all": "npm run e2e && npm run verify-site && npm run e2e:browser",
+    "serve:web": "serve web -p 3333"
   },
   "dependencies": {
     "@inquirer/prompts": "^8.2.0",
@@ -62,7 +65,9 @@
     "supabase": "^2.9.0",
     "ts-node": "^10.9.2",
     "tsup": "^8.3.5",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "@playwright/test": "^1.49.0",
+    "serve": "^14.2.4"
   },
   "engines": {
     "node": ">=18.0.0"
