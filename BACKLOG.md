@@ -2,6 +2,8 @@
 
 Prioritized list of next steps derived from [ROADMAP.md](ROADMAP.md) and [docs/STRATEGY_AND_FEEDBACK.md](docs/STRATEGY_AND_FEEDBACK.md). Use for sprint planning and ownership.
 
+**Track / gate / monetize:** How we measure usage, restrict by tier, and make money → [docs/TRACK_GATE_MONETIZE.md](docs/TRACK_GATE_MONETIZE.md).
+
 ---
 
 ## P0 — Ship for growth

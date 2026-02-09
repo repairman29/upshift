@@ -82,7 +82,7 @@ This document outlines planned features and improvements for Upshift.
 ### Team Features
 - [x] **Upgrade policies** — `.upshiftrc.json`: `upgradePolicy: { blockRisk: ["high"] }` blocks high (or medium) risk upgrades; single and batch upgrade respect policy; use `-y` to override
 - [ ] **Org-level credit pools** — Shared credit pool per org (Team plan); design: [docs/team-features.md](docs/team-features.md). CLI ready: `UPSHIFT_ORG` for org context when platform is live.
-- [ ] **Audit logs** — Who ran which upgrade/fix, when, from where; design: [docs/team-features.md](docs/team-features.md). **CLI ready:** set `UPSHIFT_AUDIT_URL` (and optional `UPSHIFT_ORG`, `UPSHIFT_API_TOKEN`); CLI POSTs events after upgrade, fix, scan_upload. Platform implements endpoint and storage.
+- [x] **Audit logs** — Who ran which upgrade/fix, when, from where; design: [docs/team-features.md](docs/team-features.md). **CLI ready:** set `UPSHIFT_AUDIT_URL`; CLI POSTs events after upgrade, fix, scan_upload. Platform: Edge Function `audit-events` + table `audit_logs` (see [docs/AUDIT_GO_LIVE.md](docs/AUDIT_GO_LIVE.md)).
 
 ### IDE & UX
 - [x] **VS Code: Explain for current file** — Right-click in .ts/.tsx/.js/.jsx → “Upshift: Explain dependency for current file”; detects package from imports, runs explain, shows result in Upshift output channel
@@ -104,19 +104,19 @@ v0.4.0 stacked deliverables across all four innovation areas. **Full checklist:*
 |--------|-------------------|----------------------------------|
 | **1. AI & intelligence** | Context-aware explain, `upshift plan`, `upshift suggest`, migration templates (React, Next, Vue, Angular, TS, Jest), `upgrade --dry-run`, `upshift migrate`, **custom template** (`--template-file`) | Custom migration generators (learn from code style) |
 | **2. Ecosystems & reach** | Python/Ruby/Go scan, explain (minimal + risk/changelog + **--ai**), upgrade (single + batch), `scan --report`, `scan --licenses` | — |
-| **3. Workflow & platform** | HITL approval + webhook, Radar Free + Pro (MVP), `upshift radar`, GitHub App (beta) workflow, VS Code explain/fix in editor, regression recording, CLI audit emission | Published one-click GitHub App, platform audit/credit endpoints |
+| **3. Workflow & platform** | HITL approval + webhook, Radar Free + Pro (MVP), `upshift radar`, **published GitHub App** (one-click install, scan on PR, comment), **platform audit endpoint** (`audit-events`), VS Code explain/fix in editor, regression recording, CLI audit emission | Org credit pools, platform billing |
 | **4. Research & experiments** | Changelog in explain, regression signal (opt-in), community templates, opt-in insights doc | — |
 
 ### Next (platform / v0.5.0)
 
 *Strategic priorities from [docs/STRATEGY_AND_FEEDBACK.md](docs/STRATEGY_AND_FEEDBACK.md): GitHub App as primary paid entry for teams; monetize the fix, not the scan; audit/compliance as enterprise wedge.*
 
-- **Published GitHub App (priority #1 for growth)** — One-click installable Upshift App (scan on PR, comment). **Make the GitHub App the primary paid entry point for teams**—zero-friction adoption vs asking everyone to install the CLI. **Backend in-repo:** Edge Function `github-app-webhook` + table `github_app_installations`; set `GITHUB_WEBHOOK_SECRET` and point App webhook URL at the function. See [docs/github-app.md](docs/github-app.md). Marketplace listing when ready.
-- **Platform audit endpoint & compliance positioning** — **In-repo:** Edge Function `audit-events` + table `audit_logs`; set `UPSHIFT_AUDIT_URL` to the function URL. See [docs/team-features.md](docs/team-features.md). **GTM:** Sell "Compliance automation" for fintech/healthtech—proof that upgrades were assessed for CVEs and tested.
-- **Radar: PDF Health Report export** — Export Radar dashboard (or a summary) as a PDF "Health Report" so CTOs, consultants, and agencies can use it for client reporting and board/audit visibility.
-- **Confidence score ("Trust battery")** — In UI/CLI output, show a confidence level for AI fixes: e.g. green when high confidence (tests passed, deterministic mods), yellow when heuristic. Reduces churn when the model occasionally gets it wrong.
-- **Silent mode / auto-merge when safe** — When Upshift can upgrade, run tests, and verify no breaking changes, offer an option to merge the PR automatically without human intervention. "Maintenance on autopilot" differentiator vs Dependabot.
-- **Stronger `fix --dry-run` for enterprise** — Produce a clear, reviewable diff that can be approved in a PR before any code is touched. Critical for enterprise safety and trust.
+- **Published GitHub App (priority #1 for growth)** — ✅ Done. One-click install at [github.com/apps/upshift-ai](https://github.com/apps/upshift-ai); scan on PR, comment; post-install page at upshiftai.dev/github-app-installed. See [docs/GITHUB_APP_SHIP_CHECKLIST.md](docs/GITHUB_APP_SHIP_CHECKLIST.md). Marketplace listing when ready.
+- **Platform audit endpoint & compliance positioning** — ✅ Done. Edge Function `audit-events` + table `audit_logs`; set `UPSHIFT_AUDIT_URL`. See [docs/AUDIT_GO_LIVE.md](docs/AUDIT_GO_LIVE.md). **GTM:** "Compliance automation" for fintech/healthtech.
+- **Radar: PDF Health Report export** — ✅ Done. Radar page has "Export / print report" (browser print → Save as PDF). Health Report title + date for client/board use.
+- **Confidence score ("Trust battery")** — ✅ Done. CLI and VS Code show confidence (high = tests passed after fix, heuristic = review recommended). Green/yellow in output.
+- **Silent mode / auto-merge when safe** — ✅ Done. Repo secret `ENABLE_AUTOMERGE=true` + workflow step: when scan is 0 outdated / 0 vulns, enables PR auto-merge. See [docs/GITHUB_APP_SHIP_CHECKLIST.md](docs/GITHUB_APP_SHIP_CHECKLIST.md)#optional-silent-mode.
+- **Stronger `fix --dry-run` for enterprise** — ✅ Done. `upshift fix --dry-run` prints unified diff for PR review; option text updated.
 - **Pricing: seats vs credits (explore)** — For Pro/Team, consider unlimited usage per seat instead of credit caps to avoid "usage anxiety." Align with [docs/STRATEGY_AND_FEEDBACK.md](docs/STRATEGY_AND_FEEDBACK.md).
 - **Org-level credit pools** — **In-repo:** Migrations for `orgs`, `org_members`, `credit_transactions`; platform (Next.js + Stripe) implements billing; CLI sends `UPSHIFT_ORG` when set.
 - **Enterprise** — SSO (SAML/OIDC), on-premise deployment option, SLA and dedicated support. See [docs/enterprise.md](docs/enterprise.md).

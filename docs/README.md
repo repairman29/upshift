@@ -28,6 +28,7 @@ Index of product and developer documentation.
 | Doc | Description |
 |-----|--------------|
 | [Team features](team-features.md) | Design for org-level credit pools and audit logs (Pro/Team) |
+| [Track, gate, monetize](TRACK_GATE_MONETIZE.md) | How we track usage, gate by tier, and monetize; move-forward checklist |
 
 ## Roadmap and releases
 
