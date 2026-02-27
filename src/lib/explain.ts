@@ -780,7 +780,7 @@ async function getAIAnalysisEcosystem(
 
   try {
     const { default: OpenAI } = await import("openai");
-    const openai = new OpenAI({ apiKey });
+    const openai = new OpenAI({ apiKey: apiKey || "dummy", baseURL });
 
     const systemPrompt = `You are a senior software engineer helping developers upgrade ${label} dependencies safely.
 Your task is to analyze a package upgrade and provide actionable guidance.
