@@ -82,7 +82,7 @@ export async function runBatchUpgrade(options: BatchUpgradeOptions): Promise<voi
       const allowed: UpgradeCandidate[] = [];
       for (const pkg of candidates) {
         const risk = await assessRisk(options.cwd, pkg.name, pkg.current, pkg.target);
-        if (!blockRisk.includes(risk.level)) allowed.push(pkg);
+        if (risk.level === "low" || !blockRisk.includes(risk.level as "high" | "medium")) allowed.push(pkg);
       }
       candidates = allowed;
       if (before > candidates.length) {

@@ -66,8 +66,9 @@ export async function runUpgrade(options: UpgradeOptions): Promise<void> {
   }
 
   const spinner = ora(`Upgrading ${options.packageName}...`).start();
+  let packageManager: import("./package-manager.js").PackageManager = "npm";
   try {
-    const packageManager = detectPackageManager(options.cwd);
+    packageManager = detectPackageManager(options.cwd);
 
     const target = options.toVersion ?? "latest";
     const config = loadConfig(options.cwd);
@@ -83,9 +84,9 @@ export async function runUpgrade(options: UpgradeOptions): Promise<void> {
     const blockRisk = config.upgradePolicy?.blockRisk;
     if (!options.dryRun && blockRisk && blockRisk.length > 0 && targetVersion) {
       const risk = await assessRisk(options.cwd, options.packageName, currentVersion ?? undefined, targetVersion);
-      if (blockRisk.includes(risk.level)) {
+      if (risk.level !== "low" && blockRisk.includes(risk.level as "high" | "medium")) {
         spinner.fail(`Upgrade blocked by policy (risk: ${risk.level}). Set upgradePolicy.blockRisk in .upshiftrc.json or use -y to override.`);
-        risk.reasons.forEach((r) => process.stdout.write(chalk.gray(`  - ${r}\n`)));
+        risk.reasons.forEach((r) => { process.stdout.write(chalk.gray(`  - ${r}\n`)); });
         process.exit(1);
       }
     }

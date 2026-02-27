@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import ora from "ora";
-import { existsSync, readFileSync, readdirSync } from "fs";
+import { existsSync, readFileSync, readdirSync, Dirent } from "fs";
 import path from "path";
 import semver from "semver";
 import { runCommand } from "./exec.js";
@@ -106,7 +106,7 @@ export async function runExplain(options: ExplainOptions): Promise<void> {
       process.stdout.write(
         `${options.packageName} ${currentVersion ?? "?"} → ${targetVersion}: ${color(risk.level.toUpperCase())}\n`
       );
-      risk.reasons.forEach((r) => process.stdout.write(`  - ${r}\n`));
+      risk.reasons.forEach((r) => { process.stdout.write(`  - ${r}\n`); });
       return;
     }
 
@@ -192,7 +192,7 @@ function getUsageInCodebase(
   let fileCount = 0;
   function scan(dir: string): void {
     if (!existsSync(dir)) return;
-    let entries: string[];
+    let entries: Dirent[];
     try {
       entries = readdirSync(dir, { withFileTypes: true });
     } catch {
@@ -369,7 +369,7 @@ async function runExplainRuby(options: ExplainOptions): Promise<void> {
 
     let risk: RiskAssessment | undefined;
     if (options.risk || options.json) {
-      risk = assessRiskRubyGo(currentVersion, targetVersion, majorDelta);
+      risk = assessRiskRubyGo(currentVersion as string | undefined, targetVersion as string | undefined, majorDelta);
     }
     let changelog: string | null = null;
     if ((options.changelog || options.ai) && (gemInfo.source_code_uri || gemInfo.homepage)) {
@@ -408,7 +408,7 @@ async function runExplainRuby(options: ExplainOptions): Promise<void> {
       process.stdout.write(
         `${options.packageName} ${currentVersion ?? "?"} → ${targetVersion ?? "?"}: ${color(risk.level.toUpperCase())}\n`
       );
-      risk.reasons.forEach((r) => process.stdout.write(`  - ${r}\n`));
+      risk.reasons.forEach((r) => { process.stdout.write(`  - ${r}\n`); });
       return;
     }
 
@@ -465,7 +465,7 @@ async function runExplainGo(options: ExplainOptions): Promise<void> {
 
     let risk: RiskAssessment | undefined;
     if (options.risk || options.json) {
-      risk = assessRiskRubyGo(currentVersion ?? undefined, targetVersion ?? undefined, majorDelta);
+      risk = assessRiskRubyGo(currentVersion as string | undefined, targetVersion as string | undefined, majorDelta);
     }
     let changelog: string | null = null;
     if ((options.changelog || options.ai) && options.packageName.startsWith("github.com/")) {
@@ -503,7 +503,7 @@ async function runExplainGo(options: ExplainOptions): Promise<void> {
       process.stdout.write(
         `${options.packageName} ${currentVersion ?? "?"} → ${targetVersion ?? "?"}: ${color(risk.level.toUpperCase())}\n`
       );
-      risk.reasons.forEach((r) => process.stdout.write(`  - ${r}\n`));
+      risk.reasons.forEach((r) => { process.stdout.write(`  - ${r}\n`); });
       return;
     }
 

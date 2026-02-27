@@ -2,6 +2,7 @@
  * Ecosystem detection: node (npm/yarn/pnpm), python (pip/poetry), ruby (bundler), go.
  */
 
+import chalk from "chalk";
 import { existsSync } from "fs";
 import path from "path";
 import { runCommand } from "./exec.js";
@@ -28,6 +29,8 @@ export function detectEcosystem(cwd: string): Ecosystem {
     return "go";
   }
 
+  // No recognized project files - return node as default but log a warning
+  console.warn(chalk.yellow("Warning: No recognized project files found (package.json, pyproject.toml, requirements.txt, Gemfile, go.mod). Assuming Node.js project."));
   return "node"; // default
 }
 
