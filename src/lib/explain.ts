@@ -754,9 +754,13 @@ async function getAIAnalysisEcosystem(
   changelog: string | null
 ): Promise<string> {
   const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
+  const baseURL = process.env.OPENAI_BASE_URL || "https://api.openai.com/v1";
+  const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
+
+  if (!apiKey && baseURL.includes("openai.com")) {
     return chalk.yellow("AI analysis unavailable (OPENAI_API_KEY not configured).\n") +
-      "Set OPENAI_API_KEY environment variable to enable AI-powered explanations.";
+      "Set OPENAI_API_KEY environment variable to enable AI-powered explanations.\n" +
+      "Or use a local model: set OPENAI_BASE_URL=http://127.0.0.1:1234/v1 and OPENAI_MODEL=qwen/qwen3-14b";
   }
 
   const labels: Record<string, string> = {
@@ -802,7 +806,7 @@ Provide:
 Upgrade command: ${upgradeCmd}`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: model,
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },

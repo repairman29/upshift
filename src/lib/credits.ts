@@ -27,6 +27,12 @@ function showOutOfCreditsMessage(needed: number = 1): void {
 }
 
 export async function consumeCredit(action: string, count: number = 1): Promise<void> {
+  // Skip credits check for local models (LM Studio, Ollama, etc.)
+  const baseURL = process.env.OPENAI_BASE_URL;
+  if (baseURL && !baseURL.includes("api.openai.com")) {
+    return; // Local endpoint - no credits needed
+  }
+
   const endpoint = process.env.UPSHIFT_CREDITS_ENDPOINT;
   const token = process.env.UPSHIFT_API_TOKEN;
 

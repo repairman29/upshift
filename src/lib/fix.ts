@@ -207,13 +207,16 @@ async function getAIPatterns(
   toVersion: string
 ): Promise<MigrationPattern[]> {
   const apiKey = process.env.OPENAI_API_KEY;
+  const baseURL = process.env.OPENAI_BASE_URL || "https://api.openai.com/v1";
+  const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
   
-  if (!apiKey) {
-    throw new Error("OPENAI_API_KEY not configured. Set it to enable AI-powered fixes.");
+  if (!apiKey && baseURL.includes("openai.com")) {
+    throw new Error("OPENAI_API_KEY not configured. Set it to enable AI-powered fixes.\n" +
+      "Or use a local model: set OPENAI_BASE_URL=http://127.0.0.1:1234/v1 and OPENAI_MODEL=qwen/qwen3-14b");
   }
 
   const { default: OpenAI } = await import("openai");
-  const openai = new OpenAI({ apiKey });
+  const openai = new OpenAI({ apiKey: apiKey || "dummy", baseURL });
 
   const systemPrompt = `You are an expert at npm package migrations. Given a package upgrade, identify specific code patterns that need to change.
 
@@ -250,7 +253,7 @@ To version: ${toVersion}
 What code patterns need to change for this upgrade?`;
 
   const response = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
+    model: model,
     messages: [
       { role: "system", content: systemPrompt },
       { role: "user", content: userPrompt },

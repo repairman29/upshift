@@ -161,13 +161,16 @@ function extractUrl(via: Array<string | { url?: string }>): string | undefined {
 
 async function getAIRemediation(auditData: AuditResult): Promise<string> {
   const apiKey = process.env.OPENAI_API_KEY;
+  const baseURL = process.env.OPENAI_BASE_URL || "https://api.openai.com/v1";
+  const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
   
-  if (!apiKey) {
-    return "AI remediation unavailable (OPENAI_API_KEY not configured).";
+  if (!apiKey && baseURL.includes("openai.com")) {
+    return "AI remediation unavailable (OPENAI_API_KEY not configured).\n" +
+      "Or use a local model: set OPENAI_BASE_URL=http://127.0.0.1:1234/v1 and OPENAI_MODEL=qwen/qwen3-14b";
   }
 
   const { default: OpenAI } = await import("openai");
-  const openai = new OpenAI({ apiKey });
+  const openai = new OpenAI({ apiKey: apiKey || "dummy", baseURL });
 
   const vulnSummary = auditData.vulnerabilities
     .slice(0, 10) // Limit to 10 for token efficiency
@@ -198,7 +201,7 @@ Provide:
 4. Alternatives for packages without fixes`;
 
   const response = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
+    model: model,
     messages: [
       { role: "system", content: systemPrompt },
       { role: "user", content: userPrompt },
